@@ -8,7 +8,7 @@ import { MdCategory, MdMenu  } from "react-icons/md";
 import { GiCardboardBoxClosed } from "react-icons/gi";
 import { IoIosSettings, IoIosArrowDown    } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
-import { RiLogoutBoxFill } from "react-icons/ri";
+import { CiLogout } from "react-icons/ci";
 
 const Sidebar = () => {
 
@@ -110,15 +110,17 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
+
       <nav>
         <Link
           to="/"
           className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
         >
-          <RiLogoutBoxFill className="text-primary" />
+          <CiLogout className="text-primary" />
           Cerrar sesión
         </Link>
       </nav>
+
     </div>
     <button onClick={()=> setShowMenu(!showMenu)} className="xl:hidden fixed bottom-4 right-4 bg-primary text-black p-3 rounded-full z-50">{showMenu ? <IoClose/> : <MdMenu />}</button>
     </>
