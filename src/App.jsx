@@ -8,7 +8,9 @@ import Login from "./pages/auth/Login";
 import RecuperarContrasena from "./pages/auth/RecuperarContrasena";
 
 // Pages admin
-import Home from "./pages/admin/Home";
+import Dashboard from "./pages/admin/Dashboard";
+import Perfil from "./pages/admin/Perfil";
+import Proveedores from "./pages/admin/Proveedores";
 
 import Error404 from "./pages/Error404";
 
@@ -21,7 +23,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
         <Route path="/" element={<LayoutAdmin />}>
-          <Route index element={<Home />} />
+          <Route index element={<Dashboard />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/proveedores" element={<Proveedores />} />
         </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>
