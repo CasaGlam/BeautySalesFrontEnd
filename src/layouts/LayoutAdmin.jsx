@@ -14,6 +14,9 @@ const LayoutAdmin = () => {
     case '/perfil':
       title = 'Perfil';
       break;
+      case '/ventas/registrar':
+        title = 'Registro';
+        break;
     case '/proveedores':
       title = 'Proveedores';
       break;

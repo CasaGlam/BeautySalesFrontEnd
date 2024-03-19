@@ -63,7 +63,7 @@ const Sidebar = () => {
               <ul className={`my-2 ${!showSubMenu && "hidden"}`}>
                 <li>
                   <Link
-                    to="/"
+                    to="/ventas"
                     className="py-2 px-4 border-l border-gray-500 ml-6 block relative before:w-3 before:h-3 before:absolute before:bg-gray-500 before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary-100 hover:text-white transition-colors"
                   >
                     Ventas

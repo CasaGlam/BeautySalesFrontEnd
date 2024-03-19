@@ -10,7 +10,9 @@ import RecuperarContrasena from "./pages/auth/RecuperarContrasena";
 // Pages admin
 import Dashboard from "./pages/admin/Dashboard";
 import Perfil from "./pages/admin/Perfil";
+import Registrar from "./pages/admin/Registrar";
 import Proveedores from "./pages/admin/Proveedores";
+
 
 import Error404 from "./pages/Error404";
 
@@ -25,6 +27,7 @@ function App() {
         <Route path="/" element={<LayoutAdmin />}>
           <Route index element={<Dashboard />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/ventas/registrar" element={<Registrar />} />
           <Route path="/proveedores" element={<Proveedores />} />
         </Route>
         <Route path="*" element={<Error404 />} />
