@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 
 // Icons
-import { FaSave } from "react-icons/fa";
+import { FaSave, FaEdit, FaTrash } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 
 const Proveedores = () => {
-  const [mostrarVentanaEmergente, setMostrarVentanaEmergente] = useState(false);
+  const [mostrarAgregarProveedor, setmostrarAgregarProveedor] = useState(false);
 
-  const toggleVentanaEmergente = () => {
-    setMostrarVentanaEmergente(!mostrarVentanaEmergente);
+  const desplegarVentanaProveedor = () => {
+    setmostrarAgregarProveedor(!mostrarAgregarProveedor);
   };
 
   const proveedores = [
@@ -32,14 +32,14 @@ const Proveedores = () => {
     <div className="overflow-x-auto">
       <div className="w-full py-5 flex items-center justify-start md:justify-end">
         <button
-          className="bg-primary text-black py-2 px-4 rounded-[10px]"
-          onClick={toggleVentanaEmergente}
+          className="bg-primary text-secondary-900 py-2 px-4 rounded-[10px]"
+          onClick={desplegarVentanaProveedor}
         >
-          Agregar nuevo proveedor
+          Agregar nuevo producto
         </button>
       </div>
 
-      {mostrarVentanaEmergente && (
+      {mostrarAgregarProveedor && (
         <div className="fixed top-1 flex items-center justify-center w-[78%] h-full">
           <div className="bg-secondary-100 p-8 rounded-lg flex flex-col">
             <h2 className="text-2xl font-bold mb-4 ">Agregar Nuevo Proveedor</h2>
@@ -66,13 +66,13 @@ const Proveedores = () => {
             <div className='w-full flex gap-2'>
             <button
               className="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded-md w-full flex items-center justify-center"
-              onClick={toggleVentanaEmergente}
+              onClick={desplegarVentanaProveedor}
             >
               <FaSave/>
             </button>
             <button
               className="text-black bg-red-500 hover:bg-red-700 px-4 py-2 rounded-md w-full flex items-center justify-center"
-              onClick={toggleVentanaEmergente}
+              onClick={desplegarVentanaProveedor}
             >
               <IoMdCloseCircle/>
             </button>
@@ -102,10 +102,10 @@ const Proveedores = () => {
               <td className="py-3 px-6 text-left">{proveedor.direccion}</td>
               <td className="py-3 px-6 text-left">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                  Editar
+                  <FaEdit/>
                 </button>
                 <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2">
-                  Eliminar
+                  <FaTrash/>
                 </button>
               </td>
             </tr>
