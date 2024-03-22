@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 // Icons
 import { FaChartSimple, FaCartShopping } from "react-icons/fa6";
 import { MdCategory, MdMenu } from "react-icons/md";
-import { GiCardboardBoxClosed } from "react-icons/gi";
 import { IoIosSettings, IoIosArrowDown } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
 import { HiUsers } from "react-icons/hi2";
+import { FaTruck } from "react-icons/fa";
+import { GiLipstick } from "react-icons/gi";
 
 const Sidebar = () => {
   const [showSubMenu, setShowSubMenu] = useState(false);
@@ -34,6 +35,15 @@ const Sidebar = () => {
               >
                 <FaChartSimple className="text-primary" />
                 Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/"
+                className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
+              >
+                <GiLipstick className="text-primary" />
+                Productos
               </Link>
             </li>
             <li>
@@ -81,16 +91,16 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                to="/proveedores"
+                to="/"
                 className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
               >
-                <GiCardboardBoxClosed className="text-primary" />
+                <FaTruck className="text-primary" />
                 Proveedores
               </Link>
             </li>
             <li>
               <Link
-                to="/proveedores"
+                to="/"
                 className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
               >
                 <HiUsers className="text-primary" />
@@ -134,15 +144,6 @@ const Sidebar = () => {
           </ul>
         </div>
 
-        <nav>
-          <Link
-            to="/"
-            className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
-          >
-            <CiLogout className="text-primary" />
-            Cerrar sesión
-          </Link>
-        </nav>
       </div>
       <button
         onClick={() => setShowMenu(!showMenu)}

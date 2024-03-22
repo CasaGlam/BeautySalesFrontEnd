@@ -8,7 +8,7 @@ import { CiLogout } from "react-icons/ci";
 
 const Header = ({ title }) => {
   return (
-    <header className="h-[7vh] md:h-[10vh] border-b border-secondary-100 p-8 flex items-center justify-between">
+    <header className="h-[7vh] md:h-[10vh] border-b border-secondary-100 p-8 flex items-center justify-between bg-secondary-100">
       <h2>{title}</h2>
       <nav className="flex items-center gap-x-4">
         <Menu
