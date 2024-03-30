@@ -29,7 +29,7 @@ const Clientes = () => {
       return;
     }
 
-    // Aquí puedes agregar lógica para guardar el nuevo cliente
+
     Swal.fire({
       icon: 'success',
       title: 'Cliente Guardado',

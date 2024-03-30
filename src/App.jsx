@@ -14,7 +14,7 @@ import Productos from "./pages/admin/productos";
 import Categorias from "./pages/admin/Categorias";
 import Registrar from "./pages/admin/Registrar";
 import Compras from "./pages/admin/Compras";
-import Proveedor from "./pages/admin/Proveedor";
+import Proveedores from "./pages/admin/Proveedores";
 import Clientes from "./pages/admin/clientes";
 
 
@@ -35,7 +35,7 @@ function App() {
           <Route path="/categorias" element={<Categorias />} />
           <Route path="/ventas/registrar" element={<Registrar />} />
           <Route path="/compras" element={<Compras />} />
-          <Route path="/proveedor" element={<Proveedor />} />
+          <Route path="/proveedores" element={<Proveedores />} />
           <Route path="/clientes" element={<Clientes />} />
         </Route>
         <Route path="*" element={<Error404 />} />

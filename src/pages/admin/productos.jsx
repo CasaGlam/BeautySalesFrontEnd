@@ -30,7 +30,6 @@ const Productos = () => {
       return;
     }
 
-    // Aquí puedes agregar lógica para guardar el nuevo producto
     Swal.fire({
       icon: 'success',
       title: 'Producto Guardado',
