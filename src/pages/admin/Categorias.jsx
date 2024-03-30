@@ -29,7 +29,6 @@ const Categorias = () => {
       return;
     }
 
-    // Aquí puedes agregar lógica para guardar la nueva categoría
     Swal.fire({
       icon: 'success',
       title: 'Categoría Guardada',
