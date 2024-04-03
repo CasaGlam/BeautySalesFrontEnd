@@ -1,44 +1,81 @@
-import React, {useState} from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect  } from "react";
+import { Link } from "react-router-dom";
+import { useWindowSize } from "react-use";
 
 // Icons
-import { FaUser, FaLock, FaEye, FaEyeSlash    } from "react-icons/fa";
-
+import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
-
   const [showPassword, setShowPassword] = useState(false);
+  const { width } = useWindowSize(); // Obtiene el ancho de la ventana
+
+  useEffect(() => {
+    // Oculta el div con id "Prueba" si el ancho de la ventana es menor a 900px
+    const pruebaDiv = document.getElementById("Prueba");
+    if (width < 1300 && pruebaDiv) {
+      pruebaDiv.style.display = "none";
+    } else if (pruebaDiv) {
+      pruebaDiv.style.display = "block";
+    }
+  }, [width]);
 
   return (
-    <div className='min-h-screen flex items-center justify-center'>
-        <div className='bg-secondary-100 p-8 rounded-xl  w-auto lg:w-[450px]'>
-          <h1 className='text-3xl text-center uppercase font-bold tracking-[5px] text-primary mb-8 '>Iniciar sesión</h1>
-          <form className='mb-8'>
-            <div className='relative mb-5'>
-              <FaUser className='absolute top-1/2 -translate-y-1/2 left-2' />
-              <input type='text' className='py-3 pl-8 pr-4  bg-secondary-900 w-full outline-none rounded-lg focus:border focus:border-primary' placeholder='Usuario'/>
+    <div className="w-[100vw] h-[100vh] flex justify-center items-center">
+      <div
+        className="w-[90vw] h-[90vh] rounded-lg flex justify-center"
+        style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}
+      >
+        <div
+          className="w-[40%]  h-[100%] border-r border-black"
+          style={{
+            backgroundImage: "url('src/assets/img/LogoBeautySales.png')",
+            backgroundRepeat: "no-repeat",
+          }}
+          id="Prueba"
+        ></div>
+        <div className="text-black  w-[60%] flex flex-col justify-center items-center backdrop-blur-sm rounded-lg">
+          <h1 className="text-5xl font-bold mb-10">Bienvenido</h1>
+          {/*<h5 className="font-bold mb-10">A Beauty sales</h5>*/}
+          <hr className=" border-black h-px w-[95%]" />
+          <h2 className="text-4xl font-bold mb-10 mt-10">Iniciar sesión</h2>
+          <form className=" w-[80%]">
+            <div className="relative mb-8">
+              <FaUser className="absolute top-1/2 -translate-y-1/2 left-2" />
+              <input
+                type="text"
+                className="py-3 pl-8 pr-12 w-full outline-none border-b border-black bg-transparent placeholder-black"
+                placeholder="Correo"
+              />
             </div>
-            <div className='relative mb-8'>
-              <FaLock   className='absolute top-1/2 -translate-y-1/2 left-2'/>
-              <input type={showPassword ? "text" : "password"} className='py-3 pl-8 pr-12  bg-secondary-900 w-full outline-none rounded-lg focus:border focus:border-primary' placeholder='Contraseña'/>
+            <div className="relative mb-8">
+              <FaLock className="absolute top-1/2 -translate-y-1/2 left-2 " />
+              <input
+                type={showPassword ? "text" : "password"}
+                className="py-3 pl-8 pr-12  w-full outline-none border-b border-black bg-transparent placeholder-black"
+                placeholder="Contraseña"
+              />
               {showPassword ? (
-                <FaEyeSlash onClick={() => setShowPassword(!showPassword)} className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer'/>
-              ):(
-                <FaEye onClick={() => setShowPassword(!showPassword)} className='absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer'/>
-              )}     
+                <FaEyeSlash
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer"
+                />
+              ) : (
+                <FaEye
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer"
+                />
+              )}
             </div>
-            <div>
-              <button type='submit' className='bg-primary w-full py-3 px-4 rounded-lg uppercase font-bold text-secondary-900 hover:bg-secondary-900 hover:text-white transition-all duration-400'>Ingresar</button>
-            </div>
+            <input
+              type="button"
+              className=" text-center py-3 pl-8 pr-12  w-full outline-none bg-primary rounded-lg cursor-pointer font-semibold"
+              value="Ingresar"
+            />
           </form>
-          <div className='flex flex-col gap-4 items-center text-gray-100'>
-              <Link to="/recuperar-contrasena" className='hover:text-primary transition.colors'>
-               ¿Olvidates tu contraseña?
-              </Link>
-          </div>
         </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

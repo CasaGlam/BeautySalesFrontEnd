@@ -4,10 +4,12 @@ const Perfil = () => {
   return (
     <div className="bg-secondary-100 p-8 rounded-xl mb-10">
       <div className="mb-10 w-full flex items-center justify-center">
+        <div className="rounded-full" style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}>
         <img
           src="src/assets/img/LogoBeautySales.png"
           className="w-40 h-40 rounded-full"
         />
+        </div>
       </div>
       <hr className="mb-10 border-gray-500"/>
       <h3 className="text-xl text-white pb-10">Información de usuario</h3>
@@ -23,6 +25,20 @@ const Perfil = () => {
                   type="text"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
                   placeholder="Nombre"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
+            <div className="w-full md:w-1/4">
+              <p>Rol</p>
+            </div>
+            <div className="flex-1 flex items-center">
+              <div className="w-full">
+                <input
+                  type="text"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  placeholder="Rol"
                 />
               </div>
             </div>
@@ -83,6 +99,7 @@ const Perfil = () => {
                 <textarea
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
                   placeholder="Descripción de la empresa"
+                  
                 ></textarea>
               </div>
             </div>
