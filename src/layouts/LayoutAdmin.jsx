@@ -8,20 +8,41 @@ const LayoutAdmin = () => {
 
   let title = "";
   switch (location.pathname) {
-    case "/":
-      title = "Dashboard";
-      break;
     case "/perfil":
       title = "Perfil";
       break;
-    case "/ventas/registrar":
-      title = "Registro";
+    case "/":
+      title = "Dashboard";
+      break;
+    case "/ventas":
+      title = "Ventas";
+      break;
+    case "/ventas/registrar-venta":
+      title = "Registrar venta";
+      break;
+    case "/ventas/editar-venta":
+      title = "Editar venta";
+      break;
+    case "/compras":
+      title = "Compras";
+      break;
+    case "/compras/registrar-compra":
+      title = "Registrar compra";
+      break;
+    case "/compras/editar-compra":
+      title = "Editar compra";
       break;
     case "/proveedores":
       title = "Proveedores";
       break;
-    case "/compras":
-      title = "Compras";
+    case "/usuarios":
+      title = "Usuarios";
+      break;
+    case "/usuarios/registrar-usuario":
+      title = "Registrar usuario";
+      break;
+    case "/usuarios/editar-usuario":
+      title = "Editar usuario";
       break;
     default:
       title = "";

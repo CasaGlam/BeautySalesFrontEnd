@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FaSearch, FaTrashAlt } from "react-icons/fa";
 import Swal from 'sweetalert2';
+import { Link } from "react-router-dom";
+
 
 const Compras = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -304,7 +306,17 @@ const Compras = () => {
             </div>
           </div>
         </div>
+
       )}
+
+<div >
+        <Link to="/compras/registrar-compra">
+          <button className='border p-5'>Registrar compra</button>
+        </Link>
+        <Link to="/compras/editar-compra">
+          <button className='border p-5'>Editar compra</button>
+        </Link>
+      </div>
     </div>
   );
 }
