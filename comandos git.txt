@@ -1,0 +1,8 @@
+git checkout main
+git fetch
+git pull origin main
+git checkout alexa
+git merge main
+git add .
+git commit -m "Cambios Alexa"
+git push origin alexa
