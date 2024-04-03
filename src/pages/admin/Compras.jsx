@@ -64,7 +64,7 @@ const Compras = () => {
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className='flex justify-between p-5'>
           <h3>Registrar compra</h3>
-          <button onClick={toggleModal} className='px-6 py-2 bg-green-500 rounded-full'>Registrar compra</button>
+          <Link to="/compras/registrar-compra" className='px-6 py-2 bg-green-500 rounded-full'>Registrar compra</Link>
         </div>
         <div className='p-5 overflow-x-auto'>
           <table className="min-w-full divide-y divide-gray-200">
