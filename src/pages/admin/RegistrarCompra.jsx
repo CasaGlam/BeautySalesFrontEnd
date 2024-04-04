@@ -96,11 +96,12 @@ const Compras = () => {
   };
 
   return (
-    <div className="flex justify-center">
+   <div className="bg-secondary-100 w-full rounded-lg">
+     <div className="flex justify-center p-8">
       <div className='w-full'>
-        <h3 className="text-lg font-bold mb-4 text-black">Registrar compra</h3>
+        <h3 className="text-2xl font-bold mb-4 text-white">Registrar compra</h3>
         <div className="mb-4">
-          <label className="block text-gray-800 text-sm font-bold mb-2">Productos Seleccionados</label>
+          <label className="block text-white text-sm font-bold mb-2">Productos Seleccionados</label>
           <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
             {productosSeleccionados.map((producto, index) => (
               <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
@@ -135,9 +136,9 @@ const Compras = () => {
             ))}
           </ul>
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="buscarProducto">Buscar Producto</label>
-          <div className="flex items-center border-b border-b-2 border-teal-500 py-2">
+        <div className="mb-4 ">
+          <label className="block text-white text-sm font-bold mb-2" htmlFor="buscarProducto">Buscar Producto</label>
+          <div className="flex items-center border-b border-b-2 border-teal-500 py-2 gap-4">
             <input
               id="buscarProducto"
               className="appearance-none bg-transparent border rounded-none w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -157,7 +158,7 @@ const Compras = () => {
         </div>
         {busquedaProducto && (
           <div className="mb-4">
-            <label className="block text-gray-800 text-sm font-bold mb-2">Productos</label>
+            <label className="block text-white text-sm font-bold mb-2">Productos</label>
             <div className="overflow-y-scroll max-h-40">
               <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
                 {productos
@@ -180,7 +181,7 @@ const Compras = () => {
         )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
             <input
               id="numeroCompra"
               type="text"
@@ -191,7 +192,7 @@ const Compras = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
             <input
               id="descripcion"
               type="text"
@@ -202,7 +203,7 @@ const Compras = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
             <input
               id="fecha"
               type="date"
@@ -213,7 +214,7 @@ const Compras = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="estado">Estado</label>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="estado">Estado</label>
             <select
               id="estado"
               className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -225,7 +226,7 @@ const Compras = () => {
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-800 text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
+            <label className="block text-white text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
             <select
               id="proveedor"
               className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -255,6 +256,7 @@ const Compras = () => {
         </form>
       </div>
     </div>
+   </div>
   );
 }
 
