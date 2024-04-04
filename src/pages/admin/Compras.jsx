@@ -15,8 +15,8 @@ const Compras = () => {
       proveedor: 'Proveedor Uno',
       total: 0,
       productosSeleccionados: [
-        { id: 1, nombre: 'Producto 1', cantidad: 2, precio: 100 },
-        { id: 2, nombre: 'Producto 2', cantidad: 1, precio: 150 }
+        { id: 1, nombre: 'Producto 1', precio: 50, cantidad: 2, precio: 100 },
+        { id: 2, nombre: 'Producto 2', precio: 150, cantidad: 1, precio: 150 }
       ]
     },
     {
@@ -28,8 +28,8 @@ const Compras = () => {
       proveedor: 'Proveedor Dos',
       total: 0,
       productosSeleccionados: [
-        { id: 1, nombre: 'Producto 3', cantidad: 3, precio: 200 },
-        { id: 2, nombre: 'Producto 4', cantidad: 2, precio: 300 }
+        { id: 1, nombre: 'Producto 3', precio: 100, cantidad: 3, precio: 300 },
+        { id: 2, nombre: 'Producto 4', precio:150, cantidad: 2, precio: 300 }
       ]
     },
     // Puedes agregar más ejemplos de compras aquí
@@ -62,30 +62,51 @@ const Compras = () => {
   return (
     <div className="flex justify-center">
       <div className='bg-secondary-100 w-full rounded-lg'>
-        <div className='flex justify-between p-5'>
-          <h3>Registrar compra</h3>
-          <Link to="/compras/registrar-compra" className='px-6 py-2 bg-green-500 rounded-full'>Registrar compra</Link>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
+        <div>
+          <h1 className="text-2xl font-bold mb-4 pt-4">Registro de compras</h1>
         </div>
-        <div className='p-5 overflow-x-auto'>
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <div className="flex gap-4">
+          <div>
+            <input
+              className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
+              type="search"
+              placeholder="Buscar compra"
+            />
+          </div>
+          <div className="">
+          <Link
+                to="/compras/registrar-compra"
+                className=""
+              >
+            <button  className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+              Agregar nueva compra
+            </button>
+              </Link>
+
+          </div>
+        </div>
+      </div>
+        <div className='p-5 overflow-x-auto rounded-lg'>
+          <table className="min-w-full divide-y divide-gray-500 rounded-lg">
+            <thead className="bg-secondary-900 rounded-lg">
+              <tr className=''>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Número de Compra
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Descripción
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Fecha
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Estado
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Proveedor
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Total
                 </th>
                 <th scope="col" className="relative px-6 py-3">
@@ -93,26 +114,26 @@ const Compras = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
               {compras.map((compra) => (
                 <React.Fragment key={compra.id}>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{compra.numeroCompra}</div>
+                      <div className="font-medium text-black">{compra.numeroCompra}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{compra.descripcion}</div>
+                      <div className="font-medium text-black">{compra.descripcion}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{compra.fecha}</div>
+                      <div className="font-medium text-black">{compra.fecha}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${compra.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {compra.estado ? 'Activa' : 'Inactiva'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{compra.proveedor}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-black">{compra.proveedor}</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-black">
                       ${compra.productosSeleccionados.reduce((total, producto) => total + (producto.cantidad * producto.precio), 0)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -123,20 +144,28 @@ const Compras = () => {
                   </tr>
                   {compraExpandida === compra.id && (
                     <tr>
-                      <td colSpan="7">
-                        <div className="mt-4 mb-2">
-                          <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
-                            {compra.productosSeleccionados.map((producto) => (
-                              <li key={producto.id} className="px-4 py-4 flex items-center justify-between text-sm">
-                                <span className="font-medium text-black truncate">{producto.nombre}</span>
-                                <span className="font-medium text-black">{producto.cantidad}</span>
-                                <span className="font-medium text-black">${producto.cantidad * producto.precio}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </td>
-                    </tr>
+                    <td colSpan="7">
+                      <div className="mt-4 mb-2 px-8">
+                        <ul className="border border-gray-400 rounded-md divide-y divide-gray-500">
+                          <li className="px-4 py-2 bg-secondary-900 flex items-center justify-between text-sm font-medium">
+                            <span>Producto</span>
+                            <span>Precio unitario</span>
+                            <span>Cantidad</span>
+                            <span>Total</span>
+                          </li>
+                          {compra.productosSeleccionados.map((producto) => (
+                            <li key={producto.id} className="px-4 py-4 flex items-center justify-between text-sm">
+                              <span className="text-black truncate">{producto.nombre}</span>
+                              <span className="text-black">{producto.precio}</span>
+                              <span className="text-black">{producto.cantidad}</span>
+                              <span className="text-black">${producto.cantidad * producto.precio}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                  
                   )}
                 </React.Fragment>
               ))}
