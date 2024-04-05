@@ -3,9 +3,9 @@ import { FaSearch, FaTrashAlt, FaSave, FaTimes } from "react-icons/fa";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import Swal from 'sweetalert2';
 
-const Registrar = () => {
+const RegistrarVenta = () => {
   const [productosEncontrados, setProductosEncontrados] = useState([]);
-  const precio = 2000;
+  const precio = 2000; // Precio unitario de los productos
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState('Cliente Genérico');
@@ -59,96 +59,132 @@ const Registrar = () => {
   const subtotal = productosEncontrados.reduce((total, producto) => total + producto.cantidad * producto.precio, 0);
 
   const guardarVenta = () => {
+    // Mostrar resumen de la venta antes de guardar
+    const resumenVenta = productosEncontrados.map(producto => `${producto.nombre} x ${producto.cantidad} - $${producto.cantidad * producto.precio}`).join('\n');
     Swal.fire({
-      title: 'Venta Agregada',
-      icon: 'success',
-      timer: 2000,
-      showConfirmButton: false
-    }).then(() => {
-      setProductosEncontrados([]);
+      title: 'Resumen de la Venta',
+      text: `Productos:\n${resumenVenta}\n\nTotal: $${subtotal}`,
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Lógica para guardar la venta
+        Swal.fire(
+          'Venta Guardada',
+          'La venta ha sido guardada correctamente.',
+          'success'
+        ).then(() => {
+          setProductosEncontrados([]);
+          // Redirigir a donde necesites
+        });
+      }
     });
   };
 
   const cancelarVenta = () => {
     Swal.fire({
-      title: 'Venta Cancelada',
-      icon: 'error',
-      timer: 2000,
-      showConfirmButton: false
-    }).then(() => {
-      setProductosEncontrados([]);
+      title: '¿Está seguro?',
+      text: 'Si cancela, se perderán los datos ingresados.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No, volver',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Cancelar la venta
+        setProductosEncontrados([]);
+        // Redirigir a donde necesites
+      }
     });
   };
 
   return (
-    <div className="flex justify-center">
-      <div className='bg-secondary-100 w-full rounded-lg'>
-        <div className='flex justify-between p-5'>
-          <h3>Registrar venta</h3>
-          <div className='relative'>
-            <select value={clienteSeleccionado} onChange={(e) => setClienteSeleccionado(e.target.value)} className="py-2 px-4 rounded-full outline-none text-black">
-              <option value="Cliente Genérico">Cliente Genérico</option>
-              <option value="Cliente Uno">Cliente Uno</option>
-            </select>
-          </div>
+    <div className="bg-secondary-100 w-full rounded-lg">
+      <div className="flex justify-between p-4">
+        <h3 className="text-2xl font-bold text-white">Registrar venta</h3>
+        <div className="relative">
+          <select
+            value={clienteSeleccionado}
+            onChange={(e) => setClienteSeleccionado(e.target.value)}
+            className="px-4 py-1 text-black text-sm rounded-full bg-gray-300 border border-white"
+            style={{ fontSize: '12px', width: '140px' }} // Estilos del selector de cliente
+          >
+            <option value="Cliente Genérico" className="text-black">Cliente Genérico</option>
+            <option value="Cliente Uno" className="text-black">Cliente Uno</option>
+          </select>
         </div>
-        <div className='flex justify-between p-5'>
-          <div className='flex items-center relative'>
-            <input
-              type="text"
-              placeholder='Buscar producto'
-              className='py-2 px-4 rounded-full outline-none text-black'
-              value={inputValue}
-              onChange={buscarProducto}
-            />
-            <FaSearch className='text-black absolute right-5' />
+      </div>
+      <div className="flex justify-center p-8">
+        <div className="w-full">
+          <div className="mb-4">
+            <label className="block text-white text-sm font-bold mb-2">Buscar Producto</label>
+            <div className="flex items-center border-b border-b-2 border-gray-200 py-2">
+              <input
+                type="text"
+                placeholder="Buscar producto"
+                className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
+                value={inputValue}
+                onChange={buscarProducto}
+              />
+              <FaSearch className="text-white" />
+            </div>
             {suggestions.length > 0 && (
-              <ul className="suggestions bg-secondary-100 text-white absolute top-10 left-0 right-0 z-10 border border-gray-400 rounded-md py-2">
+              <ul className="suggestions bg-gray-300 text-black absolute mt-1 w-full border border-gray-400 rounded-md py-2">
                 {suggestions.map((suggestion, index) => (
-                  <li key={index} className="p-3 hover:bg-secondary- cursor-pointer" onClick={() => agregarProducto(suggestion)}>
+                  <li key={index} className="p-3 hover:bg-gray-400 cursor-pointer" onClick={() => agregarProducto(suggestion)}>
                     <span>{suggestion}</span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
-        </div>
-        <div className='p-5'>
-          <table className='min-w-full table-auto'>
-            <thead>
-              <tr className="text-gray-100 uppercase text-sm leading-normal border-b border-gray-200">
-                <th className="py-3 px-6 text-center">Descripción</th>
-                <th className="py-3 px-6 text-center">Cantidad</th>
-                <th className="py-3 px-6 text-center">Precio</th>
-                <th className="py-3 px-6 text-center">Subtotal</th>
-                <th className="py-3 px-6 text-center"></th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-200 text-sm font-light">
+          <div className="mb-4">
+            <label className="block text-white text-sm font-bold mb-2">Productos Agregados</label>
+            <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
               {productosEncontrados.map((producto, index) => (
-                <tr key={index} className="border-b border-gray-200 hover:bg-secondary-100">
-                  <td className="py-3 px-6 text-center whitespace-nowrap">{producto.nombre}</td>
-                  <td className="py-3 px-6 text-center flex items-center justify-center gap-3">
-                    <CiCircleMinus className='cursor-pointer' onClick={() => restarCantidad(producto)} />
-                    {producto.cantidad}
-                    <CiCirclePlus className='cursor-pointer' onClick={() => agregarProducto(producto.nombre)} />
-                  </td>
-                  <td className="py-3 px-6 text-center">{producto.precio}</td>
-                  <td className="py-3 px-6 text-center">{producto.cantidad * producto.precio}</td>
-                  <td className="py-3 px-6 text-center"><FaTrashAlt className='text-[#FF0000] cursor-pointer' onClick={() => eliminarProducto(producto)} /></td>
-                </tr>
+                <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
+                  <div>
+                    <div className="flex items-center">
+                      <button
+                        className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        onClick={() => restarCantidad(producto)}
+                        type="button"
+                      >
+                        <CiCircleMinus />
+                      </button>
+                      <span className="mx-2">{producto.cantidad}</span>
+                      <button
+                        className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        onClick={() => agregarProducto(producto.nombre)}
+                        type="button"
+                      >
+                        <CiCirclePlus />
+                      </button>
+                    </div>
+                    <span className="text-white font-medium">{producto.nombre}</span>
+                    <div>
+                      <span className="text-white mr-2">Precio Unitario: ${producto.precio}</span>
+                      <span className="text-white">Subtotal: ${producto.cantidad * producto.precio}</span>
+                    </div>
+                  </div>
+                  <FaTrashAlt className="text-[#FF0000] cursor-pointer" onClick={() => eliminarProducto(producto)} />
+                </li>
               ))}
-            </tbody>
-          </table>
-          <div className='flex justify-end gap-4'>
-            <p className='text-[20px] pr-5'>Total: {subtotal}</p>
-            <button onClick={guardarVenta} className='px-6 py-2 mt-10 bg-green-500 rounded-full'><FaSave /></button>
-            <button onClick={cancelarVenta} className='px-6 py-2 mt-10 bg-red-500 rounded-full'><FaTimes /></button>
+            </ul>
+          </div>
+          <div className="flex justify-end gap-4">
+            <p className="text-white font-bold">Total: ${subtotal}</p>
+            <button onClick={guardarVenta} className="px-6 py-2 mt-10 bg-green-500 rounded-full text-white"><FaSave /></button>
+            <button onClick={cancelarVenta} className="px-6 py-2 mt-10 bg-red-500 rounded-full text-white"><FaTimes /></button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Registrar;
+export default RegistrarVenta;
