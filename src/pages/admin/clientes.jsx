@@ -1,303 +1,167 @@
-import React, { useState } from 'react';
-import { FaSearch, FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
-import Swal from 'sweetalert2';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Clientes = () => {
-  const [mostrarAgregarCliente, setMostrarAgregarCliente] = useState(false);
-  const [mostrarEditarCliente, setMostrarEditarCliente] = useState(false);
-  const [busqueda, setBusqueda] = useState('');
-  const [clientesFiltrados, setClientesFiltrados] = useState([]);
-  const [clienteAEditar, setClienteAEditar] = useState(null);
-  const [nuevoCliente, setNuevoCliente] = useState({
-    id: '',
-    nombre: '',
-    telefono: '',
-    correo: ''
-  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [clientes] = useState([
+    { idCliente: 1, nombre: "Cliente Uno", telefono: "123456789", correo: "cliente1@example.com" },
+    { idCliente: 2, nombre: "Cliente Dos", telefono: "987654321", correo: "cliente2@example.com" },
+    { idCliente: 3, nombre: "Cliente Tres", telefono: "456789123", correo: "cliente3@example.com" },
+    { idCliente: 4, nombre: "Cliente Cuatro", telefono: "789123456", correo: "cliente4@example.com" },
+    { idCliente: 5, nombre: "Cliente Cinco", telefono: "321654987", correo: "cliente5@example.com" },
+    { idCliente: 6, nombre: "Cliente Seis", telefono: "654987321", correo: "cliente6@example.com" },
+    { idCliente: 7, nombre: "Cliente Siete", telefono: "987321654", correo: "cliente7@example.com" }
+  ]);
+  const itemsPerPage = 5;
 
-  const desplegarVentanaCliente = () => {
-    setMostrarAgregarCliente(!mostrarAgregarCliente);
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Resetear a la primera página al buscar
   };
 
-  const guardarNuevoCliente = () => {
-    if (!nuevoCliente.id || !nuevoCliente.nombre || !nuevoCliente.telefono || !nuevoCliente.correo) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Campos incompletos',
-        text: 'Por favor, completa todos los campos.',
-      });
-      return;
-    }
+  const filteredClientes = clientes.filter((cliente) =>
+    cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredClientes.slice(indexOfFirstItem, indexOfLastItem);
 
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleDelete = (id) => {
     Swal.fire({
-      icon: 'success',
-      title: 'Cliente Guardado',
-      text: 'El cliente se ha guardado exitosamente.',
-    });
-    setMostrarAgregarCliente(false);
-  };
-
-  const handleEditarCliente = (cliente) => {
-    setClienteAEditar(cliente);
-    setMostrarEditarCliente(true);
-  };
-
-  const handleEliminarCliente = (clienteId) => {
-    Swal.fire({
-      icon: 'warning',
       title: '¿Estás seguro?',
-      text: 'Una vez eliminado, no podrás recuperar este cliente.',
+      text: 'No podrás deshacer esta acción',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        const clientesActualizados = clientes.filter(cliente => cliente.id !== clienteId);
-        setClientes(clientesActualizados);
+        // Aquí puedes agregar la lógica para eliminar el cliente con el id proporcionado
         Swal.fire(
-          'Eliminado',
-          'El cliente ha sido eliminado correctamente.',
+          '¡Eliminado!',
+          'El cliente ha sido eliminado',
           'success'
         );
       }
     });
   };
 
-  const handleBuscar = (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    setBusqueda(searchTerm);
-    const filteredClientes = clientes.filter((cliente) =>
-      cliente.nombre.toLowerCase().includes(searchTerm)
-    );
-    setClientesFiltrados(filteredClientes);
-  };
-
-  const clientes = [
-    {
-      id: 1,
-      nombre: 'Cliente 1',
-      telefono: '123456789',
-      correo: 'cliente1@example.com',
-    },
-    {
-      id: 2,
-      nombre: 'Cliente 2',
-      telefono: '987654321',
-      correo: 'cliente2@example.com',
-    },
-  ];
-
   return (
-    <div className={`overflow-x-auto ${mostrarAgregarCliente || mostrarEditarCliente ? 'blur-background' : 'no-blur-background'}`}>
-      <div className="bg-secondary-100 w-full rounded-lg p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold mr-4">Registrar Clientes</h1>
-          <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="Buscar cliente..."
-              value={busqueda}
-              onChange={handleBuscar}
-              className="py-2 px-4 rounded-md mr-4"
-            />
-            <button
-              className="bg-primary text-secondary-900 py-2 px-4 rounded-[10px]"
-              onClick={desplegarVentanaCliente}
-            >
-              Agregar Cliente
-            </button>
+    <div className="flex justify-center">
+      <div className='bg-secondary-100 w-full rounded-lg'>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
+          <div>
+            <h1 className="text-2xl font-bold mb-4 pt-4">Registro de clientes</h1>
           </div>
-        </div>
-
-        {mostrarAgregarCliente && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-            <div className="absolute w-full h-full bg-gray-900 opacity-70"></div>
-            <div className="bg-secondary-100 p-8 rounded-lg flex flex-col relative z-10">
-              <h2 className="text-2xl font-bold mb-4 ">Agregar Nuevo Cliente</h2>
-              {/* Campos de entrada para agregar cliente */}
-              <div className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="ID"
-                  className="border bg-secondary-900 border-secondary-900  text-white rounded-md px-3 py-2 w-full"
-                  value={nuevoCliente.id}
-                  onChange={(e) => setNuevoCliente({ ...nuevoCliente, id: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevoCliente.nombre}
-                  onChange={(e) => setNuevoCliente({ ...nuevoCliente, nombre: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Teléfono"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevoCliente.telefono}
-                  onChange={(e) => setNuevoCliente({ ...nuevoCliente, telefono: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Correo"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevoCliente.correo}
-                  onChange={(e) => setNuevoCliente({ ...nuevoCliente, correo: e.target.value })}
-                />
-              </div>
-              {/* Botones de guardar y cancelar */}
-              <div className='w-full flex gap-2 mt-4'>
-                <button
-                  className="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded-md w-full flex items-center justify-center"
-                  onClick={guardarNuevoCliente}
-                >
-                  <FaSave className="text-white" />
+          <div className="flex gap-4">
+            <div>
+              <input
+                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
+                type="search"
+                placeholder="Buscar cliente"
+                value={searchTerm}
+                onChange={handleSearch}
+              />
+            </div>
+            <div className="">
+              <Link to="/clientes/registrar-cliente"> {/* Enlace para agregar nuevo cliente */}
+                <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                  Agregar nuevo cliente
                 </button>
-                <button
-                  className="text-black bg-red-500 hover:bg-red-700 px-4 py-2 rounded-md w-full flex items-center justify-center"
-                  onClick={() => {
-                    Swal.fire({
-                      icon: 'info',
-                      title: 'Cancelar',
-                      text: '¿Estás seguro de cancelar?',
-                      showCancelButton: true,
-                      confirmButtonColor: '#3085d6',
-                      cancelButtonColor: '#d33',
-                      confirmButtonText: 'Sí, cancelar',
-                      cancelButtonText: 'No',
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        setMostrarAgregarCliente(false);
-                      }
-                    });
-                  }}
-                >
-                  <FaTimes className="text-white" />
-                </button>
-              </div>
+              </Link>
             </div>
           </div>
-        )}
-
-        {/* Tabla de clientes */}
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="text-gray-100 uppercase text-sm leading-normal border-b border-gray-200">
-              <th className="py-3 px-6 text-left">ID</th>
-              <th className="py-3 px-6 text-left">Nombre</th>
-              <th className="py-3 px-6 text-left">Teléfono</th>
-              <th className="py-3 px-6 text-left">Correo</th>
-              <th className="py-3 px-6 text-left">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-200 text-sm font-light">
-            {clientesFiltrados.map((cliente) => (
-              <tr key={cliente.id} className="border-b border-gray-200 hover:bg-secondary-100">
-                <td className="py-3 px-6 text-left whitespace-nowrap">{cliente.id}</td>
-                <td className="py-3 px-6 text-left">{cliente.nombre}</td>
-                <td className="py-3 px-6 text-left">{cliente.telefono}</td>
-                <td className="py-3 px-6 text-left">{cliente.correo}</td>
-                <td className="py-3 px-6 text-left">
-                  {/* Botón de Editar */}
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => handleEditarCliente(cliente)}
-                  >
-                    <FaEdit/>
-                  </button>
-                  {/* Botón de Eliminar */}
-                  <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-                    onClick={handleEliminarCliente}
-                  >
-                    <FaTrash/>
-                  </button>
-                </td>
+        </div>
+        <div className='p-5 overflow-x-auto rounded-lg'>
+          <table className="min-w-full divide-y divide-gray-500 rounded-lg">
+            <thead className="bg-secondary-900 rounded-lg">
+              <tr className=''>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  ID
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Nombre
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Teléfono
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Correo electrónico
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Acciones
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      
-      {mostrarEditarCliente && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-          <div className="absolute w-full h-full bg-gray-900 opacity-70"></div>
-          <div className="bg-secondary-100 p-8 rounded-lg flex flex-col relative z-10">
-            <h2 className="text-2xl font-bold mb-4 ">Editar Cliente</h2>
-            {/* Campos de entrada para editar cliente */}
-            <div className="flex flex-col gap-4">
-              <input
-                type="text"
-                placeholder="ID"
-                className="border bg-secondary-900 border-secondary-900  text-white rounded-md px-3 py-2 w-full"
-                value={clienteAEditar.id}
-                onChange={(e) => setClienteAEditar({ ...clienteAEditar, id: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Nombre"
-                className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                value={clienteAEditar.nombre}
-                onChange={(e) => setClienteAEditar({ ...clienteAEditar, nombre: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Teléfono"
-                className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                value={clienteAEditar.telefono}
-                onChange={(e) => setClienteAEditar({ ...clienteAEditar, telefono: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Correo"
-                className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                value={clienteAEditar.correo}
-                onChange={(e) => setClienteAEditar({ ...clienteAEditar, correo: e.target.value })}
-              />
-            </div>
-            {/* Botones de guardar y cancelar */}
-            <div className='w-full flex gap-2 mt-4'>
-              <button
-                className="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded-md w-full flex items-center justify-center"
-                onClick={() => {
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Cliente Actualizado',
-                    text: 'El cliente se ha actualizado exitosamente.',
-                  });
-                  setMostrarEditarCliente(false);
-                }}
-              >
-                <FaSave className="text-white" />
-              </button>
-              <button
-                className="text-black bg-red-500 hover:bg-red-700 px-4 py-2 rounded-md w-full flex items-center justify-center"
-                onClick={() => {
-                  Swal.fire({
-                    icon: 'info',
-                    title: 'Cancelar',
-                    text: '¿Estás seguro de cancelar?',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sí, cancelar',
-                    cancelButtonText: 'No',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      setMostrarEditarCliente(false);
-                    }
-                  });
-                }}
-              >
-                <FaTimes className="text-white" />
-              </button>
-            </div>
-          </div>
+            </thead>
+            <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
+              {currentItems.map((cliente) => (
+                <tr key={cliente.idCliente}>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.idCliente}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.nombre}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.telefono}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.correo}</td>
+                  <td className="px-6 py-4 whitespace-nowrap flex">
+                    <Link to={`/clientes/editar-cliente`}> {/* Enlace para editar cliente */}
+                      <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
+                    </Link>
+                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(cliente.idCliente)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+        {/* Paginación */}
+        <div className="flex justify-center mt-4">
+          <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <span className="sr-only">Previous</span>
+              {/* Heroicon name: solid/chevron-left */}
+              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
+              </svg>
+            </button>
+            {/* Otras páginas */}
+            {/* El contenido aquí depende de la cantidad de páginas */}
+            {[...Array(Math.ceil(filteredClientes.length / itemsPerPage)).keys()].map((number) => (
+              <button
+                key={number}
+                onClick={() => paginate(number + 1)}
+                className={
+                  currentPage === number + 1
+                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                }
+              >
+                {number + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === Math.ceil(filteredClientes.length / itemsPerPage)}
+              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <span className="sr-only">Next</span>
+              {/* Heroicon name: solid/chevron-right */}
+              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </nav>
+        </div>
+      </div>
     </div>
   );
 };

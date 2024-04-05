@@ -11,7 +11,11 @@ import RecuperarContrasena from "./pages/auth/RecuperarContrasena";
 import Dashboard from "./pages/admin/Dashboard";
 import Perfil from "./pages/admin/Perfil";
 import Productos from "./pages/admin/productos";
+import RegistrarProducto from "./pages/admin/RegistrarProducto";
+import EditarProducto from "./pages/admin/EditarProductos";
 import Categorias from "./pages/admin/Categorias";
+import RegistrarCategoria from "./pages/admin/RegistrarCategoria";
+import EditarCategoria from "./pages/admin/EditarCategorias";
 import Ventas from "./pages/admin/Ventas";
 import RegistrarVenta from "./pages/admin/RegistrarVenta";
 import EditarVenta from "./pages/admin/EditarVenta";
@@ -19,10 +23,18 @@ import Compras from "./pages/admin/Compras";
 import RegistrarCompra from "./pages/admin/RegistrarCompra";
 import EditarCompra from "./pages/admin/EditarCompra";
 import Proveedores from "./pages/admin/Proveedores";
+import RegistrarProveedor from "./pages/admin/RegistrarProveedor";
+import EditarProveedor from "./pages/admin/EditarProveedores";
 import Clientes from "./pages/admin/clientes";
+import RegistrarCliente from "./pages/admin/RegistrarCliente";
+import EditarCliente from "./pages/admin/EditarCliente";
 import Usuarios from "./pages/admin/Usuarios";
 import RegistrarUsuario from "./pages/admin/RegistrarUsuario";
 import EditarUsuario from "./pages/admin/EditarUsuario";
+
+
+
+
 
 
 import Error404 from "./pages/Error404";
@@ -51,6 +63,14 @@ function App() {
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/usuarios/registrar-usuario" element={<RegistrarUsuario />} />
           <Route path="/usuarios/editar-usuario" element={<EditarUsuario />} />
+          <Route path="/proveedores/registrar-proveedor" element={<RegistrarProveedor />} />
+          <Route path="/proveedores/editar-proveedor" element={<EditarProveedor />} />
+          <Route path="/productos/registrar-producto" element={<RegistrarProducto />} />
+          <Route path="/productos/editar-producto" element={<EditarProducto />} />
+          <Route path="/categorias/registrar-categoria" element={<RegistrarCategoria />} />
+          <Route path="/categorias/editar-categoria" element={<EditarCategoria />} />
+          <Route path="/clientes/registrar-cliente" element={<RegistrarCliente />} />
+          <Route path="/clientes/editar-cliente" element={<EditarCliente />} />
 
         </Route>
         <Route path="*" element={<Error404 />} />
