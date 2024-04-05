@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 const EditarCategoria = () => {
   // Simulación de datos de la categoría a editar
   const categoriaInicial = {
-    idCategoria: "456",
     nombre: "Categoría de ejemplo",
     descripcion: "Descripción de la categoría de ejemplo",
     estado: true
@@ -46,18 +45,6 @@ const EditarCategoria = () => {
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="ID Categoría"
-                  name="idCategoria"
-                  value={categoria.idCategoria}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                  readOnly // El campo ID es de solo lectura
-                />
-              </div>
               <div className="relative">
                 <FaBox className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input

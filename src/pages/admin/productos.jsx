@@ -1,19 +1,20 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Importar Link desde react-router-dom
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Productos = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [productos] = useState([
-    { idProducto: 1, nombre: "Producto Uno", precio: 10.99, cantidad: 50, descripcion: "Descripción del producto uno", estado: true },
-    { idProducto: 2, nombre: "Producto Dos", precio: 20.99, cantidad: 30, descripcion: "Descripción del producto dos", estado: false },
-    { idProducto: 3, nombre: "Producto Tres", precio: 15.99, cantidad: 40, descripcion: "Descripción del producto tres", estado: true },
-    { idProducto: 4, nombre: "Producto Cuatro", precio: 25.99, cantidad: 20, descripcion: "Descripción del producto cuatro", estado: false },
-    { idProducto: 5, nombre: "Producto Cinco", precio: 30.99, cantidad: 60, descripcion: "Descripción del producto cinco", estado: true },
-    { idProducto: 6, nombre: "Producto Seis", precio: 12.99, cantidad: 35, descripcion: "Descripción del producto seis", estado: true },
-    { idProducto: 7, nombre: "Producto Siete", precio: 18.99, cantidad: 45, descripcion: "Descripción del producto siete", estado: false }
+    { nombre: "Producto Uno", precio: 10.99, cantidad: 50, descripcion: "Descripción del producto uno", estado: true, categoria: "Categoría Uno" },
+    { nombre: "Producto Dos", precio: 20.99, cantidad: 30, descripcion: "Descripción del producto dos", estado: false, categoria: "Categoría Dos" },
+    { nombre: "Producto Tres", precio: 15.99, cantidad: 40, descripcion: "Descripción del producto tres", estado: true, categoria: "Categoría Tres" },
+    { nombre: "Producto Cuatro", precio: 25.99, cantidad: 20, descripcion: "Descripción del producto cuatro", estado: false, categoria: "Categoría Cuatro" },
+    { nombre: "Producto Cinco", precio: 30.99, cantidad: 60, descripcion: "Descripción del producto cinco", estado: true, categoria: "Categoría Cinco" },
+    { nombre: "Producto Seis", precio: 12.99, cantidad: 35, descripcion: "Descripción del producto seis", estado: true, categoria: "Categoría Seis" },
+    { nombre: "Producto Siete", precio: 18.99, cantidad: 45, descripcion: "Descripción del producto siete", estado: false, categoria: "Categoría Siete" }
   ]);
   const itemsPerPage = 5;
 
@@ -32,7 +33,7 @@ const Productos = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (id) => {
+  const handleDelete = (nombre) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás deshacer esta acción',
@@ -44,7 +45,7 @@ const Productos = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Aquí puedes agregar la lógica para eliminar el producto con el id proporcionado
+        // Aquí puedes agregar la lógica para eliminar el producto con el nombre proporcionado
         Swal.fire(
           '¡Eliminado!',
           'El producto ha sido eliminado',
@@ -72,7 +73,7 @@ const Productos = () => {
               />
             </div>
             <div className="">
-              <Link to="/productos/registrar-producto"> {/* Enlace para agregar nuevo producto */}
+              <Link to="/productos/registrar-producto">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Agregar nuevo producto
                 </button>
@@ -84,9 +85,6 @@ const Productos = () => {
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  ID
-                </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Nombre
                 </th>
@@ -103,71 +101,66 @@ const Productos = () => {
                   Estado
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Categoría
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
               {currentItems.map((producto) => (
-                <tr key={producto.idProducto}>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{producto.idProducto}</td>
+                <tr key={producto.nombre}>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.nombre}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.precio}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.estado ? 'Activo' : 'Inactivo'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{producto.categoria}</td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
-                    <Link to={`/productos/editar-producto`}> {/* Enlace para editar producto */}
+                    <Link to={`/productos/editar-producto`}>
                       <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto.idProducto)} />
+                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto.nombre)} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        {/* Paginación */}
         <div className="flex justify-center mt-4">
-          <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+          <div className="flex justify-center mt-4">
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
             >
-              <span className="sr-only">Previous</span>
-              {/* Heroicon name: solid/chevron-left */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
-              </svg>
+              <IoIosArrowBack/>
             </button>
-            {/* Otras páginas */}
-            {/* El contenido aquí depende de la cantidad de páginas */}
-            {[...Array(Math.ceil(filteredProductos.length / itemsPerPage)).keys()].map((number) => (
-              <button
-                key={number}
-                onClick={() => paginate(number + 1)}
-                className={
-                  currentPage === number + 1
-                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
-                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                }
-              >
-                {number + 1}
-              </button>
-            ))}
+            {Array.from(
+              { length: Math.ceil(filteredProductos.length / itemsPerPage) },
+              (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => paginate(i + 1)}
+                  className={`${
+                    currentPage === i + 1
+                      ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                      : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === Math.ceil(filteredProductos.length / itemsPerPage)}
-              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
             >
-              <span className="sr-only">Next</span>
-              {/* Heroicon name: solid/chevron-right */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <IoIosArrowForward/>
             </button>
-          </nav>
+          </div>
         </div>
       </div>
     </div>

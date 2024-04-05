@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaUser, FaDollarSign, FaBoxes, FaAlignLeft } from "react-icons/fa";
+import { FaUser, FaDollarSign, FaBoxes } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const RegistrarCategoria = () => {
   const [categoria, setCategoria] = useState({
-    idCategoria: "",
     nombre: "",
-    descripcion: "",
-    estado: true // Por defecto el estado es activo
+    descripcion: ""
   });
 
   const handleChange = (e) => {
@@ -23,7 +21,6 @@ const RegistrarCategoria = () => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
     if (
-      categoria.idCategoria &&
       categoria.nombre &&
       categoria.descripcion
     ) {
@@ -50,17 +47,6 @@ const RegistrarCategoria = () => {
                 <FaDollarSign className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
-                  placeholder="ID Categoría"
-                  name="idCategoria"
-                  value={categoria.idCategoria}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-              <div className="relative">
-                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
                   placeholder="Nombre"
                   name="nombre"
                   value={categoria.nombre}
@@ -80,17 +66,6 @@ const RegistrarCategoria = () => {
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
-              </div>
-              <div className="relative">
-                <select
-                  name="estado"
-                  value={categoria.estado}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                >
-                  <option value={true}>Activo</option>
-                  <option value={false}>Inactivo</option>
-                </select>
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">

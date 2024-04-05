@@ -5,12 +5,11 @@ import Swal from "sweetalert2";
 
 const RegistrarProducto = () => {
   const [producto, setProducto] = useState({
-    idProducto: "",
     nombre: "",
     precio: "",
     cantidad: "",
     descripcion: "",
-    estado: true // Por defecto el estado es activo
+    categoria: "" // Nuevo campo de categoría
   });
 
   const handleChange = (e) => {
@@ -25,11 +24,11 @@ const RegistrarProducto = () => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
     if (
-      producto.idProducto &&
       producto.nombre &&
       producto.precio &&
       producto.cantidad &&
-      producto.descripcion
+      producto.descripcion &&
+      producto.categoria
     ) {
       // Mostrar alerta de producto creado
       Swal.fire("¡Producto creado!", "", "success");
@@ -51,17 +50,6 @@ const RegistrarProducto = () => {
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
-                <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="ID Producto"
-                  name="idProducto"
-                  value={producto.idProducto}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-              <div className="relative">
                 <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
@@ -72,8 +60,6 @@ const RegistrarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
                 <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -85,6 +71,8 @@ const RegistrarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
                 <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -96,8 +84,6 @@ const RegistrarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
                 <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -109,15 +95,21 @@ const RegistrarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
+                <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <select
-                  name="estado"
-                  value={producto.estado}
+                  name="categoria"
+                  value={producto.categoria}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 >
-                  <option value={true}>Activo</option>
-                  <option value={false}>Inactivo</option>
+                  <option value="">Seleccionar categoría</option>
+                  <option value="Shampoo">Shampoo</option>
+                  <option value="Crema">Crema</option>
+                  <option value="Gel">Gel</option>
+                  {/* Agrega más opciones de categorías según necesites */}
                 </select>
               </div>
             </div>

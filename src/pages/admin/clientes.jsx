@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Clientes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [clientes] = useState([
-    { idCliente: 1, nombre: "Cliente Uno", telefono: "123456789", correo: "cliente1@example.com" },
-    { idCliente: 2, nombre: "Cliente Dos", telefono: "987654321", correo: "cliente2@example.com" },
-    { idCliente: 3, nombre: "Cliente Tres", telefono: "456789123", correo: "cliente3@example.com" },
-    { idCliente: 4, nombre: "Cliente Cuatro", telefono: "789123456", correo: "cliente4@example.com" },
-    { idCliente: 5, nombre: "Cliente Cinco", telefono: "321654987", correo: "cliente5@example.com" },
-    { idCliente: 6, nombre: "Cliente Seis", telefono: "654987321", correo: "cliente6@example.com" },
-    { idCliente: 7, nombre: "Cliente Siete", telefono: "987321654", correo: "cliente7@example.com" }
+    { nombre: "Cliente Uno", telefono: "123456789", correo: "cliente1@example.com" },
+    { nombre: "Cliente Dos", telefono: "987654321", correo: "cliente2@example.com" },
+    { nombre: "Cliente Tres", telefono: "456789123", correo: "cliente3@example.com" },
+    { nombre: "Cliente Cuatro", telefono: "789123456", correo: "cliente4@example.com" },
+    { nombre: "Cliente Cinco", telefono: "321654987", correo: "cliente5@example.com" },
+    { nombre: "Cliente Seis", telefono: "654987321", correo: "cliente6@example.com" },
+    { nombre: "Cliente Siete", telefono: "987321654", correo: "cliente7@example.com" }
   ]);
   const itemsPerPage = 5;
 
@@ -32,7 +33,7 @@ const Clientes = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (id) => {
+  const handleDelete = (nombre) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás deshacer esta acción',
@@ -44,7 +45,7 @@ const Clientes = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Aquí puedes agregar la lógica para eliminar el cliente con el id proporcionado
+        // Aquí puedes agregar la lógica para eliminar el cliente con el nombre proporcionado
         Swal.fire(
           '¡Eliminado!',
           'El cliente ha sido eliminado',
@@ -85,9 +86,6 @@ const Clientes = () => {
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  ID
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Nombre
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
@@ -102,9 +100,8 @@ const Clientes = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
-              {currentItems.map((cliente) => (
-                <tr key={cliente.idCliente}>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.idCliente}</td>
+              {currentItems.map((cliente, index) => (
+                <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.nombre}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.telefono}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.correo}</td>
@@ -112,7 +109,7 @@ const Clientes = () => {
                     <Link to={`/clientes/editar-cliente`}> {/* Enlace para editar cliente */}
                       <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(cliente.idCliente)} />
+                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(cliente.nombre)} />
                   </td>
                 </tr>
               ))}
@@ -127,37 +124,30 @@ const Clientes = () => {
               disabled={currentPage === 1}
               className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              <span className="sr-only">Previous</span>
-              {/* Heroicon name: solid/chevron-left */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
-              </svg>
+              <IoIosArrowBack/>
             </button>
-            {/* Otras páginas */}
-            {/* El contenido aquí depende de la cantidad de páginas */}
-            {[...Array(Math.ceil(filteredClientes.length / itemsPerPage)).keys()].map((number) => (
-              <button
-                key={number}
-                onClick={() => paginate(number + 1)}
-                className={
-                  currentPage === number + 1
-                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
-                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                }
-              >
-                {number + 1}
-              </button>
-            ))}
+            {Array.from(
+              { length: Math.ceil(filteredClientes.length / itemsPerPage) },
+              (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => paginate(i + 1)}
+                  className={`${
+                    currentPage === i + 1
+                      ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                      : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === Math.ceil(filteredClientes.length / itemsPerPage)}
               className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              <span className="sr-only">Next</span>
-              {/* Heroicon name: solid/chevron-right */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <IoIosArrowForward/>
             </button>
           </nav>
         </div>
