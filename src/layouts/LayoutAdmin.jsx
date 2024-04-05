@@ -35,6 +35,39 @@ const LayoutAdmin = () => {
     case "/proveedores":
       title = "Proveedores";
       break;
+    case "/proveedores/registrar-proveedor":
+      title= "Registrar Proveedor";
+      break
+    case "/proveedores/editar-proveedor":
+      title= "Editar Proveedor";
+      break
+    case "/productos":
+      title= "Productos";
+      break
+    case "/productos/registrar-producto":
+      title= " Registrar Producto";
+      break
+    case "/productos/editar-producto":
+      title= " Editar Producto";
+      break
+    case "/categorias":
+      title= "Categorias";
+      break
+    case "/categorias/registrar-categoria":
+      title= "Registrar Categorias";
+      break 
+    case "/categorias/editar-categoria":
+      title= "Editar Categorias";
+      break 
+    case "/clientes":
+      title= "Clientes";
+      break
+    case "/clientes/registrar-cliente":
+      title= " Registrar Clientes";
+      break 
+    case "/clientes/editar-cliente":
+      title= " Editar Clientes";
+      break  
     case "/usuarios":
       title = "Usuarios";
       break;

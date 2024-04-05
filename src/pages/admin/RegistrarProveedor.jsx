@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 
 const RegistrarProveedor = () => {
   const [proveedor, setProveedor] = useState({
-    id: "",
     nombre: "",
     telefono: "",
     correo: "",
@@ -23,13 +22,7 @@ const RegistrarProveedor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
-    if (
-      proveedor.id &&
-      proveedor.nombre &&
-      proveedor.telefono &&
-      proveedor.correo &&
-      proveedor.direccion
-    ) {
+    if (proveedor.nombre && proveedor.telefono && proveedor.correo && proveedor.direccion) {
       // Mostrar alerta de proveedor creado
       Swal.fire("¡Proveedor creado!", "", "success");
       // Redirigir a la página de proveedores después de 2 segundos
@@ -49,18 +42,7 @@ const RegistrarProveedor = () => {
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="ID"
-                  name="id"
-                  value={proveedor.id}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-              <div className="relative">
+              <div className="relative flex-1">
                 <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
@@ -71,9 +53,7 @@ const RegistrarProveedor = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
+              <div className="relative flex-1">
                 <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
@@ -84,7 +64,9 @@ const RegistrarProveedor = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
-              <div className="relative">
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+              <div className="relative flex-1">
                 <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="email"
@@ -95,9 +77,7 @@ const RegistrarProveedor = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
+              <div className="relative flex-1">
                 <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
@@ -110,17 +90,21 @@ const RegistrarProveedor = () => {
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <button
-                type="submit"
-                className="w-full md:w-[43%]  px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              >
-                Crear proveedor
-              </button>
-              <Link to="/proveedores" className="w-full md:w-[43%]">
-                <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Volver
+              <div className="flex-1">
+                <button
+                  type="submit"
+                  className="w-full px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+                >
+                  Crear proveedor
                 </button>
-              </Link>
+              </div>
+              <div className="flex-1">
+                <Link to="/proveedores">
+                  <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                    Volver
+                  </button>
+                </Link>
+              </div>
             </div>
           </form>
         </div>

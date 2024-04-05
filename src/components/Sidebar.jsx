@@ -39,7 +39,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                to="/"
+                to="/productos"
                 className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
               >
                 <GiLipstick className="text-primary" />
@@ -48,7 +48,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                to="/"
+                to="/categorias"
                 className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
               >
                 <MdCategory className="text-primary" />
@@ -91,7 +91,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                to="/"
+                to="/proveedores"
                 className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
               >
                 <FaTruck className="text-primary" />
@@ -100,7 +100,7 @@ const Sidebar = () => {
             </li>
             <li>
               <Link
-                to="/Proveedores"
+                to="/clientes"
                 className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"
               >
                 <HiUsers className="text-primary" />
@@ -108,6 +108,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
+              
               <button
                 onClick={() => setShowSubMenu1(!showSubMenu1)}
                 className="w-full flex items-center justify-between py-2 px-4 rounded-lg hover:bg-secondary-900 transition-colors"

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaUser, FaDollarSign, FaBox, FaInfoCircle } from "react-icons/fa"; // Cambié los íconos para que coincidan con los datos del producto
+import { FaBox, FaInfoCircle } from "react-icons/fa"; // Cambié los íconos para que coincidan con los datos del producto
 import Swal from "sweetalert2";
 
 const EditarProducto = () => {
   // Simulación de datos del producto a editar
   const productoInicial = {
-    idProducto: "123",
     nombre: "Producto de ejemplo",
     precio: "10.99",
     cantidad: "50",
     descripcion: "Descripción del producto de ejemplo",
-    estado: true
+    categoria: "Electrónica" // Nuevo campo de categoría
   };
 
   const [producto, setProducto] = useState(productoInicial);
@@ -49,18 +48,6 @@ const EditarProducto = () => {
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
-                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="ID Producto"
-                  name="idProducto"
-                  value={producto.idProducto}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                  readOnly // El campo ID es de solo lectura
-                />
-              </div>
-              <div className="relative">
                 <FaBox className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
@@ -71,10 +58,8 @@ const EditarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
-                <FaDollarSign className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <FaBox className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
                   placeholder="Precio"
@@ -84,6 +69,8 @@ const EditarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
                 <FaBox className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -95,8 +82,6 @@ const EditarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
                 <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -108,16 +93,20 @@ const EditarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
                 <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <select
-                  name="estado"
-                  value={producto.estado}
+                  name="categoria"
+                  value={producto.categoria}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 >
-                  <option value={true}>Activo</option>
-                  <option value={false}>Inactivo</option>
+                  <option value="Shampoo">Shampoo</option>
+                  <option value="Crema">Crema</option>
+                  <option value="Gel">Gel</option>
+                  {/* Agrega más opciones de categorías según necesites */}
                 </select>
               </div>
             </div>

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Categorias = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -84,9 +85,7 @@ const Categorias = () => {
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  ID
-                </th>
+                
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Nombre
                 </th>
@@ -102,9 +101,9 @@ const Categorias = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
-              {currentItems.map((categoria) => (
-                <tr key={categoria.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.id}</td>
+              {currentItems.map((categoria, index) => (
+                <tr key={index}>
+                  
                   <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.nombre}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.descripcion}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.estado ? 'Activo' : 'Inactivo'}</td>
@@ -127,37 +126,30 @@ const Categorias = () => {
               disabled={currentPage === 1}
               className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              <span className="sr-only">Previous</span>
-              {/* Heroicon name: solid/chevron-left */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
-              </svg>
+              <IoIosArrowBack/>
             </button>
-            {/* Otras páginas */}
-            {/* El contenido aquí depende de la cantidad de páginas */}
-            {[...Array(Math.ceil(filteredCategorias.length / itemsPerPage)).keys()].map((number) => (
-              <button
-                key={number}
-                onClick={() => paginate(number + 1)}
-                className={
-                  currentPage === number + 1
-                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
-                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                }
-              >
-                {number + 1}
-              </button>
-            ))}
+            {Array.from(
+              { length: Math.ceil(filteredCategorias.length / itemsPerPage) },
+              (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => paginate(i + 1)}
+                  className={`${
+                    currentPage === i + 1
+                      ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                      : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === Math.ceil(filteredCategorias.length / itemsPerPage)}
               className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              <span className="sr-only">Next</span>
-              {/* Heroicon name: solid/chevron-right */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <IoIosArrowForward/>
             </button>
           </nav>
         </div>

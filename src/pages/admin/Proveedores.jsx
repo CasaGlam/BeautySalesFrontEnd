@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Proveedores = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [proveedores] = useState([
-    { id: 1, nombre: "Proveedor Uno", telefono: "123456789", correo: "proveedor1@example.com", direccion: "Calle 123, Ciudad Uno" },
-    { id: 2, nombre: "Proveedor Dos", telefono: "987654321", correo: "proveedor2@example.com", direccion: "Avenida 456, Ciudad Dos" },
-    { id: 3, nombre: "Proveedor Tres", telefono: "555555555", correo: "proveedor3@example.com", direccion: "Plaza Principal, Ciudad Tres" },
-    { id: 4, nombre: "Proveedor Cuatro", telefono: "444444444", correo: "proveedor4@example.com", direccion: "Calle 789, Ciudad Cuatro" },
-    { id: 5, nombre: "Proveedor Cinco", telefono: "333333333", correo: "proveedor5@example.com", direccion: "Bulevar X, Ciudad Cinco" },
-    { id: 6, nombre: "Proveedor Seis", telefono: "222222222", correo: "proveedor6@example.com", direccion: "Avenida Z, Ciudad Seis" },
-    { id: 7, nombre: "Proveedor Siete", telefono: "111111111", correo: "proveedor7@example.com", direccion: "Calle Y, Ciudad Siete" }
+    { nombre: "Proveedor Uno", telefono: "123456789", correo: "proveedor1@example.com", direccion: "Calle 123, Ciudad Uno" },
+    { nombre: "Proveedor Dos", telefono: "987654321", correo: "proveedor2@example.com", direccion: "Avenida 456, Ciudad Dos" },
+    { nombre: "Proveedor Tres", telefono: "555555555", correo: "proveedor3@example.com", direccion: "Plaza Principal, Ciudad Tres" },
+    { nombre: "Proveedor Cuatro", telefono: "444444444", correo: "proveedor4@example.com", direccion: "Calle 789, Ciudad Cuatro" },
+    { nombre: "Proveedor Cinco", telefono: "333333333", correo: "proveedor5@example.com", direccion: "Bulevar X, Ciudad Cinco" },
+    { nombre: "Proveedor Seis", telefono: "222222222", correo: "proveedor6@example.com", direccion: "Avenida Z, Ciudad Seis" },
+    { nombre: "Proveedor Siete", telefono: "111111111", correo: "proveedor7@example.com", direccion: "Calle Y, Ciudad Siete" }
   ]);
   const itemsPerPage = 5;
 
@@ -85,9 +86,6 @@ const Proveedores = () => {
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  ID
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Nombre
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
@@ -105,9 +103,8 @@ const Proveedores = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
-              {currentItems.map((proveedor) => (
-                <tr key={proveedor.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.id}</td>
+              {currentItems.map((proveedor, index) => (
+                <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.nombre}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.telefono}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.correo}</td>
@@ -116,7 +113,7 @@ const Proveedores = () => {
                     <Link to={`/proveedores/editar-proveedor`}>
                       <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(proveedor.id)} />
+                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(index)} />
                   </td>
                 </tr>
               ))}
@@ -131,37 +128,30 @@ const Proveedores = () => {
               disabled={currentPage === 1}
               className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              <span className="sr-only">Previous</span>
-              {/* Heroicon name: solid/chevron-left */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
-              </svg>
+              <IoIosArrowBack/>
             </button>
-            {/* Otras páginas */}
-            {/* El contenido aquí depende de la cantidad de páginas */}
-            {[...Array(Math.ceil(filteredProveedores.length / itemsPerPage)).keys()].map((number) => (
-              <button
-                key={number}
-                onClick={() => paginate(number + 1)}
-                className={
-                  currentPage === number + 1
-                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
-                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                }
-              >
-                {number + 1}
-              </button>
-            ))}
+            {Array.from(
+              { length: Math.ceil(filteredProveedores.length / itemsPerPage) },
+              (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => paginate(i + 1)}
+                  className={`${
+                    currentPage === i + 1
+                      ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                      : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === Math.ceil(filteredProveedores.length / itemsPerPage)}
               className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
-              <span className="sr-only">Next</span>
-              {/* Heroicon name: solid/chevron-right */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <IoIosArrowForward/>
             </button>
           </nav>
         </div>
