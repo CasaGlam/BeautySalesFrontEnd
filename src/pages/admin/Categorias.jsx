@@ -1,302 +1,167 @@
-import React, { useState } from 'react';
-import { FaSearch, FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
-import Swal from 'sweetalert2';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const Categorias = () => {
-  const [mostrarAgregarCategoria, setMostrarAgregarCategoria] = useState(false);
-  const [mostrarEditarCategoria, setMostrarEditarCategoria] = useState(false);
-  const [busqueda, setBusqueda] = useState('');
-  const [categoriasFiltradas, setCategoriasFiltradas] = useState([]);
-  const [categoriaAEditar, setCategoriaAEditar] = useState(null);
-  const [nuevaCategoria, setNuevaCategoria] = useState({
-    id: '',
-    nombre: '',
-    descripcion: '',
-    estado: ''
-  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categorias] = useState([
+    { id: 1, nombre: "Categoría Uno", descripcion: "Descripción de la categoría uno", estado: true },
+    { id: 2, nombre: "Categoría Dos", descripcion: "Descripción de la categoría dos", estado: false },
+    { id: 3, nombre: "Categoría Tres", descripcion: "Descripción de la categoría tres", estado: true },
+    { id: 4, nombre: "Categoría Cuatro", descripcion: "Descripción de la categoría cuatro", estado: false },
+    { id: 5, nombre: "Categoría Cinco", descripcion: "Descripción de la categoría cinco", estado: true },
+    { id: 6, nombre: "Categoría Seis", descripcion: "Descripción de la categoría seis", estado: true },
+    { id: 7, nombre: "Categoría Siete", descripcion: "Descripción de la categoría siete", estado: false }
+  ]);
+  const itemsPerPage = 5;
 
-  const desplegarVentanaCategoria = () => {
-    setMostrarAgregarCategoria(!mostrarAgregarCategoria);
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Resetear a la primera página al buscar
   };
 
-  const guardarNuevaCategoria = () => {
-    if (!nuevaCategoria.id || !nuevaCategoria.nombre || !nuevaCategoria.descripcion || !nuevaCategoria.estado) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Campos incompletos',
-        text: 'Por favor, completa todos los campos.',
-      });
-      return;
-    }
+  const filteredCategorias = categorias.filter((categoria) =>
+    categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCategorias.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleDelete = (id) => {
     Swal.fire({
-      icon: 'success',
-      title: 'Categoría Guardada',
-      text: 'La categoría se ha guardado exitosamente.',
-    });
-    setMostrarAgregarCategoria(false);
-  };
-
-  const handleEditarCategoria = (categoria) => {
-    setCategoriaAEditar(categoria);
-    setMostrarEditarCategoria(true);
-  };
-
-  const handleEliminarCategoria = (categoriaId) => {
-    Swal.fire({
-      icon: 'warning',
       title: '¿Estás seguro?',
-      text: 'Una vez eliminada, no podrás recuperar esta categoría.',
+      text: 'No podrás deshacer esta acción',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        const categoriasActualizadas = categorias.filter(categoria => categoria.id !== categoriaId);
-        setCategorias(categoriasActualizadas);
+        // Aquí puedes agregar la lógica para eliminar la categoría con el id proporcionado
         Swal.fire(
-          'Eliminada',
-          'La categoría ha sido eliminada correctamente.',
+          '¡Eliminado!',
+          'La categoría ha sido eliminada',
           'success'
         );
       }
     });
   };
 
-  const handleBuscar = (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    setBusqueda(searchTerm);
-    const filteredCategorias = categorias.filter((categoria) =>
-      categoria.nombre.toLowerCase().includes(searchTerm)
-    );
-    setCategoriasFiltradas(filteredCategorias);
-  };
-
-  const categorias = [
-    {
-      id: 1,
-      nombre: 'Categoría 1',
-      descripcion: 'Descripción de la Categoría 1',
-      estado: 'Activa'
-    },
-    {
-      id: 2,
-      nombre: 'Categoría 2',
-      descripcion: 'Descripción de la Categoría 2',
-      estado: 'Inactiva'
-    },
-  ];
-
   return (
-    <div className={`overflow-x-auto ${mostrarAgregarCategoria || mostrarEditarCategoria ? 'blur-background' : 'no-blur-background'}`}>
-      <div className="bg-secondary-100 w-full rounded-lg p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold mr-4">Registrar Categorías</h1>
-          <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="Buscar categoría..."
-              value={busqueda}
-              onChange={handleBuscar}
-              className="py-2 px-4 rounded-md mr-4"
-            />
-            <button
-              className="bg-primary text-secondary-900 py-2 px-4 rounded-[10px]"
-              onClick={desplegarVentanaCategoria}
-            >
-              Agregar Categoría
-            </button>
+    <div className="flex justify-center">
+      <div className='bg-secondary-100 w-full rounded-lg'>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
+          <div>
+            <h1 className="text-2xl font-bold mb-4 pt-4">Registro de categorías</h1>
           </div>
-        </div>
-
-        {mostrarAgregarCategoria && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-            <div className="absolute w-full h-full bg-gray-900 opacity-70"></div>
-            <div className="bg-secondary-100 p-8 rounded-lg flex flex-col relative z-10">
-              <h2 className="text-2xl font-bold mb-4 ">Agregar Nueva Categoría</h2>
-              {/* Campos de entrada para agregar categoría */}
-              <div className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="ID"
-                  className="border bg-secondary-900 border-secondary-900  text-white rounded-md px-3 py-2 w-full"
-                  value={nuevaCategoria.id}
-                  onChange={(e) => setNuevaCategoria({ ...nuevaCategoria, id: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevaCategoria.nombre}
-                  onChange={(e) => setNuevaCategoria({ ...nuevaCategoria, nombre: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Descripción"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevaCategoria.descripcion}
-                  onChange={(e) => setNuevaCategoria({ ...nuevaCategoria, descripcion: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Estado"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevaCategoria.estado}
-                  onChange={(e) => setNuevaCategoria({ ...nuevaCategoria, estado: e.target.value })}
-                />
-              </div>
-              {/* Botones de guardar y cancelar */}
-              <div className='w-full flex gap-2 mt-4'>
-                <button
-                  className="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded-md w-full flex items-center justify-center"
-                  onClick={guardarNuevaCategoria}
-                >
-                  <FaSave className="text-white" />
+          <div className="flex gap-4">
+            <div>
+              <input
+                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
+                type="search"
+                placeholder="Buscar categoría"
+                value={searchTerm}
+                onChange={handleSearch}
+              />
+            </div>
+            <div className="">
+              <Link to="/categorias/registrar-categoria">
+                <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                  Agregar nueva categoría
                 </button>
-                <button
-                  className="text-black bg-red-500 hover:bg-red-700 px-4 py-2 rounded-md w-full flex items-center justify-center"
-                  onClick={() => {
-                    Swal.fire({
-                      icon: 'info',
-                      title: 'Cancelar',
-                      text: '¿Estás seguro de cancelar?',
-                      showCancelButton: true,
-                      confirmButtonColor: '#3085d6',
-                      cancelButtonColor: '#d33',
-                      confirmButtonText: 'Sí, cancelar',
-                      cancelButtonText: 'No',
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        setMostrarAgregarCategoria(false);
-                      }
-                    });
-                  }}
-                >
-                  <FaTimes className="text-white" />
-                </button>
-              </div>
+              </Link>
             </div>
           </div>
-        )}
-
-        {/* Tabla de categorías */}
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="text-gray-100 uppercase text-sm leading-normal border-b border-gray-200">
-              <th className="py-3 px-6 text-left">ID</th>
-              <th className="py-3 px-6 text-left">Nombre</th>
-              <th className="py-3 px-6 text-left">Descripción</th>
-              <th className="py-3 px-">Estado</th>
-              <th className="py-3 px-6 text-left">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-200 text-sm font-light">
-            {categoriasFiltradas.map((categoria) => (
-              <tr key={categoria.id} className="border-b border-gray-200 hover:bg-secondary-100">
-                <td className="py-3 px-6 text-left whitespace-nowrap">{categoria.id}</td>
-                <td className="py-3 px-6 text-left">{categoria.nombre}</td>
-                <td className="py-3 px-6 text-left">{categoria.descripcion}</td>
-                <td className="py-3 px-6 text-left">{categoria.estado}</td>
-                <td className="py-3 px-6 text-left">
-                  {/* Botón de Editar */}
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => handleEditarCategoria(categoria)}
-                  >
-                    <FaEdit/>
-                  </button>
-                  {/* Botón de Eliminar */}
-                  <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-                    onClick={handleEliminarCategoria}
-                  >
-                    <FaTrash/>
-                  </button>
-                </td>
+        </div>
+        <div className='p-5 overflow-x-auto rounded-lg'>
+          <table className="min-w-full divide-y divide-gray-500 rounded-lg">
+            <thead className="bg-secondary-900 rounded-lg">
+              <tr className=''>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  ID
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Nombre
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Descripción
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Estado
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Acciones
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      
-      {mostrarEditarCategoria && (
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-          <div className="absolute w-full h-full bg-gray-900 opacity-70"></div>
-          <div className="bg-secondary-100 p-8 rounded-lg flex flex-col relative z-10">
-            <h2 className="text-2xl font-bold mb-4 ">Editar Categoría</h2>
-            {/* Campos de entrada para editar categoría */}
-            <div className="flex flex-col gap-4">
-              <input
-                type="text"
-                placeholder="ID"
-                className="border bg-secondary-900 border-secondary-900  text-white rounded-md px-3 py-2 w-full"
-                value={categoriaAEditar.id}
-                onChange={(e) => setCategoriaAEditar({ ...categoriaAEditar, id: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Nombre"
-                className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                value={categoriaAEditar.nombre}
-                onChange={(e) => setCategoriaAEditar({ ...categoriaAEditar, nombre: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Descripción"
-                className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                value={categoriaAEditar.descripcion}
-                onChange={(e) => setCategoriaAEditar({ ...categoriaAEditar, descripcion: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Estado"
-                className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                value={categoriaAEditar.estado}
-                onChange={(e) => setCategoriaAEditar({ ...categoriaAEditar, estado: e.target.value })}
-              />
-            </div>
-            {/* Botones de guardar y cancelar */}
-            <div className='w-full flex gap-2 mt-4'>
-              <button
-                className="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded-md w-full flex items-center justify-center"
-                onClick={() => {
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Categoría Actualizada',
-                    text: 'La categoría se ha actualizado exitosamente.',
-                  });
-                  setMostrarEditarCategoria(false);
-                }}
-              >
-                <FaSave className="text-white" />
-              </button>
-              <button
-                className="text-black bg-red-500 hover:bg-red-700 px-4 py-2 rounded-md w-full flex items-center justify-center"
-                onClick={() => {
-                  Swal.fire({
-                    icon: 'info',
-                    title: 'Cancelar',
-                    text: '¿Estás seguro de cancelar?',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Sí, cancelar',
-                    cancelButtonText: 'No',
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      setMostrarEditarCategoria(false);
-                    }
-                  });
-                }}
-              >
-                <FaTimes className="text-white" />
-              </button>
-            </div>
-          </div>
+            </thead>
+            <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
+              {currentItems.map((categoria) => (
+                <tr key={categoria.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.nombre}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.descripcion}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.estado ? 'Activo' : 'Inactivo'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap flex">
+                    <Link to={`/categorias/editar-categoria`}>
+                      <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
+                    </Link>
+                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(categoria.id)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+        {/* Paginación */}
+        <div className="flex justify-center mt-4">
+          <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <span className="sr-only">Previous</span>
+              {/* Heroicon name: solid/chevron-left */}
+              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
+              </svg>
+            </button>
+            {/* Otras páginas */}
+            {/* El contenido aquí depende de la cantidad de páginas */}
+            {[...Array(Math.ceil(filteredCategorias.length / itemsPerPage)).keys()].map((number) => (
+              <button
+                key={number}
+                onClick={() => paginate(number + 1)}
+                className={
+                  currentPage === number + 1
+                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                }
+              >
+                {number + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === Math.ceil(filteredCategorias.length / itemsPerPage)}
+              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <span className="sr-only">Next</span>
+              {/* Heroicon name: solid/chevron-right */}
+              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </nav>
+        </div>
+      </div>
     </div>
   );
 };
