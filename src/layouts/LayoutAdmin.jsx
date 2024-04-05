@@ -44,6 +44,15 @@ const LayoutAdmin = () => {
     case "/usuarios/editar-usuario":
       title = "Editar usuario";
       break;
+      case "/roles":
+      title = "roles";
+      break;
+    case "/roles/registrar-rol":
+      title = "Registrar rol";
+      break;
+    case "/roles/editar-rol":
+      title = "Editar rol";
+      break;
     default:
       title = "";
   }

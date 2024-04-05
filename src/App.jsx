@@ -31,11 +31,9 @@ import EditarCliente from "./pages/admin/EditarCliente";
 import Usuarios from "./pages/admin/Usuarios";
 import RegistrarUsuario from "./pages/admin/RegistrarUsuario";
 import EditarUsuario from "./pages/admin/EditarUsuario";
-
-
-
-
-
+import Roles from "./pages/admin/Roles";
+import RegistrarRol from "./pages/admin/RegistrarRol";
+import EditarRol from "./pages/admin/EditarRol";
 
 import Error404 from "./pages/Error404";
 
@@ -63,6 +61,9 @@ function App() {
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/usuarios/registrar-usuario" element={<RegistrarUsuario />} />
           <Route path="/usuarios/editar-usuario" element={<EditarUsuario />} />
+          <Route path="/roles" element={<Roles />} />
+          <Route path="/roles/registrar-rol" element={<RegistrarRol />} />
+          <Route path="/roles/editar-rol" element={<EditarRol />} />
           <Route path="/proveedores/registrar-proveedor" element={<RegistrarProveedor />} />
           <Route path="/proveedores/editar-proveedor" element={<EditarProveedor />} />
           <Route path="/productos/registrar-producto" element={<RegistrarProducto />} />
