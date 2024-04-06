@@ -83,7 +83,7 @@ const Roles = () => {
             />
           </div>
           <div className="">
-            <Link to="/Roles/registrar-rol" className="">
+            <Link to="/roles/registrar-rol" className="">
               <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Agregar nuevo rol
               </button>
@@ -115,6 +115,12 @@ const Roles = () => {
                 scope="col"
                 className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
               >
+                Fecha de creación
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+              >
                 Acciones
               </th>
             </tr>
@@ -134,7 +140,10 @@ const Roles = () => {
                   </button>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <Link to="/Roles/editar-rol">
+                  <div className="font-medium text-black">06/04/2024</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <Link to="/roles/editar-rol">
                     <button className="text-black border border-black p-2 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
                       <MdEdit />
                     </button>
