@@ -107,9 +107,9 @@ const Clientes = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.correo}</td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
                     <Link to={`/clientes/editar-cliente`}> {/* Enlace para editar cliente */}
-                      <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
+                      <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(cliente.nombre)} />
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(cliente.nombre)} />
                   </td>
                 </tr>
               ))}

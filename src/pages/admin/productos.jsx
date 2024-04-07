@@ -7,7 +7,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const Productos = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [productos] = useState([
+  const [productos, setProductos] = useState([
     { nombre: "Producto Uno", precio: 10.99, cantidad: 50, descripcion: "Descripción del producto uno", estado: true, categoria: "Categoría Uno" },
     { nombre: "Producto Dos", precio: 20.99, cantidad: 30, descripcion: "Descripción del producto dos", estado: false, categoria: "Categoría Dos" },
     { nombre: "Producto Tres", precio: 15.99, cantidad: 40, descripcion: "Descripción del producto tres", estado: true, categoria: "Categoría Tres" },
@@ -45,7 +45,9 @@ const Productos = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Aquí puedes agregar la lógica para eliminar el producto con el nombre proporcionado
+        // Eliminar el producto con el nombre proporcionado
+        const updatedProductos = productos.filter(producto => producto.nombre !== nombre);
+        setProductos(updatedProductos);
         Swal.fire(
           '¡Eliminado!',
           'El producto ha sido eliminado',
@@ -53,6 +55,13 @@ const Productos = () => {
         );
       }
     });
+  };
+
+  const toggleEstado = (nombre) => {
+    const updatedProductos = [...productos];
+    const productoIndex = updatedProductos.findIndex(producto => producto.nombre === nombre);
+    updatedProductos[productoIndex].estado = !updatedProductos[productoIndex].estado;
+    setProductos(updatedProductos);
   };
 
   return (
@@ -98,10 +107,10 @@ const Productos = () => {
                   Descripción
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  Estado
+                  Categoría
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  Categoría
+                  Estado
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Acciones
@@ -115,13 +124,20 @@ const Productos = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.precio}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{producto.estado ? 'Activo' : 'Inactivo'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.categoria}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                      onClick={() => toggleEstado(producto.nombre)}
+                    >
+                      {producto.estado ? 'Activo' : 'Inactivo'}
+                    </button>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
                     <Link to={`/productos/editar-producto`}>
-                      <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
+                      <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto.nombre)} />
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto.nombre)} />
                   </td>
                 </tr>
               ))}
