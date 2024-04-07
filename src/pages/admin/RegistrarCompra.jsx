@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { FaPlus, FaMinus } from "react-icons/fa";
 
@@ -7,7 +6,6 @@ const Compras = () => {
   const [numeroCompra, setNumeroCompra] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [fecha, setFecha] = useState('');
-  const [estado, setEstado] = useState(false);
   const [total, setTotal] = useState(0);
   const [proveedor, setProveedor] = useState('Proveedor Uno');
   const [busquedaProducto, setBusquedaProducto] = useState('');
@@ -95,6 +93,8 @@ const Compras = () => {
     });
   };
 
+  const currentDate = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato ISO
+
   return (
    <div className="bg-secondary-100 w-full rounded-lg">
      <div className="flex justify-center p-8">
@@ -113,10 +113,21 @@ const Compras = () => {
                   >
                     <FaMinus />
                   </button>
-                  <span className="mx-2">{producto.cantidad}</span>
+                  <input
+                    type="number"
+                    className="bg-gray-200 border border-gray-300 rounded-md w-16 px-2 py-1 text-black ml-2"
+                    value={producto.cantidad}
+                    onChange={(e) => {
+                      const newCantidad = parseInt(e.target.value);
+                      agregarProducto(producto.nombre, newCantidad);
+                    }}
+                  />
                   <button
                     className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    onClick={() => agregarProducto(producto.nombre)}
+                    onClick={() => {
+                      const newCantidad = producto.cantidad + 1;
+                      agregarProducto(producto.nombre, newCantidad);
+                    }}
                     type="button"
                   >
                     <FaPlus />
@@ -148,7 +159,7 @@ const Compras = () => {
               onChange={(e) => setBusquedaProducto(e.target.value)}
             />
             <button
-              className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 text-sm border-4 text-white py-1 px-2 rounded"
+              className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
               type="button"
               onClick={() => setBusquedaProducto('')}
             >
@@ -180,63 +191,54 @@ const Compras = () => {
           </div>
         )}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
-            <input
-              id="numeroCompra"
-              type="text"
-              className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Número de Compra"
-              value={numeroCompra}
-              onChange={(e) => setNumeroCompra(e.target.value)}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
-            <input
-              id="descripcion"
-              type="text"
-              className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Descripción"
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
-            <input
-              id="fecha"
-              type="date"
-              className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Fecha"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="estado">Estado</label>
-            <select
-              id="estado"
-              className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={estado}
-              onChange={(e) => setEstado(e.target.value)}
-            >
-              <option value={true}>Activa</option>
-              <option value={false}>Inactiva</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
-            <select
-              id="proveedor"
-              className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={proveedor}
-              onChange={(e) => setProveedor(e.target.value)}
-            >
-              <option value="Proveedor Uno">Proveedor Uno</option>
-              <option value="Proveedor Dos">Proveedor Dos</option>
-              {/* Agregar más opciones de proveedores según sea necesario */}
-            </select>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
+              <input
+                id="numeroCompra"
+                type="text"
+                className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Número de Compra"
+                value={numeroCompra}
+                onChange={(e) => setNumeroCompra(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
+              <input
+                id="descripcion"
+                type="text"
+                className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Descripción"
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
+              <input
+                id="fecha"
+                type="date"
+                className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Fecha"
+                value={fecha}
+                min={currentDate} // Restringe la fecha mínima a la fecha actual
+                onChange={(e) => setFecha(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
+              <select
+                id="proveedor"
+                className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                value={proveedor}
+                onChange={(e) => setProveedor(e.target.value)}
+              >
+                <option value="Proveedor Uno">Proveedor Uno</option>
+                <option value="Proveedor Dos">Proveedor Dos</option>
+                {/* Agregar más opciones de proveedores según sea necesario */}
+              </select>
+            </div>
           </div>
           <div className="mb-4">
             <button
