@@ -7,7 +7,7 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const Categorias = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categorias] = useState([
+  const [categorias, setCategorias] = useState([
     { id: 1, nombre: "Categoría Uno", descripcion: "Descripción de la categoría uno", estado: true },
     { id: 2, nombre: "Categoría Dos", descripcion: "Descripción de la categoría dos", estado: false },
     { id: 3, nombre: "Categoría Tres", descripcion: "Descripción de la categoría tres", estado: true },
@@ -45,7 +45,8 @@ const Categorias = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Aquí puedes agregar la lógica para eliminar la categoría con el id proporcionado
+        const updatedCategorias = categorias.filter((categoria) => categoria.id !== id);
+        setCategorias(updatedCategorias);
         Swal.fire(
           '¡Eliminado!',
           'La categoría ha sido eliminada',
@@ -53,6 +54,13 @@ const Categorias = () => {
         );
       }
     });
+  };
+
+  const toggleEstado = (id) => {
+    const updatedCategorias = categorias.map((categoria) =>
+      categoria.id === id ? { ...categoria, estado: !categoria.estado } : categoria
+    );
+    setCategorias(updatedCategorias);
   };
 
   return (
@@ -85,7 +93,6 @@ const Categorias = () => {
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
-                
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Nombre
                 </th>
@@ -103,15 +110,21 @@ const Categorias = () => {
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
               {currentItems.map((categoria, index) => (
                 <tr key={index}>
-                  
                   <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.nombre}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.descripcion}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{categoria.estado ? 'Activo' : 'Inactivo'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${categoria.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                      onClick={() => toggleEstado(categoria.id)}
+                    >
+                      {categoria.estado ? 'Activo' : 'Inactivo'}
+                    </button>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
                     <Link to={`/categorias/editar-categoria`}>
-                      <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
+                      <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(categoria.id)} />
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(categoria.id)} />
                   </td>
                 </tr>
               ))}

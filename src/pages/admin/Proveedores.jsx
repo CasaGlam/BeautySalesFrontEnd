@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import { MdEdit, MdDelete } from "react-icons/md"; // Importamos MdEdit y MdDelete
 import Swal from "sweetalert2";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Proveedores = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [proveedores] = useState([
-    { nombre: "Proveedor Uno", telefono: "123456789", correo: "proveedor1@example.com", direccion: "Calle 123, Ciudad Uno" },
-    { nombre: "Proveedor Dos", telefono: "987654321", correo: "proveedor2@example.com", direccion: "Avenida 456, Ciudad Dos" },
-    { nombre: "Proveedor Tres", telefono: "555555555", correo: "proveedor3@example.com", direccion: "Plaza Principal, Ciudad Tres" },
-    { nombre: "Proveedor Cuatro", telefono: "444444444", correo: "proveedor4@example.com", direccion: "Calle 789, Ciudad Cuatro" },
-    { nombre: "Proveedor Cinco", telefono: "333333333", correo: "proveedor5@example.com", direccion: "Bulevar X, Ciudad Cinco" },
-    { nombre: "Proveedor Seis", telefono: "222222222", correo: "proveedor6@example.com", direccion: "Avenida Z, Ciudad Seis" },
-    { nombre: "Proveedor Siete", telefono: "111111111", correo: "proveedor7@example.com", direccion: "Calle Y, Ciudad Siete" }
+  const [proveedores, setProveedores] = useState([
+    { nombre: "Proveedor Uno", telefono: "123456789", correo: "proveedor1@example.com", direccion: "Calle 123, Ciudad Uno", estado: true },
+    { nombre: "Proveedor Dos", telefono: "987654321", correo: "proveedor2@example.com", direccion: "Avenida 456, Ciudad Dos", estado: false },
+    { nombre: "Proveedor Tres", telefono: "555555555", correo: "proveedor3@example.com", direccion: "Plaza Principal, Ciudad Tres", estado: true },
+    { nombre: "Proveedor Cuatro", telefono: "444444444", correo: "proveedor4@example.com", direccion: "Calle 789, Ciudad Cuatro", estado: false },
+    { nombre: "Proveedor Cinco", telefono: "333333333", correo: "proveedor5@example.com", direccion: "Bulevar X, Ciudad Cinco", estado: true },
+    { nombre: "Proveedor Seis", telefono: "222222222", correo: "proveedor6@example.com", direccion: "Avenida Z, Ciudad Seis", estado: false },
+    { nombre: "Proveedor Siete", telefono: "111111111", correo: "proveedor7@example.com", direccion: "Calle Y, Ciudad Siete", estado: true }
   ]);
   const itemsPerPage = 5;
 
@@ -33,7 +33,7 @@ const Proveedores = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (id) => {
+  const handleDelete = (index) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás deshacer esta acción',
@@ -45,7 +45,10 @@ const Proveedores = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Aquí puedes agregar la lógica para eliminar el proveedor con el id proporcionado
+        const updatedProveedores = [...proveedores];
+        updatedProveedores.splice(indexOfFirstItem + index, 1);
+        // Actualiza el estado con el proveedor eliminado
+        setProveedores(updatedProveedores);
         Swal.fire(
           '¡Eliminado!',
           'El proveedor ha sido eliminado',
@@ -53,6 +56,13 @@ const Proveedores = () => {
         );
       }
     });
+  };
+
+  const toggleEstado = (index) => {
+    const updatedProveedores = [...proveedores];
+    updatedProveedores[indexOfFirstItem + index].estado = !updatedProveedores[indexOfFirstItem + index].estado;
+    // Actualiza el estado con el proveedor actualizado
+    setProveedores(updatedProveedores);
   };
 
   return (
@@ -98,6 +108,9 @@ const Proveedores = () => {
                   Dirección
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Estado
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>
@@ -109,11 +122,19 @@ const Proveedores = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.telefono}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.correo}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.direccion}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${proveedor.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                      onClick={() => toggleEstado(index)}
+                    >
+                      {proveedor.estado ? 'Activo' : 'Inactivo'}
+                    </button>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
                     <Link to={`/proveedores/editar-proveedor`}>
-                      <FaEdit className="text-blue-500 hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
+                      <MdEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-red-500 hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(index)} />
+                    <MdDelete className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(index)} />
                   </td>
                 </tr>
               ))}
