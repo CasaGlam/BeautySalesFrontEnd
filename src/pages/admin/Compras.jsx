@@ -1,129 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch, FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Compras = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [compras, setCompras] = useState([
-    {
-      id: 1,
-      numeroCompra: 'ABCDE12345',
-      descripcion: 'Compra de productos electrónicos',
-      fecha: '2024-04-03',
-      estado: true,
-      proveedor: 'Proveedor Uno',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Producto 1', precio: 500, cantidad: 2, subtotal: 1000 },
-        { id: 2, nombre: 'Producto 2', precio: 300, cantidad: 1, subtotal: 300 }
-      ]
-    },
-    {
-      id: 2,
-      numeroCompra: 'FGHIJ67890',
-      descripcion: 'Compra de ropa',
-      fecha: '2024-04-05',
-      estado: false,
-      proveedor: 'Proveedor Dos',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Producto 3', precio: 200, cantidad: 3, subtotal: 600 },
-        { id: 2, nombre: 'Producto 4', precio: 150, cantidad: 2, subtotal: 300 }
-      ]
-    },
-    // Agrega aquí los demás registros de compras
-    {
-      id: 3,
-      numeroCompra: 'KLMNO54321',
-      descripcion: 'Compra de muebles',
-      fecha: '2024-04-08',
-      estado: true,
-      proveedor: 'Proveedor Tres',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Mesa', precio: 700, cantidad: 1, subtotal: 700 },
-        { id: 2, nombre: 'Silla', precio: 150, cantidad: 4, subtotal: 600 }
-      ]
-    },
-    {
-      id: 4,
-      numeroCompra: 'PQRST67890',
-      descripcion: 'Compra de libros',
-      fecha: '2024-04-10',
-      estado: false,
-      proveedor: 'Proveedor Cuatro',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Libro 1', precio: 20, cantidad: 5, subtotal: 100 },
-        { id: 2, nombre: 'Libro 2', precio: 25, cantidad: 3, subtotal: 75 }
-      ]
-    },
-    {
-      id: 5,
-      numeroCompra: 'UVWXY09876',
-      descripcion: 'Compra de juguetes',
-      fecha: '2024-04-15',
-      estado: true,
-      proveedor: 'Proveedor Cinco',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Muñeca', precio: 30, cantidad: 2, subtotal: 60 },
-        { id: 2, nombre: 'Carro de control remoto', precio: 50, cantidad: 1, subtotal: 50 }
-      ]
-    },
-    {
-      id: 6,
-      numeroCompra: 'ZABCDE54321',
-      descripcion: 'Compra de herramientas',
-      fecha: '2024-04-18',
-      estado: true,
-      proveedor: 'Proveedor Seis',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Martillo', precio: 15, cantidad: 3, subtotal: 45 },
-        { id: 2, nombre: 'Destornillador', precio: 10, cantidad: 5, subtotal: 50 }
-      ]
-    },
-    {
-      id: 7,
-      numeroCompra: 'FGHIJ12345',
-      descripcion: 'Compra de electrodomésticos',
-      fecha: '2024-04-22',
-      estado: false,
-      proveedor: 'Proveedor Siete',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Licuadora', precio: 40, cantidad: 1, subtotal: 40 },
-        { id: 2, nombre: 'Tostadora', precio: 30, cantidad: 1, subtotal: 30 }
-      ]
-    },
-  ]);
+  const [compras, setCompras] = useState([]);
+  const [proveedores, setProveedores] = useState([]);
+  const [productos, setProductos] = useState([]);
   const [compraExpandida, setCompraExpandida] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  useEffect(() => {
+    fetch('http://localhost:8080/api/compras')
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setCompras(data);
+        } else {
+          console.error('Datos de compras no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching compras:', error));
+
+    fetch('http://localhost:8080/api/proveedores')
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data.proveedores)) {
+          setProveedores(data.proveedores);
+        } else {
+          console.error('Datos de proveedores no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching proveedores:', error));
+
+    fetch('http://localhost:8080/api/productos')
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data.productos)) {
+          setProductos(data.productos);
+        } else {
+          console.error('Datos de productos no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching productos:', error));
+  }, []);
+
   const toggleModal = () => {
     setMostrarModal(!mostrarModal);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Lógica para guardar la compra
-    setMostrarModal(false);
-  };
-
-  const handleCancel = () => {
-    // Lógica para cancelar la compra
-    setMostrarModal(false);
-  };
-
-  const toggleCompraExpandida = (id) => {
-    if (compraExpandida === id) {
-      setCompraExpandida(null);
-    } else {
-      setCompraExpandida(id);
-    }
   };
 
   const handleSearch = (event) => {
@@ -131,8 +56,18 @@ const Compras = () => {
     setCurrentPage(1); // Resetear a la primera página al buscar
   };
 
+  const getProveedorName = (idProveedor) => {
+    const proveedor = proveedores.find(proveedor => proveedor._id === idProveedor);
+    return proveedor ? proveedor.nombre : 'Proveedor no encontrado';
+  };
+
+  const getProductoName = (idProducto) => {
+    const producto = productos.find(producto => producto._id === idProducto);
+    return producto ? producto.nombre : 'Producto no encontrado';
+  };
+
   const filteredCompras = compras.filter((compra) =>
-    compra.numeroCompra.toLowerCase().includes(searchTerm.toLowerCase())
+    compra.numeroCompra.toString().includes(searchTerm)
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -196,7 +131,7 @@ const Compras = () => {
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
               {currentItems.map((compra) => (
-                <React.Fragment key={compra.id}>
+                <React.Fragment key={compra._id}>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-black">{compra.numeroCompra}</div>
@@ -205,24 +140,24 @@ const Compras = () => {
                       <div className="font-medium text-black">{compra.descripcion}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-black">{compra.fecha}</div>
+                      <div className="font-medium text-black">{new Date(compra.fecha).toLocaleDateString()}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${compra.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {compra.estado ? 'Activa' : 'Inactiva'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-black">{compra.proveedor}</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-black">{getProveedorName(compra.idProveedor)}</td>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-black">
-                      ${compra.productosSeleccionados.reduce((total, producto) => total + producto.subtotal, 0)}
+                      ${compra.total}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button onClick={() => toggleCompraExpandida(compra.id)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
-                        {compraExpandida === compra.id ? <FaAngleUp /> : <FaAngleDown />}
+                      <button onClick={() => setCompraExpandida(compraExpandida === compra._id ? null : compra._id)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
+                        {compraExpandida === compra._id ? <FaAngleUp /> : <FaAngleDown />}
                       </button>
                     </td>
                   </tr>
-                  {compraExpandida === compra.id && (
+                  {compraExpandida === compra._id && (
                     <tr>
                       <td colSpan="7">
                         <div className="mt-4 mb-2 px-8">
@@ -233,12 +168,12 @@ const Compras = () => {
                               <span>Cantidad</span>
                               <span>Total</span>
                             </li>
-                            {compra.productosSeleccionados.map((producto) => (
-                              <li key={producto.id} className="px-4 py-4 flex items-center justify-between text-sm">
-                                <span className="text-black truncate">{producto.nombre}</span>
-                                <span className="text-black">{producto.precio}</span>
-                                <span className="text-black">{producto.cantidad}</span>
-                                <span className="text-black">${producto.cantidad * producto.precio}</span>
+                            {compra.detallesCompra.map((detalle) => (
+                              <li key={detalle._id} className="px-4 py-4 flex items-center justify-between text-sm">
+                                <span className="text-black truncate">{getProductoName(detalle.idProducto)}</span>
+                                <span className="text-black">{detalle.precio}</span>
+                                <span className="text-black">{detalle.cantidad}</span>
+                                <span className="text-black">${detalle.total}</span>
                               </li>
                             ))}
                           </ul>
