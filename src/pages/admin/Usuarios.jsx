@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { MdEdit } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import Swal from 'sweetalert2';
 
 const Usuarios = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,6 +43,47 @@ const Usuarios = () => {
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleDeleteUser = (userId) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "¿Deseas eliminar este usuario?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:8080/api/usuarios/${userId}`, {
+          method: "DELETE"
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Error al eliminar el usuario');
+            }
+            return response.json();
+          })
+          .then(() => {
+            Swal.fire(
+              'Éxito!',
+              'El usuario se ha eliminado exitosamente.',
+              'success'
+            ).then(() => {
+              // Recargar la lista de usuarios después de la eliminación
+              window.location.reload();
+            });
+          })
+          .catch((error) => {
+            Swal.fire(
+              'Error!',
+              error.message || 'Hubo un error al eliminar el usuario.',
+              'error'
+            );
+          });
+      }
+    });
+  };
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
@@ -127,12 +169,16 @@ const Usuarios = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Link to="/usuarios/editar-usuario">
+                  <Link to={`/usuarios/editar-usuario/${usuario._id}`}>
                       <button className="text-black border border-black p-2 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
                         <MdEdit />
                       </button>
                     </Link>
-                    <button className="text-black border border-black p-2 rounded-lg hover:bg-black hover:text-white transition-colors">
+                    <button 
+                      className="text-black border border-black p-2 rounded-lg hover:bg-black hover:text-white transition-colors"
+                      onClick={() => handleDeleteUser(usuario._id)}
+                    >
+                      {/*Eliminar usuario */}
                       <FaTrash />
                     </button>
                   </td>

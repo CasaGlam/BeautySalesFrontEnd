@@ -60,7 +60,7 @@ function App() {
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/usuarios/registrar-usuario" element={<RegistrarUsuario />} />
-          <Route path="/usuarios/editar-usuario" element={<EditarUsuario />} />
+          <Route path="/usuarios/editar-usuario/:objectId" element={<EditarUsuario />} />
           <Route path="/roles" element={<Roles />} />
           <Route path="/roles/registrar-rol" element={<RegistrarRol />} />
           <Route path="/roles/editar-rol/:objectId" element={<EditarRol />} />
