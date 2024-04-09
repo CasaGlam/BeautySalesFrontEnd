@@ -41,7 +41,7 @@ const Header = ({ title }) => {
           </MenuItem>
           <hr className="my-4 border-gray-500" />
           <MenuItem className="rounded-lg transition-colors text-gray-300 hover:bg-secondary-900">
-            <Link to="/" className="flex items-center gap-x-4 ">
+            <Link to="/login" className="flex items-center gap-x-4 ">
               <CiLogout className="ml-[10px] text-primary object-cover rounded-full" />
               <div className="flex flex-col text-sm">
                 <span className="text-sm">Cerrar sesión</span>
