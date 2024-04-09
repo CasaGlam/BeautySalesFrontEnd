@@ -63,7 +63,7 @@ function App() {
           <Route path="/usuarios/editar-usuario" element={<EditarUsuario />} />
           <Route path="/roles" element={<Roles />} />
           <Route path="/roles/registrar-rol" element={<RegistrarRol />} />
-          <Route path="/roles/editar-rol" element={<EditarRol />} />
+          <Route path="/roles/editar-rol/:objectId" element={<EditarRol />} />
           <Route path="/proveedores/registrar-proveedor" element={<RegistrarProveedor />} />
           <Route path="/proveedores/editar-proveedor" element={<EditarProveedor />} />
           <Route path="/productos/registrar-producto" element={<RegistrarProducto />} />
@@ -72,7 +72,6 @@ function App() {
           <Route path="/categorias/editar-categoria" element={<EditarCategoria />} />
           <Route path="/clientes/registrar-cliente" element={<RegistrarCliente />} />
           <Route path="/clientes/editar-cliente" element={<EditarCliente />} />
-
         </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>

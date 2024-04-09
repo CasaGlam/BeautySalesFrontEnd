@@ -1,16 +1,32 @@
-import React, { useState } from "react";
-
-// Icons
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MdEdit } from "react-icons/md";
-import { FaTrash, FaCheck } from "react-icons/fa";
-import { IoIosArrowBack, IoIosArrowForward, IoMdClose } from "react-icons/io";
+import { FaTrash } from "react-icons/fa";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 
 const Roles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rolesPerPage] = useState(5);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [rolesData, setRolesData] = useState([]);
+
+  useEffect(() => {
+    fetchRoles();
+  }, []);
+
+  const fetchRoles = () => {
+    fetch("http://localhost:8080/api/roles")
+      .then((response) => response.json())
+      .then((data) => {
+        setRolesData(data.roles);
+      })
+      .catch((error) => console.error("Error fetching roles:", error));
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -25,39 +41,72 @@ const Roles = () => {
     setSelectedRole(null);
   };
 
-  const Roles = [
-    {
-      nombre: "Administrador",
-      dashboard: true,
-      productos: true,
-      categorias: true,
-      compras: true,
-      ventas: true,
-      proveedores: true,
-      clientes: true,
-      usuarios: true,
-      roles: true,
-      fecha: "5/04/2024",
-      estado: true,
-    },
-    {
-      nombre: "Empleado",
-      dashboard: true,
-      productos: false,
-      categorias: true,
-      compras: false,
-      ventas: true,
-      proveedores: false,
-      clientes: true,
-      usuarios: false,
-      roles: true,
-      fecha: "5/04/2024",
-      estado: true,
-    },
+  const handleDelete = (objectId) => {
+    MySwal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta acción no se puede revertir",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma la eliminación, enviar la solicitud DELETE
+        fetch(`http://localhost:8080/api/roles/${objectId}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error deleting role");
+            }
+            return response.json();
+          })
+          .then(() => {
+            // Recargar roles después de eliminar
+            fetchRoles();
+            // Mostrar alerta de éxito
+            MySwal.fire({
+              icon: "success",
+              title: "Eliminado con éxito",
+              timer: 2000,
+              showConfirmButton: false,
+            });
+          })
+          .catch((error) => {
+            console.error("Error deleting role:", error.message);
+            // Mostrar alerta de error
+            MySwal.fire({
+              icon: "error",
+              title: "Error al eliminar",
+              text: error.message,
+            });
+          });
+      }
+    });
+  };
+
+  const allPermissions = [
+    "dashboard",
+    "productos",
+    "categorias",
+    "compras",
+    "ventas",
+    "proveedores",
+    "clientes",
+    "usuarios",
+    "roles",
   ];
 
-  const filteredRoles = Roles.filter((rol) =>
-    rol.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  const getPermissionStatus = (permission) => {
+    return selectedRole && selectedRole.permisos.includes(permission)
+      ? "Sí"
+      : "No";
+  };
+
+  const filteredRoles = rolesData.filter((rol) =>
+    rol.rol.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastUser = currentPage * rolesPerPage;
@@ -93,70 +142,66 @@ const Roles = () => {
       </div>
 
       {filteredRoles.length === 0 ? (
-      <div className="text-xl text-center text-gray-500">No se encuentran roles.</div>
-    ) : (
-      <div className="p-5 overflow-x-auto rounded-lg">
-        <table className="min-w-full divide-y divide-gray-500 rounded-lg ">
-          <thead className="bg-secondary-900 rounded-lg ">
-            <tr className="">
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-              >
-                Nombre
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-              >
-                Permisos
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-              >
-                Fecha de creación
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-              >
-                Acciones
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
-            {currentUsers.map((rol, index) => (
-              <tr key={index}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="font-medium text-black">{rol.nombre}</div>
-                </td>
-                <td>
-                <button
-                    onClick={() => openPermissionsModal(rol)}
-                    className="text-black border border-black p-2 rounded-lg  hover:bg-black hover:text-white transition-colors"
-                  >
-                    Ver permisos
-                  </button>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="font-medium text-black">06/04/2024</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <Link to="/roles/editar-rol">
-                    <button className="text-black border border-black p-2 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
-                      <MdEdit />
-                    </button>
-                  </Link>
-                  <button className="text-black border border-black p-2 rounded-lg hover:bg-black hover:text-white transition-colors">
-                    <FaTrash />
-                  </button>
-                </td>
+        <div className="text-xl text-center text-gray-500">
+          No se encuentran roles.
+        </div>
+      ) : (
+        <div className="p-5 overflow-x-auto rounded-lg">
+          <table className="min-w-full divide-y divide-gray-500 rounded-lg ">
+            <thead className="bg-secondary-900 rounded-lg ">
+              <tr className="">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                >
+                  Nombre
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                >
+                  Permisos
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                >
+                  Acciones
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
+              {currentUsers.map((rol, index) => (
+                <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="font-medium text-black">{rol.rol}</div>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => openPermissionsModal(rol)}
+                      className="text-black border border-black p-2 rounded-lg  hover:bg-black hover:text-white transition-colors"
+                    >
+                      Ver permisos
+                    </button>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <Link to={`/roles/editar-rol/${rol._id}`}>
+                      <button className="text-black border border-black p-2 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                        <MdEdit />
+                      </button>
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(rol._id)}
+                      className="text-black border border-black p-2 rounded-lg hover:bg-black hover:text-white transition-colors"
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className="flex justify-center mt-4">
@@ -220,45 +265,15 @@ const Roles = () => {
                     className="text-lg leading-6 text-white font-bold mb-4"
                     id="modal-headline"
                   >
-                    Permisos de {selectedRole.nombre}
+                    Permisos de {selectedRole.rol}
                   </h3>
                   <div className="flex flex-wrap gap-4">
-                    <div className="w-full sm:w-1/2">
-                      <strong>Dashboard:</strong>{" "}
-                      {selectedRole.dashboard ? "Sí" : "No"}
-                    </div>
-                    <div className="w-full sm:w-1/2">
-                      <strong>Productos:</strong>{" "}
-                      {selectedRole.productos ? "Sí" : "No"}
-                    </div>
-                    <div className="w-full sm:w-1/2">
-                      <strong>Categorias:</strong>{" "}
-                      {selectedRole.categorias ? "Sí" : "No"}
-                    </div>
-                    <div className="w-full sm:w-1/2">
-                      <strong>Compras:</strong>{" "}
-                      {selectedRole.compras ? "Sí" : "No"}
-                    </div>
-                    <div className="w-full sm:w-1/2">
-                      <strong>Ventas:</strong>{" "}
-                      {selectedRole.ventas ? "Sí" : "No"}
-                    </div>
-                    <div className="w-full sm:w-1/2">
-                      <strong>Proveedores:</strong>{" "}
-                      {selectedRole.proveedores ? "Sí" : "No"}
-                    </div>
-                    <div className="w-full sm:w-1/2">
-                      <strong>Clientes:</strong>{" "}
-                      {selectedRole.clientes ? "Sí" : "No"}
-                    </div>
-                    <div className="w-full sm:w-1/2">
-                      <strong>Usuarios:</strong>{" "}
-                      {selectedRole.usuarios ? "Sí" : "No"}
-                    </div>
-                    <div className="w-full sm:w-1/2">
-                      <strong>Roles:</strong>{" "}
-                      {selectedRole.roles ? "Sí" : "No"}
-                    </div>
+                    {allPermissions.map((permission) => (
+                      <div key={permission} className="w-full sm:w-1/2">
+                        <strong>{permission}:</strong>{" "}
+                        {getPermissionStatus(permission)}
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <div className="mt-5 sm:mt-6">
