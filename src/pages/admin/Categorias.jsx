@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import Swal from "sweetalert2";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import Swal from "sweetalert2";
 
 const Categorias = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -141,16 +141,21 @@ const Categorias = () => {
                       {categoria.estado ? 'Activo' : 'Inactivo'}
                     </button>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap flex">
-                    <Link to={`/categorias/editar-categoria`}>
-                      <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
-                    </Link>
+                  <td className="px-6 py-4 whitespace-nowrap flex justify-end">
                     <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(categoria._id)} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+        {/* Botón de Edición */}
+        <div className="flex justify-end mt-4 pr-10">
+          <Link to="/categorias/editar-categoria">
+            <button className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+              <FaEdit className="text-white mr-2" /> 
+            </button>
+          </Link>
         </div>
         {/* Paginación */}
         <div className="flex justify-center mt-4">

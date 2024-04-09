@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MdEdit, MdDelete } from "react-icons/md";
-import Swal from "sweetalert2";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import Swal from "sweetalert2";
 
 const Proveedores = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [proveedores, setProveedores] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const itemsPerPage = 5;
 
   useEffect(() => {
     fetch('http://localhost:8080/api/proveedores')
@@ -17,7 +15,6 @@ const Proveedores = () => {
       .then(data => {
         if (data && data.proveedores && Array.isArray(data.proveedores)) {
           setProveedores(data.proveedores);
-          setLoading(false);
         } else {
           console.error('Datos de proveedores no encontrados en la respuesta:', data);
         }
@@ -34,13 +31,14 @@ const Proveedores = () => {
     proveedor.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const itemsPerPage = 5;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredProveedores.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (id, index) => {
+  const handleDelete = (id) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás deshacer esta acción',
@@ -57,9 +55,8 @@ const Proveedores = () => {
         })
         .then(response => {
           if (response.ok) {
-            const updatedProveedores = [...proveedores];
-            updatedProveedores.splice(indexOfFirstItem + index, 1);
-            // Actualiza el estado con el proveedor eliminado
+            // Filtrar los proveedores para eliminar el proveedor eliminado de la lista
+            const updatedProveedores = proveedores.filter(proveedor => proveedor.idProveedor !== id);
             setProveedores(updatedProveedores);
             Swal.fire(
               '¡Eliminado!',
@@ -130,6 +127,9 @@ const Proveedores = () => {
                   Dirección
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Descripción
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Estado
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
@@ -144,24 +144,30 @@ const Proveedores = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.telefono}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.correo}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.direccion}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.descripcion}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${proveedor.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
-                      onClick={() => toggleEstado(index)}
+                      disabled
                     >
                       {proveedor.estado ? 'Activo' : 'Inactivo'}
                     </button>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap flex">
-                    <Link to={`/proveedores/editar-proveedor`}>
-                      <MdEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
-                    </Link>
-                    <MdDelete className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(proveedor._id, index)} />
+                  <td className="px-6 py-4 whitespace-nowrap flex justify-end">
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(proveedor.idProveedor)} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+        {/* Botón de Edición */}
+        <div className="flex justify-end mt-4 pr-10">
+          <Link to="/proveedores/editar-proveedor">
+            <button className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+              <FaEdit className="text-white mr-2" /> 
+            </button>
+          </Link>
         </div>
         {/* Paginación */}
         <div className="flex justify-center mt-4">
