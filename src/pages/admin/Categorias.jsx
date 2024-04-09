@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -7,16 +7,20 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const Categorias = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categorias, setCategorias] = useState([
-    { id: 1, nombre: "Categoría Uno", descripcion: "Descripción de la categoría uno", estado: true },
-    { id: 2, nombre: "Categoría Dos", descripcion: "Descripción de la categoría dos", estado: false },
-    { id: 3, nombre: "Categoría Tres", descripcion: "Descripción de la categoría tres", estado: true },
-    { id: 4, nombre: "Categoría Cuatro", descripcion: "Descripción de la categoría cuatro", estado: false },
-    { id: 5, nombre: "Categoría Cinco", descripcion: "Descripción de la categoría cinco", estado: true },
-    { id: 6, nombre: "Categoría Seis", descripcion: "Descripción de la categoría seis", estado: true },
-    { id: 7, nombre: "Categoría Siete", descripcion: "Descripción de la categoría siete", estado: false }
-  ]);
-  const itemsPerPage = 5;
+  const [categorias, setCategorias] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/categorias')
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.categorias && Array.isArray(data.categorias)) {
+          setCategorias(data.categorias);
+        } else {
+          console.error('Datos de categorías no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching categorías:', error));
+  }, []);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -27,6 +31,7 @@ const Categorias = () => {
     categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const itemsPerPage = 5;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCategorias.slice(indexOfFirstItem, indexOfLastItem);
@@ -45,22 +50,38 @@ const Categorias = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        const updatedCategorias = categorias.filter((categoria) => categoria.id !== id);
-        setCategorias(updatedCategorias);
-        Swal.fire(
-          '¡Eliminado!',
-          'La categoría ha sido eliminada',
-          'success'
-        );
+        fetch(`http://localhost:8080/api/categorias/${id}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            // Filtrar las categorías para eliminar la categoría eliminada de la lista
+            const updatedCategorias = categorias.filter(categoria => categoria._id !== id);
+            setCategorias(updatedCategorias);
+            Swal.fire(
+              '¡Eliminado!',
+              'La categoría ha sido eliminada',
+              'success'
+            );
+          } else {
+            console.error('Error al eliminar la categoría:', response.statusText);
+            Swal.fire(
+              'Error',
+              'Hubo un problema al eliminar la categoría',
+              'error'
+            );
+          }
+        })
+        .catch(error => {
+          console.error('Error al eliminar la categoría:', error);
+          Swal.fire(
+            'Error',
+            'Hubo un problema al eliminar la categoría',
+            'error'
+          );
+        });
       }
     });
-  };
-
-  const toggleEstado = (id) => {
-    const updatedCategorias = categorias.map((categoria) =>
-      categoria.id === id ? { ...categoria, estado: !categoria.estado } : categoria
-    );
-    setCategorias(updatedCategorias);
   };
 
   return (
@@ -115,7 +136,7 @@ const Categorias = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${categoria.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
-                      onClick={() => toggleEstado(categoria.id)}
+                      disabled
                     >
                       {categoria.estado ? 'Activo' : 'Inactivo'}
                     </button>
@@ -124,7 +145,7 @@ const Categorias = () => {
                     <Link to={`/categorias/editar-categoria`}>
                       <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(categoria.id)} />
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(categoria._id)} />
                   </td>
                 </tr>
               ))}

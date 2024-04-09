@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -7,16 +7,22 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const Productos = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [productos, setProductos] = useState([
-    { nombre: "Producto Uno", precio: 10.99, cantidad: 50, descripcion: "Descripción del producto uno", estado: true, categoria: "Categoría Uno" },
-    { nombre: "Producto Dos", precio: 20.99, cantidad: 30, descripcion: "Descripción del producto dos", estado: false, categoria: "Categoría Dos" },
-    { nombre: "Producto Tres", precio: 15.99, cantidad: 40, descripcion: "Descripción del producto tres", estado: true, categoria: "Categoría Tres" },
-    { nombre: "Producto Cuatro", precio: 25.99, cantidad: 20, descripcion: "Descripción del producto cuatro", estado: false, categoria: "Categoría Cuatro" },
-    { nombre: "Producto Cinco", precio: 30.99, cantidad: 60, descripcion: "Descripción del producto cinco", estado: true, categoria: "Categoría Cinco" },
-    { nombre: "Producto Seis", precio: 12.99, cantidad: 35, descripcion: "Descripción del producto seis", estado: true, categoria: "Categoría Seis" },
-    { nombre: "Producto Siete", precio: 18.99, cantidad: 45, descripcion: "Descripción del producto siete", estado: false, categoria: "Categoría Siete" }
-  ]);
+  const [productos, setProductos] = useState([]);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    // Obtener productos
+    fetch('http://localhost:8080/api/productos')
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.productos && Array.isArray(data.productos)) {
+          setProductos(data.productos);
+        } else {
+          console.error('Datos de productos no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching productos:', error));
+  }, []);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -33,7 +39,7 @@ const Productos = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (nombre) => {
+  const handleDelete = (id) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás deshacer esta acción',
@@ -45,14 +51,37 @@ const Productos = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Eliminar el producto con el nombre proporcionado
-        const updatedProductos = productos.filter(producto => producto.nombre !== nombre);
-        setProductos(updatedProductos);
-        Swal.fire(
-          '¡Eliminado!',
-          'El producto ha sido eliminado',
-          'success'
-        );
+        // Enviar solicitud de eliminación al servidor
+        fetch(`http://localhost:8080/api/productos/${id}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            // Eliminar el producto del estado local
+            const updatedProductos = productos.filter(producto => producto._id !== id);
+            setProductos(updatedProductos);
+            Swal.fire(
+              '¡Eliminado!',
+              'El producto ha sido eliminado',
+              'success'
+            );
+          } else {
+            console.error('Error al eliminar el producto:', response.statusText);
+            Swal.fire(
+              'Error',
+              'Hubo un problema al eliminar el producto',
+              'error'
+            );
+          }
+        })
+        .catch(error => {
+          console.error('Error al eliminar el producto:', error);
+          Swal.fire(
+            'Error',
+            'Hubo un problema al eliminar el producto',
+            'error'
+          );
+        });
       }
     });
   };
@@ -107,9 +136,6 @@ const Productos = () => {
                   Descripción
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  Categoría
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Estado
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
@@ -119,12 +145,11 @@ const Productos = () => {
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
               {currentItems.map((producto) => (
-                <tr key={producto.nombre}>
+                <tr key={producto._id}>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.nombre}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.precio}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{producto.categoria}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
@@ -137,7 +162,7 @@ const Productos = () => {
                     <Link to={`/productos/editar-producto`}>
                       <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto.nombre)} />
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
                   </td>
                 </tr>
               ))}
