@@ -1,25 +1,58 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaBox, FaInfoCircle } from "react-icons/fa"; // Cambié los íconos para que coincidan con los datos del producto
+import { FaBox, FaInfoCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const EditarProducto = () => {
-  // Simulación de datos del producto a editar
-  const productoInicial = {
-    nombre: "Producto de ejemplo",
-    precio: "10.99",
-    cantidad: "50",
-    descripcion: "Descripción del producto de ejemplo",
-    categoria: "Electrónica" // Nuevo campo de categoría
-  };
-
-  const [producto, setProducto] = useState(productoInicial);
+  const [productos, setProductos] = useState([]);
+  const [productoSeleccionado, setProductoSeleccionado] = useState("");
+  const [producto, setProducto] = useState({
+    nombre: "",
+    precio: "",
+    cantidad: "",
+    descripcion: ""
+  });
 
   useEffect(() => {
-    // Simulación de carga de datos del producto a editar
-    // Aquí puedes hacer una llamada a la API para obtener los datos reales
-    // En este ejemplo, cargamos los datos del producto inicialmente
+    const obtenerProductos = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/productos');
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.productos && data.productos.length > 0) {
+            setProductos(data.productos);
+            // Asigna el primer producto como el producto inicial
+            setProductoSeleccionado(data.productos[0]._id);
+          } else {
+            console.error('No se encontraron productos en la respuesta:', data);
+          }
+        } else {
+          console.error('Error al obtener los productos:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error al obtener los productos:', error);
+      }
+    };
+
+    obtenerProductos();
   }, []);
+
+  useEffect(() => {
+    const obtenerProductoSeleccionado = () => {
+      const productoAEditar = productos.find(p => p._id === productoSeleccionado);
+      if (productoAEditar) {
+        setProducto({
+          ...productoAEditar
+        });
+      }
+    };
+
+    obtenerProductoSeleccionado();
+  }, [productos, productoSeleccionado]);
+
+  const handleChangeProducto = async (e) => {
+    setProductoSeleccionado(e.target.value);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,15 +62,33 @@ const EditarProducto = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulación de función de edición del producto
-    // Aquí puedes enviar los datos del producto a la API para actualizarlos
-    // En este ejemplo, mostramos una alerta de éxito y redirigimos a la página de productos
-    Swal.fire("¡Producto editado!", "", "success");
-    setTimeout(() => {
-      window.location.href = "/productos";
-    }, 2000);
+    try {
+      const response = await fetch(`http://localhost:8080/api/productos/${producto._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nombre: producto.nombre,
+          precio: producto.precio,
+          cantidad: producto.cantidad,
+          descripcion: producto.descripcion
+        })
+      });
+      if (response.ok) {
+        Swal.fire("¡Producto editado!", "", "success");
+        setTimeout(() => {
+          window.location.href = "/productos";
+        }, 2000);
+      } else {
+        Swal.fire("Error", "Hubo un problema al editar el producto", "error");
+      }
+    } catch (error) {
+      console.error('Error al editar el producto:', error);
+      Swal.fire("Error", "Hubo un problema al editar el producto", "error");
+    }
   };
 
   return (
@@ -45,6 +96,17 @@ const EditarProducto = () => {
       <h1 className="text-2xl font-bold mb-10 pt-4">Editar producto</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <select
+              value={productoSeleccionado}
+              onChange={handleChangeProducto}
+              className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+            >
+              {productos.map(p => (
+                <option key={p._id} value={p._id}>{p.nombre}</option>
+              ))}
+            </select>
+          </div>
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
@@ -92,22 +154,6 @@ const EditarProducto = () => {
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
-              </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <select
-                  name="categoria"
-                  value={producto.categoria}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                >
-                  <option value="Shampoo">Shampoo</option>
-                  <option value="Crema">Crema</option>
-                  <option value="Gel">Gel</option>
-                  {/* Agrega más opciones de categorías según necesites */}
-                </select>
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">

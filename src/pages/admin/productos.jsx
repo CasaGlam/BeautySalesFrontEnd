@@ -159,15 +159,20 @@ const Productos = () => {
                     </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
-                    <Link to={`/productos/editar-producto`}>
-                      <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
-                    </Link>
+                    
                     <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="flex justify-end mt-4 pr-10">
+          <Link to="/productos/editar-producto">
+            <button className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+              <FaEdit className="text-white mr-2" /> 
+            </button>
+          </Link>
         </div>
         <div className="flex justify-center mt-4">
           <div className="flex justify-center mt-4">

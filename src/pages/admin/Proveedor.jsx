@@ -1,309 +1,212 @@
-import React, { useState } from 'react';
-import { FaSearch, FaEdit, FaTrash, FaSave, FaTimes } from "react-icons/fa";
-import Swal from 'sweetalert2';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import Swal from "sweetalert2";
 
 const Proveedores = () => {
-  const [mostrarAgregarProveedor, setMostrarAgregarProveedor] = useState(false);
-  const [mostrarEditarProveedor, setMostrarEditarProveedor] = useState(false);
-  const [busqueda, setBusqueda] = useState('');
-  const [proveedoresFiltrados, setProveedoresFiltrados] = useState([]);
-  const [proveedorAEditar, setProveedorAEditar] = useState(null);
-  const [nuevoProveedor, setNuevoProveedor] = useState({
-    nombre: '',
-    telefono: '',
-    correo: '',
-    direccion: ''
-  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [proveedores, setProveedores] = useState([]);
 
-  const desplegarVentanaProveedor = () => {
-    setMostrarAgregarProveedor(!mostrarAgregarProveedor);
+  useEffect(() => {
+    fetch('http://localhost:8080/api/proveedores')
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.proveedores && Array.isArray(data.proveedores)) {
+          setProveedores(data.proveedores);
+        } else {
+          console.error('Datos de proveedores no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching proveedores:', error));
+  }, []);
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Resetear a la primera página al buscar
   };
 
-  const guardarNuevoProveedor = () => {
-    if (!nuevoProveedor.nombre || !nuevoProveedor.telefono || !nuevoProveedor.correo || !nuevoProveedor.direccion) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Campos incompletos',
-        text: 'Por favor, completa todos los campos.',
-      });
-      return;
-    }
+  const filteredProveedores = proveedores.filter((proveedor) =>
+    proveedor.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    // Aquí puedes agregar lógica para guardar el nuevo proveedor
+  const itemsPerPage = 5;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredProveedores.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleDelete = (id) => {
     Swal.fire({
-      icon: 'success',
-      title: 'Proveedor Guardado',
-      text: 'El proveedor se ha guardado exitosamente.',
-    });
-    setMostrarAgregarProveedor(false);
-  };
-
-  const handleEditarProveedor = (proveedor) => {
-    setProveedorAEditar(proveedor);
-    setMostrarEditarProveedor(true);
-  };
-
-  const handleEliminarProveedor = (proveedorId) => {
-    Swal.fire({
-      icon: 'warning',
       title: '¿Estás seguro?',
-      text: 'Una vez eliminado, no podrás recuperar este proveedor.',
+      text: 'No podrás deshacer esta acción',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        const proveedoresActualizados = proveedores.filter(proveedor => proveedor.id !== proveedorId);
-        setProveedores(proveedoresActualizados);
-        Swal.fire(
-          'Eliminado',
-          'El proveedor ha sido eliminado correctamente.',
-          'success'
-        );
+        fetch(`http://localhost:8080/api/proveedores/${id}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            // Filtrar los proveedores para eliminar el proveedor eliminado de la lista
+            const updatedProveedores = proveedores.filter(proveedor => proveedor.idProveedor !== id);
+            setProveedores(updatedProveedores);
+            Swal.fire(
+              '¡Eliminado!',
+              'El proveedor ha sido eliminado',
+              'success'
+            );
+          } else {
+            console.error('Error al eliminar el proveedor:', response.statusText);
+            Swal.fire(
+              'Error',
+              'Hubo un problema al eliminar el proveedor',
+              'error'
+            );
+          }
+        })
+        .catch(error => {
+          console.error('Error al eliminar el proveedor:', error);
+          Swal.fire(
+            'Error',
+            'Hubo un problema al eliminar el proveedor',
+            'error'
+          );
+        });
       }
     });
   };
 
-  const handleBuscar = (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    setBusqueda(searchTerm);
-    const filteredProveedores = proveedores.filter((proveedor) =>
-      proveedor.nombre.toLowerCase().includes(searchTerm)
-    );
-    setProveedoresFiltrados(filteredProveedores);
-  };
-
-  const proveedores = [
-    {
-      id: 1,
-      nombre: 'Alexa',
-      telefono: '3117432572',
-      correo: 'Alexa@gmail.com',
-      direccion: 'Calle 63, Ciudad, País',
-    },
-    {
-      id: 2,
-      nombre: 'Carlos',
-      telefono: '3004185451',
-      correo: 'carlos@gmail.com',
-      direccion: 'Calle 51, Ciudad, País',
-    },
-  ];
-
   return (
-    <div className={`overflow-x-auto ${mostrarAgregarProveedor || mostrarEditarProveedor ? 'blur-background' : 'no-blur-background'}`}>
-      <div className="bg-secondary-100 w-full rounded-lg p-4">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold mr-4">Registrar Proveedor</h1>
-          <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="Buscar proveedor..."
-              value={busqueda}
-              onChange={handleBuscar}
-              className="py-2 px-4 rounded-md mr-4"
-            />
-            <button
-              className="bg-primary text-secondary-900 py-2 px-4 rounded-[10px]"
-              onClick={desplegarVentanaProveedor}
-            >
-              Agregar Proveedor
-            </button>
+    <div className="flex justify-center">
+      <div className='bg-secondary-100 w-full rounded-lg'>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
+          <div>
+            <h1 className="text-2xl font-bold mb-4 pt-4">Registro de proveedores</h1>
           </div>
-        </div>
-
-        {mostrarAgregarProveedor && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-            <div className="absolute w-full h-full bg-gray-900 opacity-70"></div>
-            <div className="bg-secondary-100 p-8 rounded-lg flex flex-col relative z-10">
-              <h2 className="text-2xl font-bold mb-4 ">Agregar Nuevo Proveedor</h2>
-              {/* Campos de entrada para agregar proveedor */}
-              <div className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  className="border bg-secondary-900 border-secondary-900  text-white rounded-md px-3 py-2 w-full"
-                  value={nuevoProveedor.nombre}
-                  onChange={(e) => setNuevoProveedor({ ...nuevoProveedor, nombre: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Teléfono"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevoProveedor.telefono}
-                  onChange={(e) => setNuevoProveedor({ ...nuevoProveedor, telefono: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Correo"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevoProveedor.correo}
-                  onChange={(e) => setNuevoProveedor({ ...nuevoProveedor, correo: e.target.value })}
-                />
-                <input
-                  type="text"
-                  placeholder="Dirección"
-                  className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-                  value={nuevoProveedor.direccion}
-                  onChange={(e) => setNuevoProveedor({ ...nuevoProveedor, direccion: e.target.value })}
-                />
-              </div>
-              {/* Botones de guardar y cancelar */}
-              <div className='w-full flex gap-2 mt-4'>
-                <button
-                  className="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded-md w-full flex items-center justify-center"
-                  onClick={guardarNuevoProveedor}
-                >
-                  <FaSave className="text-white" />
+          <div className="flex gap-4">
+            <div>
+              <input
+                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
+                type="search"
+                placeholder="Buscar proveedor"
+                value={searchTerm}
+                onChange={handleSearch}
+              />
+            </div>
+            <div className="">
+              <Link to="/proveedores/registrar-proveedor">
+                <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                  Agregar nuevo proveedor
                 </button>
-                <button
-                  className="text-black bg-red-500 hover:bg-red-700 px-4 py-2 rounded-md w-full flex items-center justify-center"
-                  onClick={() => {
-                    Swal.fire({
-                      icon: 'info',
-                      title: 'Cancelar',
-                      text: '¿Estás seguro de cancelar?',
-                      showCancelButton: true,
-                      confirmButtonColor: '#3085d6',
-                      cancelButtonColor: '#d33',
-                      confirmButtonText: 'Sí, cancelar',
-                      cancelButtonText: 'No',
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        setMostrarAgregarProveedor(false);
-                      }
-                    });
-                  }}
-                >
-                  <FaTimes className="text-white" />
-                </button>
-              </div>
+              </Link>
             </div>
           </div>
-        )}
-
-        {/* Tabla de proveedores */}
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="text-gray-100 uppercase text-sm leading-normal border-b border-gray-200">
-              <th className="py-3 px-6 text-left">ID</th>
-              <th className="py-3 px-6 text-left">Nombre</th>
-              <th className="py-3 px-6 text-left">Teléfono</th>
-          <th className="py-3 px-6 text-left">Correo</th>
-          <th className="py-3 px-6 text-left">Dirección</th>
-          <th className="py-3 px-6 text-left">Acciones</th>
-        </tr>
-      </thead>
-      <tbody className="text-gray-200 text-sm font-light">
-        {proveedoresFiltrados.map((proveedor) => (
-          <tr key={proveedor.id} className="border-b border-gray-200 hover:bg-secondary-100">
-            <td className="py-3 px-6 text-left whitespace-nowrap">{proveedor.id}</td>
-            <td className="py-3 px-6 text-left">{proveedor.nombre}</td>
-            <td className="py-3 px-6 text-left">{proveedor.telefono}</td>
-            <td className="py-3 px-6 text-left">{proveedor.correo}</td>
-            <td className="py-3 px-6 text-left">{proveedor.direccion}</td>
-            <td className="py-3 px-6 text-left">
-              {/* Botón de Editar */}
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => handleEditarProveedor(proveedor)}
-              >
-                <FaEdit/>
-              </button>
-              {/* Botón de Eliminar */}
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
-                onClick={handleEliminarProveedor}
-              >
-                <FaTrash/>
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-  
-  {mostrarEditarProveedor && (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
-      <div className="absolute w-full h-full bg-gray-900 opacity-70"></div>
-      <div className="bg-secondary-100 p-8 rounded-lg flex flex-col relative z-10">
-        <h2 className="text-2xl font-bold mb-4 ">Editar Proveedor</h2>
-        {/* Campos de entrada para editar proveedor */}
-        <div className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Nombre"
-            className="border bg-secondary-900 border-secondary-900  text-white rounded-md px-3 py-2 w-full"
-            value={proveedorAEditar.nombre}
-            onChange={(e) => setProveedorAEditar({ ...proveedorAEditar, nombre: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Teléfono"
-            className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-            value={proveedorAEditar.telefono}
-            onChange={(e) => setProveedorAEditar({ ...proveedorAEditar, telefono: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Correo"
-            className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-            value={proveedorAEditar.correo}
-            onChange={(e) => setProveedorAEditar({ ...proveedorAEditar, correo: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Dirección"
-            className="border bg-secondary-900 border-secondary-900 text-white rounded-md px-3 py-2 w-full"
-            value={proveedorAEditar.direccion}
-            onChange={(e) => setProveedorAEditar({ ...proveedorAEditar, direccion: e.target.value })}
-          />
         </div>
-        {/* Botones de guardar y cancelar */}
-        <div className='w-full flex gap-2 mt-4'>
-          <button
-            className="bg-green-500 hover:bg-green-700 text-black px-4 py-2 rounded-md w-full flex items-center justify-center"
-            onClick={() => {
-              Swal.fire({
-                icon: 'success',
-                title: 'Proveedor Actualizado',
-                text: 'El proveedor se ha actualizado exitosamente.',
-              });
-              setMostrarEditarProveedor(false);
-            }}
-          >
-            <FaSave className="text-white" />
-          </button>
-          <button
-            className="text-black bg-red-500 hover:bg-red-700 px-4 py-2 rounded-md w-full flex items-center justify-center"
-            onClick={() => {
-              Swal.fire({
-                icon: 'info',
-                title: 'Cancelar',
-                text: '¿Estás seguro de cancelar?',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, cancelar',
-                cancelButtonText: 'No',
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  setMostrarEditarProveedor(false);
-                }
-              });
-            }}
-          >
-            <FaTimes className="text-white" />
-          </button>
+        <div className='p-5 overflow-x-auto rounded-lg'>
+          <table className="min-w-full divide-y divide-gray-500 rounded-lg">
+            <thead className="bg-secondary-900 rounded-lg">
+              <tr className=''>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Nombre
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Teléfono
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Correo
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Dirección
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Descripción
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Estado
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
+              {currentItems.map((proveedor, index) => (
+                <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.nombre}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.telefono}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.correo}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.direccion}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-black">{proveedor.descripcion}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${proveedor.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                      disabled
+                    >
+                      {proveedor.estado ? 'Activo' : 'Inactivo'}
+                    </button>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap flex justify-end">
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(proveedor.idProveedor)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {/* Botón de Edición */}
+        <div className="flex justify-end mt-4 pr-10">
+          <Link to="/proveedores/editar-proveedor">
+            <button className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+              <FaEdit className="text-white mr-2" /> 
+            </button>
+          </Link>
+        </div>
+        {/* Paginación */}
+        <div className="flex justify-center mt-4">
+          <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <IoIosArrowBack/>
+            </button>
+            {Array.from(
+              { length: Math.ceil(filteredProveedores.length / itemsPerPage) },
+              (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => paginate(i + 1)}
+                  className={`${
+                    currentPage === i + 1
+                      ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                      : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === Math.ceil(filteredProveedores.length / itemsPerPage)}
+              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <IoIosArrowForward/>
+            </button>
+          </nav>
         </div>
       </div>
     </div>
-  )}
-</div>
-);
+  );
 };
 
 export default Proveedores;

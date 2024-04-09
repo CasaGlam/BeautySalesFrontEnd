@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaUser, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { FaUser, FaPhone, FaEnvelope, FaMapMarkerAlt, FaInfoCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const RegistrarProveedor = () => {
@@ -9,6 +9,7 @@ const RegistrarProveedor = () => {
     telefono: "",
     correo: "",
     direccion: "",
+    descripcion: "" // Agregar campo de descripción
   });
 
   const handleChange = (e) => {
@@ -22,7 +23,7 @@ const RegistrarProveedor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
-    if (proveedor.nombre && proveedor.telefono && proveedor.correo && proveedor.direccion) {
+    if (proveedor.nombre && proveedor.telefono && proveedor.correo && proveedor.direccion && proveedor.descripcion) {
       // Enviar solicitud POST para registrar el proveedor
       fetch('http://localhost:8080/api/proveedores', {
         method: 'POST',
@@ -104,6 +105,19 @@ const RegistrarProveedor = () => {
                   placeholder="Dirección"
                   name="direccion"
                   value={proveedor.direccion}
+                  onChange={handleChange}
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                />
+              </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+              <div className="relative flex-1">
+                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <input
+                  type="text"
+                  placeholder="Descripción"
+                  name="descripcion"
+                  value={proveedor.descripcion}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />

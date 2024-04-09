@@ -140,15 +140,20 @@ const Clientes = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.telefono}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.correo}</td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
-                    <Link to={`/clientes/editar-cliente`}>
-                      <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
-                    </Link>
+                    
                     <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(cliente._id, cliente.nombre)} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="flex justify-end mt-4 pr-10">
+          <Link to="/clientes/editar-cliente">
+            <button className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+              <FaEdit className="text-white mr-2" /> 
+            </button>
+          </Link>
         </div>
         {/* Paginación */}
         <div className="flex justify-center mt-4">
