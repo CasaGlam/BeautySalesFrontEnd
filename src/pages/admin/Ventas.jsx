@@ -1,107 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch, FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Ventas = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [ventas, setVentas] = useState([
-    {
-      id: 1,
-      numeroVenta: 'ABCDE12345',
-      descripcion: 'Venta de productos electrónicos',
-      fecha: '2024-04-03',
-      estado: true,
-      cliente: 'Cliente Uno',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Producto 1', precio: 500, cantidad: 2, subtotal: 1000 },
-        { id: 2, nombre: 'Producto 2', precio: 300, cantidad: 1, subtotal: 300 }
-      ]
-    },
-    {
-      id: 2,
-      numeroVenta: 'FGHIJ67890',
-      descripcion: 'Venta de ropa',
-      fecha: '2024-04-05',
-      estado: false,
-      cliente: 'Cliente Dos',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Producto 3', precio: 200, cantidad: 3, subtotal: 600 },
-        { id: 2, nombre: 'Producto 4', precio: 150, cantidad: 2, subtotal: 300 }
-      ]
-    },
-    // Se agregan más registros aquí
-    {
-      id: 3,
-      numeroVenta: 'KLMNO54321',
-      descripcion: 'Venta de muebles',
-      fecha: '2024-04-08',
-      estado: true,
-      cliente: 'Cliente Tres',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Mesa', precio: 700, cantidad: 1, subtotal: 700 },
-        { id: 2, nombre: 'Silla', precio: 150, cantidad: 4, subtotal: 600 }
-      ]
-    },
-    {
-      id: 4,
-      numeroVenta: 'PQRST67890',
-      descripcion: 'Venta de libros',
-      fecha: '2024-04-10',
-      estado: false,
-      cliente: 'Cliente Cuatro',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Libro 1', precio: 20, cantidad: 5, subtotal: 100 },
-        { id: 2, nombre: 'Libro 2', precio: 25, cantidad: 3, subtotal: 75 }
-      ]
-    },
-    {
-      id: 5,
-      numeroVenta: 'UVWXY09876',
-      descripcion: 'Venta de juguetes',
-      fecha: '2024-04-15',
-      estado: true,
-      cliente: 'Cliente Cinco',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Muñeca', precio: 30, cantidad: 2, subtotal: 60 },
-        { id: 2, nombre: 'Carro de control remoto', precio: 50, cantidad: 1, subtotal: 50 }
-      ]
-    },
-    {
-      id: 6,
-      numeroVenta: 'ZABCDE54321',
-      descripcion: 'Venta de herramientas',
-      fecha: '2024-04-18',
-      estado: true,
-      cliente: 'Cliente Seis',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Martillo', precio: 15, cantidad: 3, subtotal: 45 },
-        { id: 2, nombre: 'Destornillador', precio: 10, cantidad: 5, subtotal: 50 }
-      ]
-    },
-    {
-      id: 7,
-      numeroVenta: 'FGHIJ12345',
-      descripcion: 'Venta de electrodomésticos',
-      fecha: '2024-04-22',
-      estado: false,
-      cliente: 'Cliente Siete',
-      total: 0,
-      productosSeleccionados: [
-        { id: 1, nombre: 'Licuadora', precio: 40, cantidad: 1, subtotal: 40 },
-        { id: 2, nombre: 'Tostadora', precio: 30, cantidad: 1, subtotal: 30 }
-      ]
-    },
-  ]);
+  const [ventas, setVentas] = useState([]);
+  const [clientes, setClientes] = useState([]);
+  const [productos, setProductos] = useState([]);
   const [ventaExpandida, setVentaExpandida] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/ventas')
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setVentas(data);
+        } else {
+          console.error('Datos de ventas no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching ventas:', error));
+
+    fetch('http://localhost:8080/api/clientes')
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data.clientes)) {
+          setClientes(data.clientes);
+        } else {
+          console.error('Datos de clientes no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching clientes:', error));
+
+    fetch('http://localhost:8080/api/productos')
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data.productos)) {
+          setProductos(data.productos);
+        } else {
+          console.error('Datos de productos no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching productos:', error));
+  }, []);
 
   const toggleModal = () => {
     setMostrarModal(!mostrarModal);
@@ -131,8 +75,35 @@ const Ventas = () => {
     setCurrentPage(1); // Resetear a la primera página al buscar
   };
 
+  const getClienteName = (idCliente) => {
+    const cliente = clientes.find(cliente => cliente._id === idCliente);
+    return cliente ? cliente.nombre : 'Cliente no encontrado';
+  };
+
+  const getProductName = (idProducto) => {
+    const producto = productos.find(producto => producto._id === idProducto);
+    return producto ? producto.nombre : 'Producto no encontrado';
+  };
+
+  const getDescription = (idProducto) => {
+    const producto = productos.find(producto => producto._id === idProducto);
+    return producto ? producto.descripcion : 'Descripción no encontrada';
+  };
+
+  const getTotalVenta = (venta) => {
+    return venta.detallesVenta.reduce((total, detalle) => total + detalle.total, 0);
+  };
+
+  const getTotalDetalle = (detalle) => {
+    return detalle.cantidad * detalle.precio;
+  };
+
+  const getTotalVentaTabla = (venta) => {
+    return venta.detallesVenta.reduce((total, detalle) => total + getTotalDetalle(detalle), 0);
+  };
+
   const filteredVentas = ventas.filter((venta) =>
-    venta.numeroVenta.toLowerCase().includes(searchTerm.toLowerCase())
+    venta.numeroVenta.toString().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -175,9 +146,6 @@ const Ventas = () => {
                   Número de Venta
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  Descripción
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Fecha
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
@@ -196,33 +164,30 @@ const Ventas = () => {
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
               {currentItems.map((venta) => (
-                <React.Fragment key={venta.id}>
+                <React.Fragment key={venta._id}>
                   <tr>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-black">{venta.numeroVenta}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-black">{venta.descripcion}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-black">{venta.fecha}</div>
+                      <div className="font-medium text-black">{new Date(venta.fecha).toLocaleDateString()}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${venta.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {venta.estado ? 'Activa' : 'Inactiva'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium text-black">{venta.cliente}</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-black">{getClienteName(venta.idCliente)}</td>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-black">
-                      ${venta.productosSeleccionados.reduce((total, producto) => total + producto.subtotal, 0)}
+                      ${getTotalVentaTabla(venta)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button onClick={() => toggleVentaExpandida(venta.id)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
-                        {ventaExpandida === venta.id ? <FaAngleUp /> : <FaAngleDown />}
+                      <button onClick={() => toggleVentaExpandida(venta._id)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
+                        {ventaExpandida === venta._id ? <FaAngleUp /> : <FaAngleDown />}
                       </button>
                     </td>
                   </tr>
-                  {ventaExpandida === venta.id && (
+                  {ventaExpandida === venta._id && (
                     <tr>
                       <td colSpan="7">
                         <div className="mt-4 mb-2 px-8">
@@ -233,12 +198,12 @@ const Ventas = () => {
                               <span>Cantidad</span>
                               <span>Total</span>
                             </li>
-                            {venta.productosSeleccionados.map((producto) => (
-                              <li key={producto.id} className="px-4 py-4 flex items-center justify-between text-sm">
-                                <span className="text-black truncate">{producto.nombre}</span>
-                                <span className="text-black">{producto.precio}</span>
-                                <span className="text-black">{producto.cantidad}</span>
-                                <span className="text-black">${producto.subtotal}</span>
+                            {venta.detallesVenta.map((detalle) => (
+                              <li key={detalle._id} className="px-4 py-4 flex items-center justify-between text-sm">
+                                <span className="text-black">{getProductName(detalle.idProducto)}</span>
+                                <span className="text-black">${detalle.precio}</span>
+                                <span className="text-black">{detalle.cantidad}</span>
+                                <span className="text-black">${getTotalDetalle(detalle)}</span>
                               </li>
                             ))}
                           </ul>

@@ -1,15 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSearch, FaTrashAlt, FaSave, FaTimesCircle, FaPlus } from "react-icons/fa";
 import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import Swal from 'sweetalert2';
 
 const RegistrarVenta = () => {
+  const [clientes, setClientes] = useState([]);
   const [productosEncontrados, setProductosEncontrados] = useState([]);
-  const precio = 2000;
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [clienteSeleccionado, setClienteSeleccionado] = useState('Cliente Genérico');
+  const [clienteSeleccionado, setClienteSeleccionado] = useState('');
+  const [numeroVenta, setNumeroVenta] = useState('');
+  const [fecha, setFecha] = useState('');
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    // Obtener clientes desde la API
+    fetch('http://localhost:8080/api/clientes')
+      .then(response => response.json())
+      .then(data => {
+        if (Array.isArray(data.clientes)) {
+          setClientes(data.clientes);
+        } else {
+          console.error('La respuesta de la API de clientes no es un array:', data);
+        }
+      })
+      .catch(error => console.error('Error al obtener clientes:', error));
+  }, []);
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
@@ -18,13 +34,17 @@ const RegistrarVenta = () => {
     const value = e.target.value;
     setInputValue(value);
 
-    const sugerencias = ["Producto 1", "Producto 2", "Producto 3"];
-    const filteredSuggestions = sugerencias.filter(
-      suggestion =>
-        suggestion.toLowerCase().indexOf(value.toLowerCase()) > -1
-    );
-
-    setSuggestions(filteredSuggestions);
+    fetch('http://localhost:8080/api/productos')
+      .then(response => response.json())
+      .then(data => {
+        const productos = data.productos.map(producto => producto.nombre);
+        const filteredSuggestions = productos.filter(
+          producto =>
+            producto.toLowerCase().indexOf(value.toLowerCase()) > -1
+        );
+        setSuggestions(filteredSuggestions);
+      })
+      .catch(error => console.error('Error al obtener productos:', error));
   };
 
   const agregarProducto = (producto, cantidad) => {
@@ -36,12 +56,22 @@ const RegistrarVenta = () => {
       );
       setProductosEncontrados(nuevosProductos);
     } else {
-      setProductosEncontrados([...productosEncontrados, {
-        nombre: producto,
-        cantidad: cantidad,
-        precio: precio,
-        cliente: clienteSeleccionado
-      }]);
+      fetch('http://localhost:8080/api/productos')
+        .then(response => response.json())
+        .then(data => {
+          const productoEncontrado = data.productos.find(item => item.nombre === producto);
+          if (productoEncontrado) {
+            setProductosEncontrados([...productosEncontrados, {
+              nombre: producto,
+              cantidad: cantidad,
+              precio: productoEncontrado.precio,
+              idProducto: productoEncontrado._id // Enviar el ID del producto en lugar del nombre
+            }]);
+          } else {
+            console.error('Producto no encontrado:', producto);
+          }
+        })
+        .catch(error => console.error('Error al obtener producto:', error));
     }
 
     setInputValue('');
@@ -55,18 +85,35 @@ const RegistrarVenta = () => {
 
   const subtotal = productosEncontrados.reduce((total, producto) => total + producto.cantidad * producto.precio, 0);
 
-  const guardarVenta = () => {
-    const resumenVenta = productosEncontrados.map(producto => `${producto.nombre} x ${producto.cantidad} - $${producto.cantidad * producto.precio}`).join('\n');
-    Swal.fire({
-      title: 'Resumen de la Venta',
-      text: `Productos:\n${resumenVenta}\n\nTotal: $${subtotal}`,
-      icon: 'info',
-      showCancelButton: true,
-      confirmButtonText: 'Confirmar',
-      cancelButtonText: 'Cancelar',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
+  const guardarVentaApi = () => {
+    // Calcular el total de la venta
+    const total = productosEncontrados.reduce((total, producto) => total + producto.cantidad * producto.precio, 0);
+
+    // Construir el objeto de venta
+    const venta = {
+      numeroVenta: numeroVenta,
+      fecha: fecha,
+      idCliente: clienteSeleccionado,
+      detallesVenta: productosEncontrados,
+      total: total // Agregar el total de la venta al objeto de venta
+    };
+
+    // Enviar la solicitud POST con el objeto de venta
+    fetch('http://localhost:8080/api/ventas', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(venta)
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Error al guardar la venta');
+      })
+      .then(data => {
+        console.log('Venta guardada correctamente:', data);
         Swal.fire(
           'Venta Guardada',
           'La venta ha sido guardada correctamente.',
@@ -74,8 +121,15 @@ const RegistrarVenta = () => {
         ).then(() => {
           setProductosEncontrados([]);
         });
-      }
-    });
+      })
+      .catch(error => {
+        console.error('Error al guardar la venta:', error);
+        Swal.fire(
+          'Error',
+          'Hubo un problema al guardar la venta.',
+          'error'
+        );
+      });
   };
 
   const cancelarVenta = () => {
@@ -108,19 +162,53 @@ const RegistrarVenta = () => {
     );
   };
 
+  const handleDateChange = (e) => {
+    const selectedDate = new Date(e.target.value);
+    const currentDate = new Date();
+    if (selectedDate < currentDate) {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      const day = currentDate.getDate();
+      const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+      setFecha(formattedDate);
+      Swal.fire(
+        'Fecha inválida',
+        'No puedes seleccionar una fecha anterior a la actual.',
+        'error'
+      );
+    } else {
+      setFecha(e.target.value);
+    }
+  };
+
   return (
     <div className="bg-secondary-100 w-full rounded-lg">
       <div className="flex justify-between p-4">
         <h3 className="text-2xl font-bold text-white">Registrar venta</h3>
         <div className="flex items-center">
+          <input
+            type="text"
+            placeholder="Número de venta"
+            className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-black mr-2"
+            value={numeroVenta}
+            onChange={(e) => setNumeroVenta(e.target.value)}
+          />
+          <input
+            type="date"
+            className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-black mr-2"
+            value={fecha}
+            onChange={handleDateChange}
+          />
           <select
             value={clienteSeleccionado}
             onChange={(e) => setClienteSeleccionado(e.target.value)}
             className="px-4 py-1 text-black text-sm rounded-full bg-gray-300 border border-white mr-2"
             style={{ fontSize: '12px', width: '140px' }}
           >
-            <option value="Cliente Genérico" className="text-black">Cliente Genérico</option>
-            <option value="Cliente Uno" className="text-black">Cliente Uno</option>
+            <option value="">Seleccione cliente</option>
+            {clientes.map(cliente => (
+              <option key={cliente._id} value={cliente._id}>{cliente.nombre}</option> // Cambiado para enviar el ID del cliente
+            ))}
           </select>
           <button onClick={handleShowModal} className="px-3 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 focus:outline-none">
             <FaPlus />
@@ -198,7 +286,7 @@ const RegistrarVenta = () => {
           </div>
           <div className="flex justify-end gap-4">
             <p className="text-white font-bold">Total: ${subtotal}</p>
-            <button onClick={guardarVenta} className="px-6 py-2 mt-10 bg-green-500 rounded-full text-white"><FaSave /></button>
+            <button onClick={guardarVentaApi} className="px-6 py-2 mt-10 bg-green-500 rounded-full text-white"><FaSave /></button>
             <button onClick={cancelarVenta} className="px-6 py-2 mt-10 bg-red-500 rounded-full text-white"><FaTimesCircle /></button>
           </div>
         </div>
@@ -217,7 +305,6 @@ const RegistrarVenta = () => {
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-white">Agregar Nuevo Cliente</h3>
                     <div className="mt-2">
-                      <input type="text" placeholder="ID" className="border border-gray-300 rounded-md w-full px-3 py-2 mt-1 mb-2 bg-gray-200 text-black" />
                       <input type="text" placeholder="Nombre" className="border border-gray-300 rounded-md w-full px-3 py-2 mt-1 mb-2 bg-gray-200 text-black" />
                       <input type="text" placeholder="Teléfono" className="border border-gray-300 rounded-md w-full px-3 py-2 mt-1 mb-2 bg-gray-200 text-black" />
                       <input type="text" placeholder="Correo" className="border border-gray-300 rounded-md w-full px-3 py-2 mt-1 mb-2 bg-gray-200 text-black" />
