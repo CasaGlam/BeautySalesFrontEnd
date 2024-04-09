@@ -8,8 +8,7 @@ const RegistrarProducto = () => {
     nombre: "",
     precio: "",
     cantidad: "",
-    descripcion: "",
-    categoria: "" // Nuevo campo de categoría
+    descripcion: ""
   });
 
   const handleChange = (e) => {
@@ -20,22 +19,39 @@ const RegistrarProducto = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
     if (
       producto.nombre &&
       producto.precio &&
       producto.cantidad &&
-      producto.descripcion &&
-      producto.categoria
+      producto.descripcion
     ) {
-      // Mostrar alerta de producto creado
-      Swal.fire("¡Producto creado!", "", "success");
-      // Redirigir a la página de productos después de 2 segundos
-      setTimeout(() => {
-        window.location.href = "/productos";
-      }, 2000);
+      try {
+        const response = await fetch("http://localhost:8080/api/productos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(producto),
+        });
+
+        if (response.ok) {
+          // Mostrar alerta de producto creado
+          Swal.fire("¡Producto creado!", "", "success");
+          // Redirigir a la página de productos después de 2 segundos
+          setTimeout(() => {
+            window.location.href = "/productos";
+          }, 2000);
+        } else {
+          const errorMessage = await response.text();
+          throw new Error(`Error al crear el producto: ${errorMessage}`);
+        }
+      } catch (error) {
+        console.error("Error al enviar los datos del producto:", error);
+        Swal.fire("¡Error!", error.message, "error");
+      }
     } else {
       // Mostrar alerta de campos vacíos
       Swal.fire("¡Debes llenar todos los campos!", "", "error");
@@ -94,23 +110,6 @@ const RegistrarProducto = () => {
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
-              </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <select
-                  name="categoria"
-                  value={producto.categoria}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                >
-                  <option value="">Seleccionar categoría</option>
-                  <option value="Shampoo">Shampoo</option>
-                  <option value="Crema">Crema</option>
-                  <option value="Gel">Gel</option>
-                  {/* Agrega más opciones de categorías según necesites */}
-                </select>
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">

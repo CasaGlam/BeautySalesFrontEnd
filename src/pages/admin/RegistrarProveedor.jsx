@@ -23,12 +23,32 @@ const RegistrarProveedor = () => {
     e.preventDefault();
     // Validar que todos los campos estén llenos
     if (proveedor.nombre && proveedor.telefono && proveedor.correo && proveedor.direccion) {
-      // Mostrar alerta de proveedor creado
-      Swal.fire("¡Proveedor creado!", "", "success");
-      // Redirigir a la página de proveedores después de 2 segundos
-      setTimeout(() => {
-        window.location.href = "/proveedores";
-      }, 2000);
+      // Enviar solicitud POST para registrar el proveedor
+      fetch('http://localhost:8080/api/proveedores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(proveedor),
+      })
+      .then(response => {
+        if (response.ok) {
+          // Mostrar alerta de proveedor creado
+          Swal.fire("¡Proveedor creado!", "", "success");
+          // Redirigir a la página de proveedores después de 2 segundos
+          setTimeout(() => {
+            window.location.href = "/proveedores";
+          }, 2000);
+        } else {
+          // Mostrar alerta de error
+          Swal.fire("¡Error al crear proveedor!", "", "error");
+        }
+      })
+      .catch(error => {
+        console.error('Error al registrar proveedor:', error);
+        // Mostrar alerta de error
+        Swal.fire("¡Error al crear proveedor!", "", "error");
+      });
     } else {
       // Mostrar alerta de campos vacíos
       Swal.fire("¡Debes llenar todos los campos!", "", "error");

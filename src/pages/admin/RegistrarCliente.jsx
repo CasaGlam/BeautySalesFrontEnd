@@ -26,10 +26,38 @@ const RegistrarCliente = () => {
       Swal.fire("Error", "Por favor, complete todos los campos", "error");
       return;
     }
-    // Aquí podrías enviar los datos del cliente a la API para registrarlo
-    // Por simplicidad, en este ejemplo, solo mostraremos una alerta de éxito
-    Swal.fire("¡Cliente registrado!", "", "success");
-    // Puedes agregar aquí el código para redirigir a la página de clientes después del registro
+    // Solicitud POST para registrar el cliente en la API
+    fetch('http://localhost:8080/api/clientes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(cliente)
+    })
+    .then(response => {
+      if (response.ok) {
+        Swal.fire("¡Cliente registrado!", "", "success");
+        setTimeout(() => {
+          window.location.href = "/clientes";
+        }, 2000);
+        // Puedes agregar aquí el código para redirigir a la página de clientes después del registro
+      } else {
+        console.error('Error al registrar el cliente:', response.statusText);
+        Swal.fire(
+          'Error',
+          'Hubo un problema al registrar el cliente',
+          'error'
+        );
+      }
+    })
+    .catch(error => {
+      console.error('Error al registrar el cliente:', error);
+      Swal.fire(
+        'Error',
+        'Hubo un problema al registrar el cliente',
+        'error'
+      );
+    });
   };
 
   return (

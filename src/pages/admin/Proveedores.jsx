@@ -1,22 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MdEdit, MdDelete } from "react-icons/md"; // Importamos MdEdit y MdDelete
+import { MdEdit, MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const Proveedores = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [proveedores, setProveedores] = useState([
-    { nombre: "Proveedor Uno", telefono: "123456789", correo: "proveedor1@example.com", direccion: "Calle 123, Ciudad Uno", estado: true },
-    { nombre: "Proveedor Dos", telefono: "987654321", correo: "proveedor2@example.com", direccion: "Avenida 456, Ciudad Dos", estado: false },
-    { nombre: "Proveedor Tres", telefono: "555555555", correo: "proveedor3@example.com", direccion: "Plaza Principal, Ciudad Tres", estado: true },
-    { nombre: "Proveedor Cuatro", telefono: "444444444", correo: "proveedor4@example.com", direccion: "Calle 789, Ciudad Cuatro", estado: false },
-    { nombre: "Proveedor Cinco", telefono: "333333333", correo: "proveedor5@example.com", direccion: "Bulevar X, Ciudad Cinco", estado: true },
-    { nombre: "Proveedor Seis", telefono: "222222222", correo: "proveedor6@example.com", direccion: "Avenida Z, Ciudad Seis", estado: false },
-    { nombre: "Proveedor Siete", telefono: "111111111", correo: "proveedor7@example.com", direccion: "Calle Y, Ciudad Siete", estado: true }
-  ]);
+  const [proveedores, setProveedores] = useState([]);
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 5;
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/proveedores')
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.proveedores && Array.isArray(data.proveedores)) {
+          setProveedores(data.proveedores);
+          setLoading(false);
+        } else {
+          console.error('Datos de proveedores no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching proveedores:', error));
+  }, []);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -33,7 +40,7 @@ const Proveedores = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (index) => {
+  const handleDelete = (id, index) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás deshacer esta acción',
@@ -45,24 +52,39 @@ const Proveedores = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        const updatedProveedores = [...proveedores];
-        updatedProveedores.splice(indexOfFirstItem + index, 1);
-        // Actualiza el estado con el proveedor eliminado
-        setProveedores(updatedProveedores);
-        Swal.fire(
-          '¡Eliminado!',
-          'El proveedor ha sido eliminado',
-          'success'
-        );
+        fetch(`http://localhost:8080/api/proveedores/${id}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            const updatedProveedores = [...proveedores];
+            updatedProveedores.splice(indexOfFirstItem + index, 1);
+            // Actualiza el estado con el proveedor eliminado
+            setProveedores(updatedProveedores);
+            Swal.fire(
+              '¡Eliminado!',
+              'El proveedor ha sido eliminado',
+              'success'
+            );
+          } else {
+            console.error('Error al eliminar el proveedor:', response.statusText);
+            Swal.fire(
+              'Error',
+              'Hubo un problema al eliminar el proveedor',
+              'error'
+            );
+          }
+        })
+        .catch(error => {
+          console.error('Error al eliminar el proveedor:', error);
+          Swal.fire(
+            'Error',
+            'Hubo un problema al eliminar el proveedor',
+            'error'
+          );
+        });
       }
     });
-  };
-
-  const toggleEstado = (index) => {
-    const updatedProveedores = [...proveedores];
-    updatedProveedores[indexOfFirstItem + index].estado = !updatedProveedores[indexOfFirstItem + index].estado;
-    // Actualiza el estado con el proveedor actualizado
-    setProveedores(updatedProveedores);
   };
 
   return (
@@ -134,7 +156,7 @@ const Proveedores = () => {
                     <Link to={`/proveedores/editar-proveedor`}>
                       <MdEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <MdDelete className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(index)} />
+                    <MdDelete className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(proveedor._id, index)} />
                   </td>
                 </tr>
               ))}

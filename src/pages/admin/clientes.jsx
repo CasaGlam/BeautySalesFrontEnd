@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -7,16 +7,22 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 const Clientes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [clientes] = useState([
-    { nombre: "Cliente Uno", telefono: "123456789", correo: "cliente1@example.com" },
-    { nombre: "Cliente Dos", telefono: "987654321", correo: "cliente2@example.com" },
-    { nombre: "Cliente Tres", telefono: "456789123", correo: "cliente3@example.com" },
-    { nombre: "Cliente Cuatro", telefono: "789123456", correo: "cliente4@example.com" },
-    { nombre: "Cliente Cinco", telefono: "321654987", correo: "cliente5@example.com" },
-    { nombre: "Cliente Seis", telefono: "654987321", correo: "cliente6@example.com" },
-    { nombre: "Cliente Siete", telefono: "987321654", correo: "cliente7@example.com" }
-  ]);
-  const itemsPerPage = 5;
+  const [clientes, setClientes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/api/clientes')
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.clientes && Array.isArray(data.clientes)) {
+          setClientes(data.clientes);
+          setLoading(false);
+        } else {
+          console.error('Datos de clientes no encontrados en la respuesta:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching clientes:', error));
+  }, []);
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -27,13 +33,14 @@ const Clientes = () => {
     cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const itemsPerPage = 5;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredClientes.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (nombre) => {
+  const handleDelete = (id, nombre) => {
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás deshacer esta acción',
@@ -45,15 +52,42 @@ const Clientes = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Aquí puedes agregar la lógica para eliminar el cliente con el nombre proporcionado
-        Swal.fire(
-          '¡Eliminado!',
-          'El cliente ha sido eliminado',
-          'success'
-        );
+        fetch(`http://localhost:8080/api/clientes/${id}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            const updatedClientes = clientes.filter(cliente => cliente._id !== id);
+            setClientes(updatedClientes);
+            Swal.fire(
+              '¡Eliminado!',
+              'El cliente ha sido eliminado',
+              'success'
+            );
+          } else {
+            console.error('Error al eliminar el cliente:', response.statusText);
+            Swal.fire(
+              'Error',
+              'Hubo un problema al eliminar el cliente',
+              'error'
+            );
+          }
+        })
+        .catch(error => {
+          console.error('Error al eliminar el cliente:', error);
+          Swal.fire(
+            'Error',
+            'Hubo un problema al eliminar el cliente',
+            'error'
+          );
+        });
       }
     });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex justify-center">
@@ -73,7 +107,7 @@ const Clientes = () => {
               />
             </div>
             <div className="">
-              <Link to="/clientes/registrar-cliente"> {/* Enlace para agregar nuevo cliente */}
+              <Link to="/clientes/registrar-cliente">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Agregar nuevo cliente
                 </button>
@@ -106,10 +140,10 @@ const Clientes = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.telefono}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.correo}</td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
-                    <Link to={`/clientes/editar-cliente`}> {/* Enlace para editar cliente */}
+                    <Link to={`/clientes/editar-cliente`}>
                       <FaEdit className="text-black hover:text-blue-700 transition-colors mr-2 cursor-pointer" />
                     </Link>
-                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(cliente.nombre)} />
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(cliente._id, cliente.nombre)} />
                   </td>
                 </tr>
               ))}

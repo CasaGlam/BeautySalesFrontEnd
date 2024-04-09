@@ -4,19 +4,21 @@ import { FaUser, FaPhone, FaEnvelope } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const EditarCliente = () => {
-  // Simulación de datos del cliente a editar
-  const clienteInicial = {
-    nombre: "Cliente de ejemplo",
-    telefono: "123456789",
-    correo: "cliente@example.com",
-  };
-
-  const [cliente, setCliente] = useState(clienteInicial);
+  const [cliente, setCliente] = useState({
+    nombre: "",
+    telefono: "",
+    correo: "",
+  });
 
   useEffect(() => {
     // Simulación de carga de datos del cliente a editar
     // Aquí puedes hacer una llamada a la API para obtener los datos reales
     // En este ejemplo, cargamos los datos del cliente inicialmente
+    setCliente({
+      nombre: "Cliente de ejemplo",
+      telefono: "123456789",
+      correo: "cliente@example.com",
+    });
   }, []);
 
   const handleChange = (e) => {
@@ -30,12 +32,31 @@ const EditarCliente = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Simulación de función de edición del cliente
-    // Aquí puedes enviar los datos del cliente a la API para actualizarlos
+    // Aquí debes enviar los datos del cliente a la API para actualizarlos
     // En este ejemplo, mostramos una alerta de éxito y redirigimos a la página de clientes
-    Swal.fire("¡Cliente editado!", "", "success");
-    setTimeout(() => {
-      window.location.href = "/clientes";
-    }, 2000);
+    const { nombre, telefono, correo } = cliente;
+    const objectId = "objectId_del_cliente"; // Reemplaza "objectId_del_cliente" con el objectId del cliente que estás editando
+    fetch(`http://localhost:8080/api/clientes/${objectId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nombre, telefono, correo }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          Swal.fire("¡Cliente editado!", "", "success");
+          setTimeout(() => {
+            window.location.href = "/clientes";
+          }, 2000);
+        } else {
+          Swal.fire("¡Error al editar cliente!", "", "error");
+        }
+      })
+      .catch((error) => {
+        console.error("Error al editar cliente:", error);
+        Swal.fire("¡Error al editar cliente!", "", "error");
+      });
   };
 
   return (
