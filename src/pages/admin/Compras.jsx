@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { FaSearch, FaAngleDown, FaAngleUp, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Compras = () => {
@@ -64,6 +64,11 @@ const Compras = () => {
   const getProductoName = (idProducto) => {
     const producto = productos.find(producto => producto._id === idProducto);
     return producto ? producto.nombre : 'Producto no encontrado';
+  };
+
+  const getNumeroVenta = (idCompra) => {
+    const compra = compras.find(compra => compra._id === idCompra);
+    return compra ? compra.numeroVenta : 'Venta no encontrada';
   };
 
   const filteredCompras = compras.filter((compra) =>
@@ -149,7 +154,7 @@ const Compras = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-black">{getProveedorName(compra.idProveedor)}</td>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-black">
-                      ${compra.total}
+                      ${compra.detallesCompra.reduce((acc, detalle) => acc + (detalle.precioVenta * detalle.cantidad), 0)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button onClick={() => setCompraExpandida(compraExpandida === compra._id ? null : compra._id)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
@@ -164,16 +169,18 @@ const Compras = () => {
                           <ul className="border border-gray-400 rounded-md divide-y divide-gray-500">
                             <li className="px-4 py-2 bg-secondary-900 flex items-center justify-between text-sm font-medium">
                               <span>Producto</span>
-                              <span>Precio unitario</span>
+                              <span>Precio de compra</span>
+                              <span>Precio de venta</span>
                               <span>Cantidad</span>
                               <span>Total</span>
                             </li>
                             {compra.detallesCompra.map((detalle) => (
                               <li key={detalle._id} className="px-4 py-4 flex items-center justify-between text-sm">
                                 <span className="text-black truncate">{getProductoName(detalle.idProducto)}</span>
-                                <span className="text-black">{detalle.precio}</span>
+                                <span className="text-black">{detalle.precioCompra}</span>
+                                <span className="text-black">{detalle.precioVenta}</span>
                                 <span className="text-black">{detalle.cantidad}</span>
-                                <span className="text-black">${detalle.total}</span>
+                                <span className="text-black">${detalle.precioVenta * detalle.cantidad}</span>
                               </li>
                             ))}
                           </ul>

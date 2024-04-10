@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Swal from 'sweetalert2';
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 
 const Compras = () => {
   const [numeroCompra, setNumeroCompra] = useState('');
@@ -13,8 +13,6 @@ const Compras = () => {
   const [productos, setProductos] = useState([]);
   const [productosSeleccionados, setProductosSeleccionados] = useState([]);
   const [proveedores, setProveedores] = useState([]);
-  const [precioCompra, setPrecioCompra] = useState(0);
-  const [precioVenta, setPrecioVenta] = useState(0);
 
   useEffect(() => {
     fetch('http://localhost:8080/api/productos')
@@ -50,7 +48,10 @@ const Compras = () => {
       setProductosSeleccionados([...productosSeleccionados, {
         ...producto,
         cantidad,
-        idProducto: producto._id // Agregar el ID del producto
+        idProducto: producto._id, // Agregar el ID del producto
+        precioCompra: 0, // Inicializar el precio de compra
+        precioVenta: producto.precioVenta, // Inicializar el precio de venta
+        precio: producto.precio // Obtener precio del producto
       }]);
       calcularTotalCompra([...productosSeleccionados, { ...producto, cantidad }]);
     }
@@ -86,6 +87,14 @@ const Compras = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!numeroCompra || !descripcion || !fecha || !proveedorId || productosSeleccionados.length === 0) {
+      Swal.fire(
+        'Campos incompletos',
+        'Por favor, complete todos los campos obligatorios.',
+        'error'
+      );
+      return;
+    }
     Swal.fire({
       title: '¿Desea confirmar la compra?',
       text: 'Una vez confirmada, la compra será procesada.',
@@ -96,6 +105,15 @@ const Compras = () => {
       reverseButtons: true
     }).then(async (result) => {
       if (result.isConfirmed) {
+        const detallesCompra = productosSeleccionados.map(producto => ({
+          precio: producto.precio,
+          cantidad: producto.cantidad,
+          precioCompra: producto.precioCompra,
+          total: producto.precio * producto.cantidad,
+          idProducto: producto.idProducto, // Usar el ID del producto seleccionado
+          precioVenta: producto.precioVenta // Incluir el precio de venta
+        }));
+
         const compra = {
           numeroCompra,
           descripcion,
@@ -103,18 +121,9 @@ const Compras = () => {
           estado: true,
           total: totalCompra,
           idProveedor: proveedorId,
-          detallesCompra: productosSeleccionados.map(producto => ({
-            precio: producto.precio,
-            cantidad: producto.cantidad,
-            precioVenta: producto.precioVenta,
-            precioCompra: producto.precioCompra,
-            total: producto.precio * producto.cantidad,
-            idProducto: producto.idProducto // Usar el ID del producto seleccionado
-          })),
-          precioCompra, // Agregar el precio de compra al objeto de compra
-          precioVenta // Agregar el precio de venta al objeto de compra
+          detallesCompra
         };
-  
+
         try {
           const response = await fetch('http://localhost:8080/api/compras', {
             method: 'POST',
@@ -123,7 +132,7 @@ const Compras = () => {
             },
             body: JSON.stringify(compra)
           });
-  
+
           if (response.ok) {
             Swal.fire(
               'Compra realizada',
@@ -146,7 +155,7 @@ const Compras = () => {
       }
     });
   };
-  
+
   const handleCancel = () => {
     Swal.fire({
       title: '¿Está seguro?',
@@ -170,6 +179,36 @@ const Compras = () => {
   };
 
   const currentDate = new Date().toISOString().split('T')[0];
+
+  const actualizarPrecioVentaProducto = async (productoId, nuevoPrecioVenta) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/productos/${productoId}`, {
+        method: 'PUT', // Utilizar el método PUT para actualizar el precio de venta
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ precio: nuevoPrecioVenta })
+      });
+
+      if (response.ok) {
+        // Actualizar el estado local del producto con el nuevo precio de venta
+        const nuevosProductos = productos.map(item =>
+          item._id === productoId ? { ...item, precioVenta: nuevoPrecioVenta } : item
+        );
+        setProductos(nuevosProductos);
+      } else {
+        throw new Error('Error al actualizar el precio de venta del producto');
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error al actualizar el precio de venta del producto');
+    }
+  };
+
+  const productosFiltrados = useMemo(() =>
+    productos.filter(producto =>
+      producto.nombre.toLowerCase().includes(busquedaProducto.toLowerCase())
+    ), [productos, busquedaProducto]);
 
   return (
     <div className="bg-secondary-100 w-full rounded-lg">
@@ -211,13 +250,45 @@ const Compras = () => {
                   </div>
                   <span className="font-medium truncate">{producto.nombre}</span>
                   <span className="font-medium truncate">{producto.precio}</span>
-                  <button
-                    className="bg-red-500 text-white rounded-md p-1 text-xs hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  <FaTrash
+                    className="cursor-pointer text-red-500 hover:text-red-700"
                     onClick={() => eliminarProductoSeleccionado(producto._id)}
-                    type="button"
-                  >
-                    Eliminar
-                  </button>
+                  />
+                  <div>
+                    <label className="block text-white text-sm font-bold mb-2" htmlFor={`precioCompra_${index}`}>Precio de Compra</label>
+                    <input
+                      id={`precioCompra_${index}`}
+                      type="number"
+                      className="bg-gray-200 border border-gray-300 rounded-md w-16 px-2 py-1 text-black ml-2"
+                      value={producto.precioCompra}
+                      onChange={(e) => {
+                        const newPrecioCompra = parseFloat(e.target.value);
+                        const nuevosProductos = productosSeleccionados.map(item =>
+                          item._id === producto._id ? { ...item, precioCompra: newPrecioCompra } : item
+                        );
+                        setProductosSeleccionados(nuevosProductos);
+                        calcularTotalCompra(nuevosProductos);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-white text-sm font-bold mb-2" htmlFor={`precioVenta_${index}`}>Precio de Venta</label>
+                    <input
+                      id={`precioVenta_${index}`}
+                      type="text" // Cambiado a texto para permitir decimales
+                      className="bg-gray-200 border border-gray-300 rounded-md w-16 px-2 py-1 text-black ml-2"
+                      value={isNaN(producto.precioVenta) ? '' : producto.precioVenta}
+                      onChange={(e) => {
+                        const newPrecioVenta = parseFloat(e.target.value); // Cambiado a parseFloat
+                        const nuevosProductos = productosSeleccionados.map(item =>
+                          item._id === producto._id ? { ...item, precioVenta: newPrecioVenta } : item
+                        );
+                        setProductosSeleccionados(nuevosProductos);
+                        calcularTotalCompra(nuevosProductos);
+                        actualizarPrecioVentaProducto(producto._id, newPrecioVenta); // Actualizar precio de venta en el API
+                      }}
+                    />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -247,20 +318,18 @@ const Compras = () => {
               <label className="block text-white text-sm font-bold mb-2">Productos</label>
               <div className="overflow-y-scroll max-h-40">
                 <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
-                  {productos
-                    .filter(producto => producto.nombre.toLowerCase().includes(busquedaProducto.toLowerCase()))
-                    .map((producto, index) => (
-                      <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
-                        <span className="font-medium truncate">{producto.nombre}</span>
-                        <button
-                          className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                          onClick={() => agregarProducto(producto._id)}
-                          type="button"
-                        >
-                          Agregar
-                        </button>
-                      </li>
-                    ))}
+                  {productosFiltrados.map((producto, index) => (
+                    <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
+                      <span className="font-medium truncate">{producto.nombre}</span>
+                      <button
+                        className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        onClick={() => agregarProducto(producto._id)}
+                        type="button"
+                      >
+                        Agregar
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -294,10 +363,9 @@ const Compras = () => {
                 <input
                   id="fecha"
                   type="date"
+                  min={currentDate} // Establecer la fecha mínima como la fecha actual
                   className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Fecha"
                   value={fecha}
-                  min={currentDate}
                   onChange={(e) => setFecha(e.target.value)}
                 />
               </div>
@@ -306,73 +374,42 @@ const Compras = () => {
                 <select
                   id="proveedor"
                   className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={proveedor}
+                  value={proveedorId}
                   onChange={(e) => {
-                    const selectedProveedorId = proveedores.find(prov => prov.nombre === e.target.value)._id;
-                    setProveedorId(selectedProveedorId);
-                    setProveedor(e.target.value);
+                    const selectedProveedor = proveedores.find(proveedor => proveedor._id === e.target.value);
+                    setProveedor(selectedProveedor.nombre);
+                    setProveedorId(e.target.value);
                   }}
                 >
-                  <option value="">Seleccionar Proveedor</option>
                   {proveedores.map(proveedor => (
-                    <option key={proveedor._id} value={proveedor.nombre}>{proveedor.nombre}</option>
+                    <option key={proveedor._id} value={proveedor._id}>{proveedor.nombre}</option>
                   ))}
                 </select>
               </div>
-              <div>
-                <label className="block text-white text-sm font-bold mb-2" htmlFor="precioCompra">Precio de Compra</label>
-                <input
-                  id="precioCompra"
-                  type="number"
-                  className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Precio de Compra"
-                  value={precioCompra}
-                  onChange={(e) => setPrecioCompra(e.target.value)}
-                />
+              <div className="col-span-2">
+                <button
+                  type="submit"
+                  className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Confirmar Compra
+                </button>
               </div>
-              <div>
-                <label className="block text-white text-sm font-bold mb-2" htmlFor="precioVenta">Precio de Venta</label>
-                <input
-                  id="precioVenta"
-                  type="number"
-                  className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Precio de Venta"
-                  value={precioVenta}
-                  onChange={(e) => setPrecioVenta(e.target.value)}
-                />
+              <div className="col-span-2">
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Cancelar
+                </button>
               </div>
-              <div>
-                <label className="block text-white text-sm font-bold mb-2" htmlFor="totalCompra">Total de la Compra</label>
-                <input
-                  id="totalCompra"
-                  type="number"
-                  className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Total de la Compra"
-                  value={totalCompra}
-                  readOnly
-                />
-              </div>
-            </div>
-            <div className="mb-4">
-              <button
-                type="submit"
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                Guardar
-              </button>
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                Cancelar
-              </button>
             </div>
           </form>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Compras;
+
