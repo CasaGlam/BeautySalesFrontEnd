@@ -25,8 +25,12 @@ const Productos = () => {
   }, []);
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1); // Resetear a la primera página al buscar
+    const value = event.target.value;
+    // Validar que el valor ingresado contenga solo letras
+    if (/^[A-Za-z\s]+$/.test(value) || value === '') {
+      setSearchTerm(value);
+      setCurrentPage(1); // Resetear a la primera página al buscar
+    }
   };
 
   const filteredProductos = productos.filter((producto) =>
@@ -84,13 +88,6 @@ const Productos = () => {
         });
       }
     });
-  };
-
-  const toggleEstado = (nombre) => {
-    const updatedProductos = [...productos];
-    const productoIndex = updatedProductos.findIndex(producto => producto.nombre === nombre);
-    updatedProductos[productoIndex].estado = !updatedProductos[productoIndex].estado;
-    setProductos(updatedProductos);
   };
 
   return (
@@ -151,15 +148,11 @@ const Productos = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <button
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
-                      onClick={() => toggleEstado(producto.nombre)}
-                    >
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                       {producto.estado ? 'Activo' : 'Inactivo'}
-                    </button>
+                    </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
-                    
                     <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
                   </td>
                 </tr>
