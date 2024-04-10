@@ -1,13 +1,16 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react"; // Importar useEffect
 import { Link } from "react-router-dom";
 import { useWindowSize } from "react-use";
+import Swal from 'sweetalert2';
 
 // Icons
 import { FaUser, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { width } = useWindowSize(); // Obtiene el ancho de la ventana
+  const [correo, setCorreo] = useState("");
+  const [password, setPassword] = useState("");
+  const { width } = useWindowSize();
 
   useEffect(() => {
     // Oculta el div con id "Prueba" si el ancho de la ventana es menor a 900px
@@ -18,6 +21,35 @@ const Login = () => {
       pruebaDiv.style.display = "block";
     }
   }, [width]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:8000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ correo, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Credenciales inválidas");
+      }
+
+      const data = await response.json();
+      localStorage.setItem("token", data.token);
+      window.location.href = "http://localhost:5173"; // Redireccionar al usuario
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al iniciar sesión',
+        text: 'Credenciales inválidas. Por favor, intenta nuevamente.',
+      });
+    }
+  };
 
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
@@ -35,16 +67,17 @@ const Login = () => {
         ></div>
         <div className="text-black  w-[60%] flex flex-col justify-center items-center backdrop-blur-sm rounded-lg">
           <h1 className="text-5xl font-bold mb-10">Bienvenido</h1>
-          {/*<h5 className="font-bold mb-10">A Beauty sales</h5>*/}
           <hr className=" border-black h-px w-[95%]" />
           <h2 className="text-4xl font-bold mb-10 mt-10">Iniciar sesión</h2>
-          <form className=" w-[80%]">
+          <form className=" w-[80%]" onSubmit={handleSubmit}>
             <div className="relative mb-8">
               <FaUser className="absolute top-1/2 -translate-y-1/2 left-2" />
               <input
                 type="text"
                 className="py-3 pl-8 pr-12 w-full outline-none border-b border-black bg-transparent placeholder-black"
                 placeholder="Correo"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
               />
             </div>
             <div className="relative mb-8">
@@ -53,6 +86,8 @@ const Login = () => {
                 type={showPassword ? "text" : "password"}
                 className="py-3 pl-8 pr-12  w-full outline-none border-b border-black bg-transparent placeholder-black"
                 placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               {showPassword ? (
                 <FaEyeSlash
@@ -66,11 +101,12 @@ const Login = () => {
                 />
               )}
             </div>
-            <input
-              type="button"
+            <button
+              type="submit"
               className=" text-center py-3 pl-8 pr-12  w-full outline-none bg-primary rounded-lg cursor-pointer font-semibold"
-              value="Ingresar"
-            />
+            >
+              Ingresar
+            </button>
           </form>
         </div>
       </div>
