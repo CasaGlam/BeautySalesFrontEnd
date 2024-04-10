@@ -5,13 +5,15 @@ import Swal from "sweetalert2";
 
 const EditarProducto = () => {
   const [productos, setProductos] = useState([]);
-  const [productoSeleccionado, setProductoSeleccionado] = useState("");
-  const [producto, setProducto] = useState({
+  const [productoFiltrado, setProductoFiltrado] = useState({
+    _id: "",
     nombre: "",
     precio: "",
     cantidad: "",
-    descripcion: ""
+    descripcion: "",
+    estado: false
   });
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     const obtenerProductos = async () => {
@@ -21,8 +23,6 @@ const EditarProducto = () => {
           const data = await response.json();
           if (data && data.productos && data.productos.length > 0) {
             setProductos(data.productos);
-            // Asigna el primer producto como el producto inicial
-            setProductoSeleccionado(data.productos[0]._id);
           } else {
             console.error('No se encontraron productos en la respuesta:', data);
           }
@@ -37,44 +37,48 @@ const EditarProducto = () => {
     obtenerProductos();
   }, []);
 
-  useEffect(() => {
-    const obtenerProductoSeleccionado = () => {
-      const productoAEditar = productos.find(p => p._id === productoSeleccionado);
-      if (productoAEditar) {
-        setProducto({
-          ...productoAEditar
-        });
-      }
-    };
+  const handleBuscarProducto = (e) => {
+    const valorBusqueda = e.target.value;
+    setBusqueda(valorBusqueda);
 
-    obtenerProductoSeleccionado();
-  }, [productos, productoSeleccionado]);
+    // Filtrar productos según la búsqueda
+    const productoEncontrado = productos.find(p =>
+      p.nombre.toLowerCase().includes(valorBusqueda.toLowerCase())
+    );
 
-  const handleChangeProducto = async (e) => {
-    setProductoSeleccionado(e.target.value);
+    // Actualizar el estado del producto filtrado
+    setProductoFiltrado(productoEncontrado ? productoEncontrado : {
+      _id: "",
+      nombre: "",
+      precio: "",
+      cantidad: "",
+      descripcion: "",
+      estado: false
+    });
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProducto({
-      ...producto,
-      [name]: value,
+    setProductoFiltrado({
+      ...productoFiltrado,
+      [name]: name === 'estado' ? value === 'activo' : value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8080/api/productos/${producto._id}`, {
+      const response = await fetch(`http://localhost:8080/api/productos/${productoFiltrado._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          nombre: producto.nombre,
-          precio: producto.precio,
-          cantidad: producto.cantidad,
-          descripcion: producto.descripcion
+          nombre: productoFiltrado.nombre,
+          precio: productoFiltrado.precio,
+          cantidad: productoFiltrado.cantidad,
+          descripcion: productoFiltrado.descripcion,
+          estado: productoFiltrado.estado
         })
       });
       if (response.ok) {
@@ -97,15 +101,13 @@ const EditarProducto = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <select
-              value={productoSeleccionado}
-              onChange={handleChangeProducto}
+            <input
+              type="text"
+              placeholder="Buscar producto"
+              value={busqueda}
+              onChange={handleBuscarProducto}
               className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-            >
-              {productos.map(p => (
-                <option key={p._id} value={p._id}>{p.nombre}</option>
-              ))}
-            </select>
+            />
           </div>
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
@@ -115,7 +117,7 @@ const EditarProducto = () => {
                   type="text"
                   placeholder="Nombre"
                   name="nombre"
-                  value={producto.nombre}
+                  value={productoFiltrado.nombre}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
@@ -126,7 +128,7 @@ const EditarProducto = () => {
                   type="text"
                   placeholder="Precio"
                   name="precio"
-                  value={producto.precio}
+                  value={productoFiltrado.precio}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
@@ -139,7 +141,7 @@ const EditarProducto = () => {
                   type="text"
                   placeholder="Cantidad"
                   name="cantidad"
-                  value={producto.cantidad}
+                  value={productoFiltrado.cantidad}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
@@ -150,10 +152,23 @@ const EditarProducto = () => {
                   type="text"
                   placeholder="Descripción"
                   name="descripcion"
-                  value={producto.descripcion}
+                  value={productoFiltrado.descripcion}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
+              </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+              <div className="relative">
+                <select
+                  name="estado"
+                  value={productoFiltrado.estado ? 'activo' : 'inactivo'}
+                  onChange={handleChange}
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                >
+                  <option value="activo">Activo</option>
+                  <option value="inactivo">Inactivo</option>
+                </select>
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">

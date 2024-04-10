@@ -11,6 +11,7 @@ const EditarCliente = () => {
     telefono: "",
     correo: ""
   });
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     const obtenerClientes = async () => {
@@ -52,8 +53,17 @@ const EditarCliente = () => {
     obtenerClienteSeleccionado();
   }, [clientes, clienteSeleccionado]); // Se agrega clientes como dependencia
 
-  const handleChangeCliente = async (e) => {
-    setClienteSeleccionado(e.target.value);
+  const handleBuscarCliente = (e) => {
+    const valorBusqueda = e.target.value;
+    setBusqueda(valorBusqueda);
+
+    // Filtrar clientes según la búsqueda
+    const clienteEncontrado = clientes.find(c =>
+      c.nombre.toLowerCase().includes(valorBusqueda.toLowerCase())
+    );
+
+    // Actualizar el estado del cliente seleccionado
+    setClienteSeleccionado(clienteEncontrado ? clienteEncontrado._id : "");
   };
 
   const handleChange = (e) => {
@@ -98,15 +108,13 @@ const EditarCliente = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <select
-              value={clienteSeleccionado}
-              onChange={handleChangeCliente}
+            <input
+              type="text"
+              placeholder="Buscar cliente"
+              value={busqueda}
+              onChange={handleBuscarCliente}
               className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-            >
-              {clientes.map(c => (
-                <option key={c._id} value={c._id}>{c.nombre}</option>
-              ))}
-            </select>
+            />
           </div>
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">

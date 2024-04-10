@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaBox, FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const EditarCategoria = () => {
@@ -12,6 +12,7 @@ const EditarCategoria = () => {
     descripcion: "",
     estado: ""
   });
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     const obtenerCategorias = async () => {
@@ -53,8 +54,17 @@ const EditarCategoria = () => {
     obtenerCategoriaSeleccionada();
   }, [categorias, categoriaSeleccionada]);
 
-  const handleChangeCategoria = (e) => {
-    setCategoriaSeleccionada(e.target.value);
+  const handleBuscarCategoria = (e) => {
+    const valorBusqueda = e.target.value;
+    setBusqueda(valorBusqueda);
+
+    // Filtrar categorías según la búsqueda
+    const categoriaEncontrada = categorias.find(c =>
+      c.nombre.toLowerCase().includes(valorBusqueda.toLowerCase())
+    );
+
+    // Actualizar el estado de la categoría seleccionada
+    setCategoriaSeleccionada(categoriaEncontrada ? categoriaEncontrada._id : "");
   };
 
   const handleChange = (e) => {
@@ -99,20 +109,17 @@ const EditarCategoria = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <select
-              value={categoriaSeleccionada}
-              onChange={handleChangeCategoria}
+            <input
+              type="text"
+              placeholder="Buscar categoría"
+              value={busqueda}
+              onChange={handleBuscarCategoria}
               className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-            >
-              {categorias.map(c => (
-                <option key={c._id} value={c._id}>{c.nombre}</option>
-              ))}
-            </select>
+            />
           </div>
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
-                <FaBox className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
                   placeholder="Nombre"
@@ -138,7 +145,6 @@ const EditarCategoria = () => {
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
-                <label className="text-black"></label>
                 <select
                   name="estado"
                   value={categoria.estado}

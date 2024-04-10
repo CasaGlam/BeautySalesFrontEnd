@@ -25,8 +25,12 @@ const Clientes = () => {
   }, []);
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    setCurrentPage(1); // Resetear a la primera página al buscar
+    const value = event.target.value;
+    // Validar que el valor ingresado contenga solo letras
+    if (/^[A-Za-z\s]+$/.test(value) || value === '') {
+      setSearchTerm(value);
+      setCurrentPage(1); // Resetear a la primera página al buscar
+    }
   };
 
   const filteredClientes = clientes.filter((cliente) =>
