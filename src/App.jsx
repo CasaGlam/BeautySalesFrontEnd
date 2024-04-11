@@ -65,13 +65,13 @@ function App() {
           <Route path="/roles/registrar-rol" element={<RegistrarRol />} />
           <Route path="/roles/editar-rol/:objectId" element={<EditarRol />} />
           <Route path="/proveedores/registrar-proveedor" element={<RegistrarProveedor />} />
-          <Route path="/proveedores/editar-proveedor" element={<EditarProveedor />} />
+          <Route path="/proveedores/editar-proveedor/:objectId" element={<EditarProveedor />} />
           <Route path="/productos/registrar-producto" element={<RegistrarProducto />} />
-          <Route path="/productos/editar-producto" element={<EditarProducto />} />
+          <Route path="/productos/editar-producto/:objectId" element={<EditarProducto />} />
           <Route path="/categorias/registrar-categoria" element={<RegistrarCategoria />} />
-          <Route path="/categorias/editar-categoria" element={<EditarCategoria />} />
+          <Route path="/categorias/editar-categoria/:objectId" element={<EditarCategoria />} />
           <Route path="/clientes/registrar-cliente" element={<RegistrarCliente />} />
-          <Route path="/clientes/editar-cliente" element={<EditarCliente />} />
+          <Route path="/clientes/editar-cliente/:objectId" element={<EditarCliente />} />
         </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>

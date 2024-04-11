@@ -141,31 +141,27 @@ const Productos = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
-              {currentItems.map((producto) => (
-                <tr key={producto._id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{producto.nombre}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{producto.precio}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {producto.estado ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap flex">
-                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
-                  </td>
-                </tr>
-              ))}
+            {currentItems.map((producto) => (
+               <tr key={producto._id}>
+               <td className="px-6 py-4 whitespace-nowrap text-black">{producto.nombre}</td>
+               <td className="px-6 py-4 whitespace-nowrap text-black">{producto.precio}</td>
+               <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
+               <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
+             <td className="px-6 py-4 whitespace-nowrap">
+               <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+               {producto.estado ? 'Activo' : 'Inactivo'}
+            </span>
+          </td>
+           <td className="px-6 py-4 whitespace-nowrap flex">
+           <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
+           <Link to={`/productos/editar-producto/${producto._id}`}>
+             <FaEdit className="text-black hover:text-primary-700 transition-colors cursor-pointer ml-2" />
+           </Link>
+           </td>
+          </tr>
+          ))}
             </tbody>
           </table>
-        </div>
-        <div className="flex justify-end mt-4 pr-10">
-          <Link to="/productos/editar-producto">
-            <button className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-              <FaEdit className="text-white mr-2" /> 
-            </button>
-          </Link>
         </div>
         <div className="flex justify-center mt-4">
           <div className="flex justify-center mt-4">

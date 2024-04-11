@@ -1,106 +1,89 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { FaInfoCircle } from "react-icons/fa";
-import Swal from "sweetalert2";
+import { Link, useParams } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 const EditarCategoria = () => {
-  const [categorias, setCategorias] = useState([]);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [categoria, setCategoria] = useState({
-    _id: "",
     nombre: "",
     descripcion: "",
     estado: ""
   });
-  const [busqueda, setBusqueda] = useState("");
+
+  const { objectId } = useParams();
 
   useEffect(() => {
-    const obtenerCategorias = async () => {
+    const fetchCategoria = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/categorias');
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.categorias && data.categorias.length > 0) {
-            setCategorias(data.categorias);
-            // Asigna la primera categoría como la categoría inicial
-            setCategoriaSeleccionada(data.categorias[0]._id);
-          } else {
-            console.error('No se encontraron categorías en la respuesta:', data);
-          }
-        } else {
-          console.error('Error al obtener las categorías:', response.statusText);
+        const response = await fetch(`http://localhost:8080/api/categorias/${objectId}`);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos del usuario');
         }
+        const data = await response.json();
+        setCategoria(data.categoria);
       } catch (error) {
-        console.error('Error al obtener las categorías:', error);
+        console.error("Error fetching categoria:", error);
       }
     };
 
-    obtenerCategorias();
-  }, []);
+    fetchCategoria();
 
-  useEffect(() => {
-    const obtenerCategoriaSeleccionada = () => {
-      const categoriaAEditar = categorias.find(c => c._id === categoriaSeleccionada);
-      if (categoriaAEditar) {
-        setCategoria({
-          _id: categoriaAEditar._id,
-          nombre: categoriaAEditar.nombre,
-          descripcion: categoriaAEditar.descripcion,
-          estado: categoriaAEditar.estado
-        });
-      }
-    };
-
-    obtenerCategoriaSeleccionada();
-  }, [categorias, categoriaSeleccionada]);
-
-  const handleBuscarCategoria = (e) => {
-    const valorBusqueda = e.target.value;
-    setBusqueda(valorBusqueda);
-
-    // Filtrar categorías según la búsqueda
-    const categoriaEncontrada = categorias.find(c =>
-      c.nombre.toLowerCase().includes(valorBusqueda.toLowerCase())
-    );
-
-    // Actualizar el estado de la categoría seleccionada
-    setCategoriaSeleccionada(categoriaEncontrada ? categoriaEncontrada._id : "");
-  };
+  }, [objectId]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setCategoria({
       ...categoria,
-      [name]: value,
+      [e.target.name]: e.target.value
     });
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`http://localhost:8080/api/categorias/${categoria._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          nombre: categoria.nombre,
-          descripcion: categoria.descripcion,
-          estado: categoria.estado
-        })
+  const handleActualizarCategoria = () => {
+    // Verificar que ningún campo esté vacío
+    if (
+      categoria.nombre.trim() === "" ||
+      categoria.descripcion.trim() === "" ||
+      categoria.estado.trim() === ""
+    ) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos incompletos',
+        text: 'Por favor, completa todos los campos.',
+        confirmButtonColor: '#3085d6',
       });
-      if (response.ok) {
-        Swal.fire("¡Categoría editada!", "", "success");
-        setTimeout(() => {
-          window.location.href = "/categorias";
-        }, 2000);
-      } else {
-        Swal.fire("Error", "Hubo un problema al editar la categoría", "error");
-      }
-    } catch (error) {
-      console.error('Error al editar la categoría:', error);
-      Swal.fire("Error", "Hubo un problema al editar la categoría", "error");
+      return;
     }
+
+    // Realizar la solicitud PUT para actualizar la categoría
+    fetch(`http://localhost:8080/api/categorias/${objectId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(categoria)
+    })
+    .then(response => {
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Categoría actualizada!',
+          showConfirmButton: false,
+          timer: 1500
+        }).then(() => {
+          // Redireccionar al usuario a la ruta /categorias
+          window.location.href = '/categorias';
+          // Realizar otras acciones necesarias en caso de éxito
+        });
+      } else {
+        throw new Error("Error al actualizar categoría");
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al actualizar categoría',
+        text: 'Hubo un problema al actualizar la categoría. Por favor, inténtalo de nuevo más tarde.',
+        confirmButtonColor: '#3085d6',
+      });
+    });
   };
 
   return (
@@ -111,65 +94,45 @@ const EditarCategoria = () => {
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <input
               type="text"
-              placeholder="Buscar categoría"
-              value={busqueda}
-              onChange={handleBuscarCategoria}
-              className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+              placeholder="Nombre de la categoría"
+              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
+              name="nombre"
+              value={categoria.nombre}
+              onChange={handleChange}
+            />
+            <input
+              type="text"
+              placeholder="Descripción"
+              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
+              name="descripcion"
+              value={categoria.descripcion}
+              onChange={handleChange}
             />
           </div>
-          <form onSubmit={handleSubmit}>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  name="nombre"
-                  value={categoria.nombre}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="Descripción"
-                  name="descripcion"
-                  value={categoria.descripcion}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <select
-                  name="estado"
-                  value={categoria.estado}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                >
-                  <option value={true}>Activo</option>
-                  <option value={false}>Inactivo</option>
-                </select>
-              </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <button
-                type="submit"
-                className="w-full md:w-[43%]  px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              >
-                Guardar cambios
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <select
+              name="estado"
+              value={categoria.estado}
+              onChange={handleChange}
+              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
+            >
+              <option value={true}>Activo</option>
+              <option value={false}>Inactivo</option>
+            </select>
+          </div>
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <button
+              className="w-full md:w-[43%] px-4 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              onClick={handleActualizarCategoria}
+            >
+              Actualizar categoría
+            </button>
+            <Link to="/categorias" className="w-full md:w-[43%]">
+              <button className="w-full px-4 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                Volver
               </button>
-              <Link to="/categorias" className="w-full md:w-[43%]">
-                <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Volver
-                </button>
-              </Link>
-            </div>
-          </form>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

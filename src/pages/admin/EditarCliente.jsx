@@ -1,105 +1,90 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { FaUser, FaPhone, FaEnvelope } from "react-icons/fa";
-import Swal from "sweetalert2";
+import { Link, useParams } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 const EditarCliente = () => {
-  const [clientes, setClientes] = useState([]);
-  const [clienteSeleccionado, setClienteSeleccionado] = useState("");
   const [cliente, setCliente] = useState({
     nombre: "",
     telefono: "",
     correo: ""
   });
-  const [busqueda, setBusqueda] = useState("");
+
+  const { objectId } = useParams();
 
   useEffect(() => {
-    const obtenerClientes = async () => {
+    const fetchCliente = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/clientes');
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.clientes && data.clientes.length > 0) {
-            setClientes(data.clientes);
-            // Asigna el primer cliente como el cliente inicial
-            setClienteSeleccionado(data.clientes[0]._id);
-          } else {
-            console.error('No se encontraron clientes en la respuesta:', data);
-          }
-        } else {
-          console.error('Error al obtener los clientes:', response.statusText);
+        const response = await fetch(`http://localhost:8080/api/clientes/${objectId}`);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos del cliente');
         }
+        const data = await response.json();
+        setCliente(data.cliente);
       } catch (error) {
-        console.error('Error al obtener los clientes:', error);
+        console.error("Error fetching cliente:", error);
       }
     };
-
-    obtenerClientes();
-  }, []);
-
-  useEffect(() => {
-    const obtenerClienteSeleccionado = () => {
-      const clienteAEditar = clientes.find(c => c._id === clienteSeleccionado); // Corrección aquí
-      if (clienteAEditar) {
-        setCliente({
-          _id: clienteAEditar._id,
-          nombre: clienteAEditar.nombre,
-          telefono: clienteAEditar.telefono,
-          correo: clienteAEditar.correo
-        });
-      }
-    };
-
-    obtenerClienteSeleccionado();
-  }, [clientes, clienteSeleccionado]); // Se agrega clientes como dependencia
-
-  const handleBuscarCliente = (e) => {
-    const valorBusqueda = e.target.value;
-    setBusqueda(valorBusqueda);
-
-    // Filtrar clientes según la búsqueda
-    const clienteEncontrado = clientes.find(c =>
-      c.nombre.toLowerCase().includes(valorBusqueda.toLowerCase())
-    );
-
-    // Actualizar el estado del cliente seleccionado
-    setClienteSeleccionado(clienteEncontrado ? clienteEncontrado._id : "");
-  };
-
+  
+    fetchCliente();
+  
+  }, [objectId]);
+  
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setCliente({
       ...cliente,
-      [name]: value,
+      [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`http://localhost:8080/api/clientes/${cliente._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          nombre: cliente.nombre,
-          telefono: cliente.telefono,
-          correo: cliente.correo
-        })
+  const handleActualizarCliente = () => {
+    // Verificar que ningún campo esté vacío
+    if (
+      cliente.nombre.trim() === "" ||
+      cliente.telefono.trim() === "" ||
+      cliente.correo.trim() === ""
+    ) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Campos incompletos',
+        text: 'Por favor, completa todos los campos.',
+        confirmButtonColor: '#3085d6',
       });
-      if (response.ok) {
-        Swal.fire("¡Cliente editado!", "", "success");
-        setTimeout(() => {
-          window.location.href = "/clientes";
-        }, 2000);
-      } else {
-        Swal.fire("Error", "Hubo un problema al editar el cliente", "error");
-      }
-    } catch (error) {
-      console.error('Error al editar el cliente:', error);
-      Swal.fire("Error", "Hubo un problema al editar el cliente", "error");
+      return;
     }
+
+    // Realizar la solicitud PUT para actualizar el cliente
+    fetch(`http://localhost:8080/api/clientes/${objectId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(cliente)
+    })
+    .then(response => {
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Cliente actualizado!',
+          showConfirmButton: false,
+          timer: 1500
+        }).then(() => {
+          // Redireccionar al usuario a la ruta /clientes
+          window.location.href = '/clientes';
+          // Realizar otras acciones necesarias en caso de éxito
+        });
+      } else {
+        throw new Error("Error al actualizar cliente");
+      }
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al actualizar cliente',
+        text: 'Hubo un problema al actualizar el cliente. Por favor, inténtalo de nuevo más tarde.',
+        confirmButtonColor: '#3085d6',
+      });
+    });
   };
 
   return (
@@ -110,66 +95,44 @@ const EditarCliente = () => {
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <input
               type="text"
-              placeholder="Buscar cliente"
-              value={busqueda}
-              onChange={handleBuscarCliente}
-              className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+              placeholder="Nombre del cliente"
+              className="text-black px-2 py-3 rounded-lg"
+              name="nombre"
+              value={cliente.nombre}
+              onChange={handleChange}
+            />
+            <input
+              type="tel"
+              placeholder="Teléfono"
+              className="text-black px-2 py-3 rounded-lg"
+              name="telefono"
+              value={cliente.telefono}
+              onChange={handleChange}
             />
           </div>
-          <form onSubmit={handleSubmit}>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  name="nombre"
-                  value={cliente.nombre}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="Teléfono"
-                  name="telefono"
-                  value={cliente.telefono}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="email"
-                  placeholder="Correo electrónico"
-                  name="correo"
-                  value={cliente.correo}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <button
-                type="submit"
-                className="w-full md:w-[43%]  px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              >
-                Guardar cambios
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <input
+              type="email"
+              placeholder="Correo electrónico"
+              className="text-black px-2 py-3 rounded-lg"
+              name="correo"
+              value={cliente.correo}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <button
+              className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              onClick={handleActualizarCliente}
+            >
+              Actualizar cliente
+            </button>
+            <Link to="/clientes" className="w-full md:w-[43%]">
+              <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                Volver
               </button>
-              <Link to="/clientes" className="w-full md:w-[43%]">
-                <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Volver
-                </button>
-              </Link>
-            </div>
-          </form>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
