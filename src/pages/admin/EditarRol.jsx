@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
-// Icons
 import { FaUser } from "react-icons/fa";
 
 const EditarRol = () => {
@@ -16,9 +14,10 @@ const EditarRol = () => {
     fetch(`http://localhost:8080/api/roles/${objectId}`)
       .then(response => response.json())
       .then(data => {
-        const selectedRole = data.roles.find(role => role._id === objectId);
-        if (selectedRole) {
-          setRolData(selectedRole);
+        if (data && data.role) {
+          setRolData(data.role);
+        } else {
+          throw new Error('No se encontró el rol');
         }
       })
       .catch(error => console.error('Error fetching role:', error));

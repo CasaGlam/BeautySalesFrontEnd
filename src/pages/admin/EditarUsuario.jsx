@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import Swal from 'sweetalert2';
 
@@ -9,8 +9,6 @@ const EditarUsuario = () => {
   const [usuario, setUsuario] = useState({
     nombre: "",
     correo: "",
-    password: "",
-    confirmPassword: "",
     rol: "",
     estado: ""
   });
@@ -19,17 +17,27 @@ const EditarUsuario = () => {
   const { objectId } = useParams();
 
   useEffect(() => {
+    const fetchUsuario = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/usuarios/${objectId}`);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos del usuario');
+        }
+        const data = await response.json();
+        setUsuario(data.usuario);
+      } catch (error) {
+        console.error("Error fetching usuario:", error);
+      }
+    };
+
+    fetchUsuario();
+
     fetch("http://localhost:8080/api/roles")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data.roles);
       })
       .catch((error) => console.error("Error fetching roles:", error));
-  }, []);
-
-  useEffect(() => {
-    // Aquí puedes cargar los datos del usuario a editar utilizando el objectId
-    // Esto se puede hacer mediante otra solicitud al servidor con el objectId
   }, [objectId]);
 
   const handleChange = (e) => {
@@ -44,8 +52,6 @@ const EditarUsuario = () => {
     if (
       usuario.nombre.trim() === "" ||
       usuario.correo.trim() === "" ||
-      usuario.password.trim() === "" ||
-      usuario.confirmPassword.trim() === "" ||
       usuario.rol.trim() === "" ||
       usuario.estado.trim() === ""
     ) {
@@ -70,32 +76,9 @@ const EditarUsuario = () => {
       return;
     }
 
-    // Verificar que la contraseña tenga al menos 6 caracteres
-    if (usuario.password.length < 6) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Contraseña demasiado corta',
-        text: 'La contraseña debe tener al menos 6 caracteres.',
-        confirmButtonColor: '#3085d6',
-      });
-      return;
-    }
-
-    // Verificar que las contraseñas coincidan
-    if (usuario.password !== usuario.confirmPassword) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Contraseñas no coinciden',
-        text: 'La contraseña y la confirmación de contraseña deben coincidir.',
-        confirmButtonColor: '#3085d6',
-      });
-      return;
-    }
-
     const datosActualizados = {
       nombre: usuario.nombre,
       correo: usuario.correo,
-      password: usuario.password,
       rol: usuario.rol,
       estado: usuario.estado === "activo" ? true : false
     };
@@ -115,9 +98,7 @@ const EditarUsuario = () => {
           showConfirmButton: false,
           timer: 1500
         }).then(() => {
-          // Redireccionar al usuario a la ruta /usuarios
           window.location.href = '/usuarios';
-          // Realizar otras acciones necesarias en caso de éxito
         });
       } else {
         throw new Error("Error al actualizar usuario");
@@ -164,33 +145,9 @@ const EditarUsuario = () => {
             </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <div className="relative">
-              <FaLock className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-              <input
-                type="password"
-                placeholder="Contraseña"
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                name="password"
-                value={usuario.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="relative">
-              <FaLock className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-              <input
-                type="password"
-                placeholder="Confirmar contraseña"
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                name="confirmPassword"
-                value={usuario.confirmPassword}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <select
               name="rol"
-              className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+              className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full md:w-[45%] md:pl-8 md:pr-12"
               value={usuario.rol}
               onChange={handleChange}
             >
@@ -203,8 +160,8 @@ const EditarUsuario = () => {
             </select>
             <select
               name="estado"
-              className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-              value={usuario.estado}
+              className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full md:w-[45%] md:pl-8 md:pr-12"
+              
               onChange={handleChange}
             >
               <option value="">Seleccione el estado</option>
@@ -214,12 +171,12 @@ const EditarUsuario = () => {
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <button
-              className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              className="w-full md:w-[46%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
               onClick={handleActualizarUsuario}
             >
               Actualizar usuario
             </button>
-            <Link to="/usuarios" className="w-full md:w-[43%]">
+            <Link to="/usuarios" className="w-full md:w-[46%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
               </button>
