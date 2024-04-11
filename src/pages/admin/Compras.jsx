@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaAngleDown, FaAngleUp, FaTrash } from "react-icons/fa";
+import { FaSearch, FaAngleDown, FaAngleUp, FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 const Compras = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -10,9 +11,18 @@ const Compras = () => {
   const [compraExpandida, setCompraExpandida] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [nuevoEstadoCompra, setNuevoEstadoCompra] = useState('');
+  const [descripcionEstadoCompra, setDescripcionEstadoCompra] = useState('');
+  const [compraSeleccionada, setCompraSeleccionada] = useState(null);
   const itemsPerPage = 5;
 
   useEffect(() => {
+    fetchCompras();
+    fetchProveedores();
+    fetchProductos();
+  }, []);
+
+  const fetchCompras = () => {
     fetch('http://localhost:8080/api/compras')
       .then(response => response.json())
       .then(data => {
@@ -23,7 +33,9 @@ const Compras = () => {
         }
       })
       .catch(error => console.error('Error fetching compras:', error));
+  };
 
+  const fetchProveedores = () => {
     fetch('http://localhost:8080/api/proveedores')
       .then(response => response.json())
       .then(data => {
@@ -34,7 +46,9 @@ const Compras = () => {
         }
       })
       .catch(error => console.error('Error fetching proveedores:', error));
+  };
 
+  const fetchProductos = () => {
     fetch('http://localhost:8080/api/productos')
       .then(response => response.json())
       .then(data => {
@@ -45,7 +59,7 @@ const Compras = () => {
         }
       })
       .catch(error => console.error('Error fetching productos:', error));
-  }, []);
+  };
 
   const toggleModal = () => {
     setMostrarModal(!mostrarModal);
@@ -54,6 +68,14 @@ const Compras = () => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Resetear a la primera página al buscar
+  };
+
+  const handleEstadoChange = (event) => {
+    setNuevoEstadoCompra(event.target.value);
+  };
+
+  const handleDescripcionEstadoChange = (event) => {
+    setDescripcionEstadoCompra(event.target.value);
   };
 
   const getProveedorName = (idProveedor) => {
@@ -71,6 +93,44 @@ const Compras = () => {
     return compra ? compra.numeroVenta : 'Venta no encontrada';
   };
 
+  const updateCompraEstado = async (compraId, estado, descripcionEstado) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/compras/${compraId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ estado, descripcionEstado }),
+      });
+      if (!response.ok) {
+        throw new Error('Error al actualizar estado de compra');
+      }
+      return true;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
+
+  const handleEstadoUpdate = async () => {
+    try {
+      const nuevoEstado = nuevoEstadoCompra === 'Activa' ? true : false; // Mapear el estado a un booleano
+      await updateCompraEstado(compraSeleccionada._id, nuevoEstado, descripcionEstadoCompra);
+      toggleModal();
+      Swal.fire({
+        icon: 'success',
+        title: 'Estado actualizado correctamente',
+      });
+      fetchCompras(); // Actualizar las compras después de guardar el cambio
+    } catch (error) {
+      console.error('Error al actualizar estado de compra:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al actualizar estado de compra',
+        text: error.message,
+      });
+    }
+  };
+
   const filteredCompras = compras.filter((compra) =>
     compra.numeroCompra.toString().includes(searchTerm)
   );
@@ -80,6 +140,13 @@ const Compras = () => {
   const currentItems = filteredCompras.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleModalOpen = (compra) => {
+    setCompraSeleccionada(compra);
+    setNuevoEstadoCompra(compra.estado ? 'Activa' : 'Inactiva');
+    setDescripcionEstadoCompra(compra.descripcionEstado || '');
+    toggleModal();
+  };
 
   return (
     <div className="flex justify-center">
@@ -118,7 +185,10 @@ const Compras = () => {
                   Descripción
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                  Fecha
+                  Fecha de Registro
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Fecha de Compra
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Estado
@@ -145,7 +215,10 @@ const Compras = () => {
                       <div className="font-medium text-black">{compra.descripcion}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-black">{new Date(compra.fecha).toLocaleDateString()}</div>
+                      <div className="font-medium text-black">{new Date(compra.fechaRegistro).toISOString().slice(0, 10)}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium text-black">{new Date(compra.fecha).toISOString().slice(0, 10)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${compra.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -159,6 +232,9 @@ const Compras = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button onClick={() => setCompraExpandida(compraExpandida === compra._id ? null : compra._id)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
                         {compraExpandida === compra._id ? <FaAngleUp /> : <FaAngleDown />}
+                      </button>
+                      <button onClick={() => handleModalOpen(compra)} className="text-green-600 hover:text-green-900 focus:outline-none ml-2">
+                        <FaEdit />
                       </button>
                     </td>
                   </tr>
@@ -213,15 +289,16 @@ const Compras = () => {
               <button
                 key={number}
                 onClick={() => paginate(number + 1)}
-                className={
+                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
                   currentPage === number + 1
-                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
-                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                }
+                    ? 'text-primary bg-primary'
+                    : 'text-gray-700 hover:text-gray-500'
+                }`}
               >
                 {number + 1}
               </button>
             ))}
+            {/* Botón para ir a la siguiente página */}
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === Math.ceil(filteredCompras.length / itemsPerPage)}
@@ -230,30 +307,76 @@ const Compras = () => {
               <span className="sr-only">Next</span>
               {/* Heroicon name: solid/chevron-right */}
               <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
+                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L9.914 10 4.293 4.293a1 1 0 1 1 1.414-1.414l6 6a1 1 0 0 1 0 1.414l-6 6z" clipRule="evenodd" />
               </svg>
             </button>
           </nav>
         </div>
-      </div>
-      {mostrarModal && (
-        // Modal de registro de compra
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <form onSubmit={handleSubmit}>
-                {/* Contenido del formulario de registro de compra */}
-              </form>
+        {mostrarModal && (
+          <div className="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+              {/* Background overlay, show/hide based on modal state */}
+              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+              {/* This element is to trick the browser into centering the modal contents. */}
+              <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+              {/* Modal panel, show/hide based on modal state */}
+              <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-primary-100 sm:mx-0 sm:h-10 sm:w-10">
+                      {/* Heroicon name: outline/exclamation */}
+                      <svg className="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.61-1.59 1.864-3.014L13.864 4.986C13.12 3.61 11.999 3.61 11.255 4.986L4.938 18zm0 0v-5.999L4.999 4h14l.061 8.001M12 9h.01"></path>
+                      </svg>
+                    </div>
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                        Actualizar estado de compra
+                      </h3>
+                      <div className="mt-2">
+                        <select
+                          value={nuevoEstadoCompra}
+                          onChange={handleEstadoChange}
+                          className="w-full text-black rounded-md border border-gray-300 shadow-sm p-2 focus:outline-none focus:border-primary"
+                        >
+                          <option value="Activa">Activa</option>
+                          <option value="Inactiva">Inactiva</option>
+                        </select>
+                      </div>
+                      <div className="mt-2">
+                        <textarea
+                          value={descripcionEstadoCompra}
+                          onChange={handleDescripcionEstadoChange}
+                          placeholder="Ingrese la descripción del cambio de estado..."
+                          className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                  <button
+                    onClick={handleEstadoUpdate}
+                    type="button"
+                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-opacity-[80%] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm"
+                  >
+                    Guardar Cambios
+                  </button>
+                  <button
+                    onClick={toggleModal}
+                    type="button"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default Compras;
