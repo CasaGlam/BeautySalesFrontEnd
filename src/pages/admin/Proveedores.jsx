@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit as EditIcon, FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Swal from "sweetalert2";
 
@@ -158,20 +158,20 @@ const Proveedores = () => {
                     </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap flex justify-end">
-                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(proveedor.idProveedor)} />
+                    {/* Botón de Editar */}
+                    <Link to={`/proveedores/editar-proveedor/${proveedor._id}`}>
+                      <button className="text-black hover:text-blue-700 transition-colors cursor-pointer">
+                        <EditIcon />
+                      </button>
+                    </Link>
+                    {/* Botón de Eliminar */}
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer ml-2" onClick={() => handleDelete(proveedor._id)} />
+
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-        {/* Botón de Edición */}
-        <div className="flex justify-end mt-4 pr-10">
-          <Link to="/proveedores/editar-proveedor">
-            <button className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-              <FaEdit className="text-white mr-2" /> 
-            </button>
-          </Link>
         </div>
         {/* Paginación */}
         <div className="flex justify-center mt-4">

@@ -146,20 +146,17 @@ const Categorias = () => {
                     </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap flex justify-end">
-                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(categoria._id)} />
+                    <Link to={`/categorias/editar-categoria/${categoria._id}`}>
+                      <button className="text-black hover:text-gray-700 transition-colors">
+                        <FaEdit />
+                      </button>
+                    </Link>
+                    <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer ml-2" onClick={() => handleDelete(categoria._id)} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-        {/* Botón de Edición */}
-        <div className="flex justify-end mt-4 pr-10">
-          <Link to="/categorias/editar-categoria">
-            <button className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-              <FaEdit className="text-white mr-2" /> 
-            </button>
-          </Link>
         </div>
         {/* Paginación */}
         <div className="flex justify-center mt-4">
