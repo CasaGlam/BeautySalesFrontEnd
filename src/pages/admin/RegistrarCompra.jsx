@@ -13,8 +13,14 @@ const Compras = () => {
   const [productos, setProductos] = useState([]);
   const [productosSeleccionados, setProductosSeleccionados] = useState([]);
   const [proveedores, setProveedores] = useState([]);
+  const [fechaRegistro, setFechaRegistro] = useState('');
+  const [descripcionEstado, setDescripcionEstado] = useState('Porque cambias el estado?');
 
   useEffect(() => {
+    const currentDate = new Date().toISOString().split('T')[0];
+    setFecha(currentDate);
+    setFechaRegistro(currentDate);
+
     fetch('http://localhost:8080/api/productos')
       .then(response => response.json())
       .then(data => {
@@ -32,6 +38,11 @@ const Compras = () => {
       .catch(error => console.error('Error fetching proveedores:', error));
   }, []);
 
+  useEffect(() => {
+    const currentDate = new Date().toISOString().split('T')[0];
+    setFechaRegistro(currentDate);
+  }, []);
+
   const agregarProducto = (productoId, cantidad = 1) => {
     const producto = productos.find(item => item._id === productoId);
     if (!producto) return;
@@ -40,7 +51,7 @@ const Compras = () => {
 
     if (productoExistente) {
       const nuevosProductos = productosSeleccionados.map(item =>
-        item._id === productoId ? { ...item, cantidad } : item
+        item._id === productoId ? { ...item, cantidad: item.cantidad + cantidad } : item
       );
       setProductosSeleccionados(nuevosProductos);
       calcularTotalCompra(nuevosProductos);
@@ -48,10 +59,10 @@ const Compras = () => {
       setProductosSeleccionados([...productosSeleccionados, {
         ...producto,
         cantidad,
-        idProducto: producto._id, // Agregar el ID del producto
-        precioCompra: 0, // Inicializar el precio de compra
-        precioVenta: producto.precioVenta, // Inicializar el precio de venta
-        precio: producto.precio // Obtener precio del producto
+        idProducto: producto._id,
+        precioCompra: 0,
+        precioVenta: producto.precioVenta,
+        precio: producto.precio
       }]);
       calcularTotalCompra([...productosSeleccionados, { ...producto, cantidad }]);
     }
@@ -110,8 +121,8 @@ const Compras = () => {
           cantidad: producto.cantidad,
           precioCompra: producto.precioCompra,
           total: producto.precio * producto.cantidad,
-          idProducto: producto.idProducto, // Usar el ID del producto seleccionado
-          precioVenta: producto.precioVenta // Incluir el precio de venta
+          idProducto: producto.idProducto,
+          precioVenta: producto.precioVenta
         }));
 
         const compra = {
@@ -121,7 +132,8 @@ const Compras = () => {
           estado: true,
           total: totalCompra,
           idProveedor: proveedorId,
-          detallesCompra
+          detallesCompra,
+          descripcionEstado
         };
 
         try {
@@ -183,7 +195,7 @@ const Compras = () => {
   const actualizarPrecioVentaProducto = async (productoId, nuevoPrecioVenta) => {
     try {
       const response = await fetch(`http://localhost:8080/api/productos/${productoId}`, {
-        method: 'PUT', // Utilizar el método PUT para actualizar el precio de venta
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -191,7 +203,6 @@ const Compras = () => {
       });
 
       if (response.ok) {
-        // Actualizar el estado local del producto con el nuevo precio de venta
         const nuevosProductos = productos.map(item =>
           item._id === productoId ? { ...item, precioVenta: nuevoPrecioVenta } : item
         );
@@ -214,12 +225,24 @@ const Compras = () => {
     <div className="bg-secondary-100 w-full rounded-lg">
       <div className="flex justify-center p-8">
         <div className='w-full'>
-          <h3 className="text-2xl font-bold mb-4 text-white">Registrar compra</h3>
+          <h3 className="text-2xl font-bold mb-4 text-white">Registro de compra</h3>
+          <div className="mb-4 flex justify-end">
+            <label className="block text-white text-sm font-bold mb-2 ml-auto" htmlFor="fechaRegistro">Fecha de Registro</label>
+            <input
+              id="fechaRegistro"
+              type="date"
+              className="border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              style={{ maxWidth: "150px" }}
+              value={fechaRegistro}
+              onChange={(e) => setFechaRegistro(e.target.value)}
+              disabled
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-white text-sm font-bold mb-2">Productos Seleccionados</label>
-            <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
+            <div className="border border-white rounded-lg p-4">
               {productosSeleccionados.map((producto, index) => (
-                <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
+                <div key={index} className="flex items-center justify-between text-sm border-b border-gray-200 py-2">
                   <div className="flex items-center">
                     <button
                       className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
@@ -234,14 +257,14 @@ const Compras = () => {
                       value={producto.cantidad}
                       onChange={(e) => {
                         const newCantidad = parseInt(e.target.value);
-                        agregarProducto(producto._id, newCantidad);
+                        agregarProducto(producto._id, newCantidad - producto.cantidad);
                       }}
                     />
                     <button
                       className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                       onClick={() => {
                         const newCantidad = producto.cantidad + 1;
-                        agregarProducto(producto._id, newCantidad);
+                        agregarProducto(producto._id, newCantidad - producto.cantidad);
                       }}
                       type="button"
                     >
@@ -275,23 +298,23 @@ const Compras = () => {
                     <label className="block text-white text-sm font-bold mb-2" htmlFor={`precioVenta_${index}`}>Precio de Venta</label>
                     <input
                       id={`precioVenta_${index}`}
-                      type="text" // Cambiado a texto para permitir decimales
+                      type="text"
                       className="bg-gray-200 border border-gray-300 rounded-md w-16 px-2 py-1 text-black ml-2"
                       value={isNaN(producto.precioVenta) ? '' : producto.precioVenta}
                       onChange={(e) => {
-                        const newPrecioVenta = parseFloat(e.target.value); // Cambiado a parseFloat
+                        const newPrecioVenta = parseFloat(e.target.value);
                         const nuevosProductos = productosSeleccionados.map(item =>
                           item._id === producto._id ? { ...item, precioVenta: newPrecioVenta } : item
                         );
                         setProductosSeleccionados(nuevosProductos);
                         calcularTotalCompra(nuevosProductos);
-                        actualizarPrecioVentaProducto(producto._id, newPrecioVenta); // Actualizar precio de venta en el API
+                        actualizarPrecioVentaProducto(producto._id, newPrecioVenta);
                       }}
                     />
                   </div>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
           <div className="mb-4 ">
             <label className="block text-white text-sm font-bold mb-2" htmlFor="buscarProducto">Buscar Producto</label>
@@ -335,74 +358,85 @@ const Compras = () => {
             </div>
           )}
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <label className="block text-white text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
-                <input
-                  id="numeroCompra"
-                  type="text"
-                  className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Número de Compra"
-                  value={numeroCompra}
-                  onChange={(e) => setNumeroCompra(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
-                <input
-                  id="descripcion"
-                  type="text"
-                  className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  placeholder="Descripción"
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-white text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
-                <input
-                  id="fecha"
-                  type="date"
-                  min={currentDate} // Establecer la fecha mínima como la fecha actual
-                  className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={fecha}
-                  onChange={(e) => setFecha(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-white text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
-                <select
-                  id="proveedor"
-                  className="w-full border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={proveedorId}
-                  onChange={(e) => {
-                    const selectedProveedor = proveedores.find(proveedor => proveedor._id === e.target.value);
-                    setProveedor(selectedProveedor.nombre);
-                    setProveedorId(e.target.value);
-                  }}
-                >
-                  {proveedores.map(proveedor => (
-                    <option key={proveedor._id} value={proveedor._id}>{proveedor.nombre}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-span-2">
-                <button
-                  type="submit"
-                  className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Confirmar Compra
-                </button>
-              </div>
-              <div className="col-span-2">
-                <button
-                  type="button"
-                  onClick={handleCancel}
-                  className="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Cancelar
-                </button>
-              </div>
+            <div className="mb-4">
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
+              <input
+                id="numeroCompra"
+                className="appearance-none bg-gray-200 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                placeholder="Número de compra"
+                value={numeroCompra}
+                onChange={(e) => setNumeroCompra(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
+              <textarea
+                id="descripcion"
+                className="appearance-none bg-gray-200 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Descripción"
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
+              <input
+                id="fecha"
+                type="date"
+                className="border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                value={fecha}
+                onChange={(e) => setFecha(e.target.value)}
+              
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
+              <select
+                id="proveedor"
+                className="appearance-none bg-gray-200 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                value={proveedorId}
+                onChange={(e) => {
+                  const selectedProveedor = proveedores.find(proveedor => proveedor._id === e.target.value);
+                  setProveedor(selectedProveedor.nombre);
+                  setProveedorId(selectedProveedor._id);
+                }}
+              >
+                {proveedores.map((proveedor, index) => (
+                  <option key={index} value={proveedor._id}>{proveedor.nombre}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-white text-sm font-bold mb-2">Total de la compra</label>
+              <span className="bg-gray-200 border border-gray-300 rounded-md px-4 py-2 text-black font-semibold">{totalCompra}</span>
+            </div>
+            <div className="mb-4" style={{ display: 'none' }}>
+              {/* Ocultamos visualmente el campo de descripción del cambio de estado */}
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcionEstado">Porque cambias de estado la compra?</label>
+              <input
+                id="descripcionEstado"
+                className="appearance-none bg-gray-200 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                placeholder="Descripción del cambio de estado"
+                value={descripcionEstado}
+                onChange={(e) => setDescripcionEstado(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit"
+              >
+                Guardar
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="button"
+                onClick={handleCancel}
+              >
+                Cancelar
+              </button>
             </div>
           </form>
         </div>
@@ -412,4 +446,3 @@ const Compras = () => {
 };
 
 export default Compras;
-
