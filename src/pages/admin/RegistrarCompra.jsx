@@ -318,10 +318,10 @@ const Compras = () => {
           </div>
           <div className="mb-4 ">
             <label className="block text-white text-sm font-bold mb-2" htmlFor="buscarProducto">Buscar Producto</label>
-            <div className="flex items-center border-b border-b-2 border-teal-500 py-2 gap-4">
+            <div className="flex items-center  border-b-2 border-teal-500 py-2 gap-4">
               <input
                 id="buscarProducto"
-                className="appearance-none bg-transparent border rounded-none w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="appearance-none bg-transparent border rounded-none w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 placeholder="Buscar"
                 value={busquedaProducto}
@@ -340,7 +340,7 @@ const Compras = () => {
             <div className="mb-4">
               <label className="block text-white text-sm font-bold mb-2">Productos</label>
               <div className="overflow-y-scroll max-h-40">
-                <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
+                <ul className="border border-gray-200 rounded-md divide-y divide-gray-200 ">
                   {productosFiltrados.map((producto, index) => (
                     <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
                       <span className="font-medium truncate">{producto.nombre}</span>
@@ -358,43 +358,36 @@ const Compras = () => {
             </div>
           )}
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+            <div className="flex justify-around">
+            <div className="mb-4 w-full flex flex-col justify-center items-center">
               <label className="block text-white text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
               <input
                 id="numeroCompra"
-                className="appearance-none bg-gray-200 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="appearance-none bg-gray-200 border rounded w-[70%]   py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 placeholder="Número de compra"
                 value={numeroCompra}
                 onChange={(e) => setNumeroCompra(e.target.value)}
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
-              <textarea
-                id="descripcion"
-                className="appearance-none bg-gray-200 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Descripción"
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
+            <div className="mb-4 w-full flex flex-col justify-center items-center">
               <label className="block text-white text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
               <input
                 id="fecha"
                 type="date"
-                className="border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="border w-[70%] rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 value={fecha}
                 onChange={(e) => setFecha(e.target.value)}
               
               />
             </div>
-            <div className="mb-4">
+            </div>
+            <div className='flex justify-around'>
+            <div className="mb-4 w-full flex flex-col justify-center items-center">
               <label className="block text-white text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
               <select
                 id="proveedor"
-                className="appearance-none bg-gray-200 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 value={proveedorId}
                 onChange={(e) => {
                   const selectedProveedor = proveedores.find(proveedor => proveedor._id === e.target.value);
@@ -406,11 +399,26 @@ const Compras = () => {
                   <option key={index} value={proveedor._id}>{proveedor.nombre}</option>
                 ))}
               </select>
-            </div>
-            <div className="mb-4">
+            </div >
+            <div className="mb-4 w-full flex flex-col justify-center items-center">
               <label className="block text-white text-sm font-bold mb-2">Total de la compra</label>
-              <span className="bg-gray-200 border border-gray-300 rounded-md px-4 py-2 text-black font-semibold">{totalCompra}</span>
+              <span className="bg-gray-200 border w-[70%] border-gray-300 rounded-md px-4 py-2 text-black font-semibold">{totalCompra}</span>
             </div>
+            </div>
+            <div className='flex justify-center '>
+            <div className="mb-4 w-full flex flex-col justify-center items-center">
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
+              <textarea
+                id="descripcion"
+                className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Descripción"
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
+              />
+            </div>
+            </div>
+            
+            
             <div className="mb-4" style={{ display: 'none' }}>
               {/* Ocultamos visualmente el campo de descripción del cambio de estado */}
               <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcionEstado">Porque cambias de estado la compra?</label>
