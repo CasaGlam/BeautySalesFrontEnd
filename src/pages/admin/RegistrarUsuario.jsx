@@ -104,6 +104,8 @@ const RegistrarUsuario = () => {
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+              <div className="flex flex-col">
+              <label htmlFor="nombre" className="pb-1">Nombre de usuario</label>
               <div className="relative">
                 <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -111,10 +113,14 @@ const RegistrarUsuario = () => {
                   placeholder="Nombre de usuario"
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                   name="nombre"
+                  id="nombre"
                   value={usuario.nombre}
                   onChange={handleChange}
                 />
               </div>
+              </div>
+              <div className="flex flex-col">
+              <label htmlFor="correo" className="pb-1">Correo electrónico</label>
               <div className="relative">
                 <MdEmail className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -122,12 +128,16 @@ const RegistrarUsuario = () => {
                   placeholder="Correo electrónico"
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                   name="correo"
+                  id="correo"
                   value={usuario.correo}
                   onChange={handleChange}
                 />
               </div>
+              </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <div className="flex flex-col">
+              <label htmlFor="password" className="pb-1">Contraseña</label>
               <div className="relative">
                 <FaLock className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -135,10 +145,14 @@ const RegistrarUsuario = () => {
                   placeholder="Contraseña"
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                   name="password"
+                  id="password"
                   value={usuario.password}
                   onChange={handleChange}
                 />
               </div>
+              </div>
+              <div className="flex flex-col">
+              <label htmlFor="confirmPassword" className="pb-1">Confirmar contraseña</label>
               <div className="relative">
                 <FaLock className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
@@ -146,17 +160,22 @@ const RegistrarUsuario = () => {
                   placeholder="Confirmar contraseña"
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                   name="confirmPassword"
+                  id="confirmPassword"
                   value={usuario.confirmPassword}
                   onChange={handleChange}
                 />
               </div>
+              </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <div className="flex flex-col">
+              <label htmlFor="rol" className="pb-1">Rol</label>
               <div className="relative">
                 <select
                   name="rol"
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                   value={usuario.rol}
+                  id="rol"
                   onChange={handleChange}
                 >
                   <option value="">Seleccione un rol</option>
@@ -166,6 +185,7 @@ const RegistrarUsuario = () => {
                     </option>
                   ))}
                 </select>
+              </div>
               </div>
             </div>
             <div className="flex justify-center gap-12 mb-10">

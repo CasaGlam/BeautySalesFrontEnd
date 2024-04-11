@@ -95,6 +95,8 @@ const EditarRol = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+          <div className="flex flex-col ">
+            <label htmlFor="rol" className="pb-1">Nombre de rol</label>
             <div className="relative">
               <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
@@ -104,6 +106,7 @@ const EditarRol = () => {
                 value={rolData.rol}
                 onChange={(e) => setRolData({ ...rolData, rol: e.target.value })}
               />
+            </div>
             </div>
           </div>
           <div className="flex justify-center">

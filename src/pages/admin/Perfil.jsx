@@ -97,7 +97,8 @@ const Perfil = () => {
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <textarea
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 resize-none"
+                  rows={4}
                   placeholder="Descripción de la empresa"
                   
                 ></textarea>

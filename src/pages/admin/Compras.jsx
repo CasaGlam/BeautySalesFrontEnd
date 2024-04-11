@@ -240,7 +240,7 @@ const Compras = () => {
                   </tr>
                   {compraExpandida === compra._id && (
                     <tr>
-                      <td colSpan="7">
+                      <td colSpan="8">
                         <div className="mt-4 mb-2 px-8">
                           <ul className="border border-gray-400 rounded-md divide-y divide-gray-500">
                             <li className="px-4 py-2 bg-secondary-900 flex items-center justify-between text-sm font-medium">
