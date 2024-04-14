@@ -173,7 +173,7 @@ const RegistrarUsuario = () => {
               <div className="relative">
                 <select
                   name="rol"
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full md:pl-8 md:pr-12"
                   value={usuario.rol}
                   id="rol"
                   onChange={handleChange}
@@ -188,7 +188,7 @@ const RegistrarUsuario = () => {
               </div>
               </div>
             </div>
-            <div className="flex justify-center gap-12 mb-10">
+            <div className="flex flex-col md:flex-row justify-center gap-12 mb-10">
               <button
                 type="submit"
                 className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
