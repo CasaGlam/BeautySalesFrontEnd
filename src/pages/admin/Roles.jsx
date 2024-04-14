@@ -119,14 +119,14 @@ const Roles = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
         <div>
-          <h1 className="text-2xl font-bold mb-4 pt-4">Registro de Roles</h1>
+          <h1 className="text-2xl font-bold mb-4 pt-4">Listado de roles</h1>
         </div>
         <div className="flex flex-col gap-4 md:flex-row ">
           <div>
             <input
               className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
               type="search"
-              placeholder="Buscar rol"
+              placeholder="Buscar"
               value={searchTerm}
               onChange={handleSearchChange}
             />
@@ -134,7 +134,7 @@ const Roles = () => {
           <div className="">
             <Link to="/roles/registrar-rol" className="">
               <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                Agregar nuevo rol
+                Agregar
               </button>
             </Link>
           </div>
@@ -186,13 +186,13 @@ const Roles = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link to={`/roles/editar-rol/${rol._id}`}>
-                      <button className="text-black border border-black p-2 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                      <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
                         <MdEdit />
                       </button>
                     </Link>
                     <button
                       onClick={() => handleDelete(rol._id)}
-                      className="text-black border border-black p-2 rounded-lg hover:bg-black hover:text-white transition-colors"
+                      className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
                     >
                       <FaTrash />
                     </button>
