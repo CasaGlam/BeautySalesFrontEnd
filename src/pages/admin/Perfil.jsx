@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from "react-router-dom";
+import { obtenerDatosDesdeToken } from "../../functions/token";
 
 const Perfil = () => {
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    // Llama a la función para obtener los datos del token cuando el componente se monta
+    const datosUsuario = obtenerDatosDesdeToken();
+    setUsuario(datosUsuario);
+  }, []);
+
   return (
     <div className="bg-secondary-100 p-8 rounded-xl mb-10">
       <div className="mb-10 w-full flex items-center justify-center">
@@ -25,6 +35,8 @@ const Perfil = () => {
                   type="text"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
                   placeholder="Nombre"
+                  value={usuario ? usuario.nombre : ''}
+                  onChange={(e) => setUsuario({...usuario, nombre: e.target.value})}
                 />
               </div>
             </div>
@@ -39,6 +51,8 @@ const Perfil = () => {
                   type="text"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
                   placeholder="Rol"
+                  value={usuario ? usuario.rol : ''}
+                  onChange={(e) => setUsuario({...usuario, rol: e.target.value})}
                 />
               </div>
             </div>
@@ -47,7 +61,7 @@ const Perfil = () => {
           <div className="mb-10 flex flex-col md:flex-row md:items-center gap-y-4 justify-between">
             <div>
               <h5 className="text-gray-100 text-xl">Correo electrónico</h5>
-              <p className="text-gray-500 text-sm">admin@gmail.com</p>
+              <p className="text-gray-500 text-sm">{usuario ? usuario.correo : ''}</p>
             </div>
             <div>
               <button className="w-full md:w-auto bg-[#3c3c3c] text-[#888888] py-3 px-4 rounded-lg hover:bg-black hover:text-white transition-colors duration-500">

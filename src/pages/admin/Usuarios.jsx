@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { MdEdit } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const Usuarios = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,16 +12,19 @@ const Usuarios = () => {
   const [usuariosFromApi, setUsuariosFromApi] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/usuarios')
-      .then(response => response.json())
-      .then(data => {
+    fetch("http://localhost:8080/api/usuarios")
+      .then((response) => response.json())
+      .then((data) => {
         if (data && data.usuarios && Array.isArray(data.usuarios)) {
           setUsuariosFromApi(data.usuarios);
         } else {
-          console.error('Datos de usuario no encontrados en la respuesta:', data);
+          console.error(
+            "Datos de usuario no encontrados en la respuesta:",
+            data
+          );
         }
       })
-      .catch(error => console.error('Error fetching usuarios:', error));
+      .catch((error) => console.error("Error fetching usuarios:", error));
   }, []);
 
   const handleSearchChange = (event) => {
@@ -44,31 +47,41 @@ const Usuarios = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDeleteUser = (userId) => {
+  const handleDeleteUser = (userId, userName) => {
+    // Verificar si el usuario es el "SUPER ADMINISTRADOR"
+    if (userName === "SUPER ADMINISTRADOR") {
+      Swal.fire(
+        "Error!",
+        "No se puede eliminar al SUPER ADMINISTRADOR.",
+        "error"
+      );
+      return; // Evitar que se continúe con la eliminación
+    }
+
     Swal.fire({
-      title: '¿Estás seguro?',
+      title: "¿Estás seguro?",
       text: "¿Deseas eliminar este usuario?",
-      icon: 'question',
+      icon: "question",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar'
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
     }).then((result) => {
       if (result.isConfirmed) {
         fetch(`http://localhost:8080/api/usuarios/${userId}`, {
-          method: "DELETE"
+          method: "DELETE",
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error('Error al eliminar el usuario');
+              throw new Error("Error al eliminar el usuario");
             }
             return response.json();
           })
           .then(() => {
             Swal.fire(
-              'Éxito!',
-              'El usuario se ha eliminado exitosamente.',
-              'success'
+              "Éxito!",
+              "El usuario se ha eliminado exitosamente.",
+              "success"
             ).then(() => {
               // Recargar la lista de usuarios después de la eliminación
               window.location.reload();
@@ -76,9 +89,9 @@ const Usuarios = () => {
           })
           .catch((error) => {
             Swal.fire(
-              'Error!',
-              error.message || 'Hubo un error al eliminar el usuario.',
-              'error'
+              "Error!",
+              error.message || "Hubo un error al eliminar el usuario.",
+              "error"
             );
           });
       }
@@ -112,7 +125,9 @@ const Usuarios = () => {
       </div>
 
       {filteredUsuarios.length === 0 ? (
-        <div className="text-xl text-center text-gray-500">No se encuentran usuarios.</div>
+        <div className="text-xl text-center text-gray-500">
+          No se encuentran usuarios.
+        </div>
       ) : (
         <div className="p-5 overflow-x-auto rounded-lg">
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
@@ -155,28 +170,40 @@ const Usuarios = () => {
               {currentUsers.map((usuario, index) => (
                 <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-black">{usuario.nombre}</div>
+                    <div className="font-medium text-black">
+                      {usuario.nombre}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-black">{usuario.correo}</div>
+                    <div className="font-medium text-black">
+                      {usuario.correo}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="font-medium text-black">{usuario.rol}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${usuario.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {usuario.estado ? 'Activo' : 'Inactivo'}
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        usuario.estado
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {usuario.estado ? "Activo" : "Inactivo"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                  <Link to={`/usuarios/editar-usuario/${usuario._id}`}>
+                    <Link to={`/usuarios/editar-usuario/${usuario._id}`}>
                       <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
                         <MdEdit />
                       </button>
                     </Link>
-                    <button 
+                    <button
                       className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
-                      onClick={() => handleDeleteUser(usuario._id)}
+                      onClick={() =>
+                        handleDeleteUser(usuario._id, usuario.nombre)
+                      }
                     >
                       {/*Eliminar usuario */}
                       <FaTrash />
@@ -215,7 +242,9 @@ const Usuarios = () => {
         )}
         <button
           onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === Math.ceil(filteredUsuarios.length / usersPerPage)}
+          disabled={
+            currentPage === Math.ceil(filteredUsuarios.length / usersPerPage)
+          }
           className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
         >
           <IoIosArrowForward />
