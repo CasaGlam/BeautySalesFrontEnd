@@ -6,7 +6,8 @@ const EditarCliente = () => {
   const [cliente, setCliente] = useState({
     nombre: "",
     telefono: "",
-    correo: ""
+    correo: "",
+    estado: ""
   });
 
   const { objectId } = useParams();
@@ -30,9 +31,10 @@ const EditarCliente = () => {
   }, [objectId]);
   
   const handleChange = (e) => {
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setCliente({
       ...cliente,
-      [e.target.name]: e.target.value
+      [e.target.name]: value
     });
   };
 
@@ -92,40 +94,65 @@ const EditarCliente = () => {
       <h1 className="text-2xl font-bold mb-10 pt-4">Editar cliente</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <input
-              type="text"
-              placeholder="Nombre del cliente"
-              className="text-black px-2 py-3 rounded-lg"
-              name="nombre"
-              value={cliente.nombre}
-              onChange={handleChange}
-            />
-            <input
-              type="tel"
-              placeholder="Teléfono"
-              className="text-black px-2 py-3 rounded-lg"
-              name="telefono"
-              value={cliente.telefono}
-              onChange={handleChange}
-            />
+          <div className="w-full flex md:flex-row flex-col gap-4 mb-10">
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
+              <label htmlFor="nombre" className="text-white font-bold">Nombre del cliente</label>
+              <input
+                type="text"
+                id="nombre"
+                placeholder="Nombre del cliente"
+                className="text-black px-2 py-3 rounded-lg"
+                name="nombre"
+                value={cliente.nombre}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
+              <label htmlFor="telefono" className="text-white font-bold">Teléfono</label>
+              <input
+                type="tel"
+                id="telefono"
+                placeholder="Teléfono"
+                className="text-black px-2 py-3 rounded-lg"
+                name="telefono"
+                value={cliente.telefono}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className="w-full flex md:flex-row flex-col gap-4 mb-10">
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
+              <label htmlFor="correo" className="text-white font-bold">Correo electrónico</label>
+              <input
+                type="email"
+                id="correo"
+                placeholder="Correo electrónico"
+                className="text-black px-2 py-3 rounded-lg"
+                name="correo"
+                value={cliente.correo}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col gap-4">
+              <label htmlFor="estado" className="text-white font-bold">Estado</label>
+              <select
+                id="estado"
+                className="text-black px-2 py-3 rounded-lg"
+                name="estado"
+                value={cliente.estado}
+                onChange={handleChange}
+              >
+                <option value={true}>Activo</option>
+                <option value={false}>Inactivo</option>
+              </select>
+            </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <input
-              type="email"
-              placeholder="Correo electrónico"
-              className="text-black px-2 py-3 rounded-lg"
-              name="correo"
-              value={cliente.correo}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <button
+          <button
               className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
               onClick={handleActualizarCliente}
             >
-              Actualizar cliente
+              Actualizar
             </button>
             <Link to="/clientes" className="w-full md:w-[43%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">

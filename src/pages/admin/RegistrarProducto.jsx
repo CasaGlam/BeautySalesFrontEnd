@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -8,8 +8,20 @@ const RegistrarProducto = () => {
     nombre: "",
     precio: "",
     cantidad: "",
-    descripcion: ""
+    descripcion: "",
+    categoria: "" // Agregamos categoría al estado del producto
   });
+
+  const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías obtenidas
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/categorias")
+      .then((response) => response.json())
+      .then((data) => {
+        setCategorias(data.categorias);
+      })
+      .catch((error) => console.error("Error fetching categorias:", error));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +38,8 @@ const RegistrarProducto = () => {
       producto.nombre &&
       producto.precio &&
       producto.cantidad &&
-      producto.descripcion
+      producto.descripcion &&
+      producto.categoria
     ) {
       try {
         const response = await fetch("http://localhost:8080/api/productos", {
@@ -60,7 +73,9 @@ const RegistrarProducto = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Registrar producto nuevo</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4">
+        Registrar producto nuevo
+      </h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
@@ -111,6 +126,22 @@ const RegistrarProducto = () => {
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
                 />
               </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+              {/* Selector para la categoría */}
+              <select
+                name="categoria"
+                value={producto.categoria}
+                onChange={handleChange}
+                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+              >
+                <option value="">Selecciona una categoría</option>
+                {categorias.map((categoria) => (
+                  <option key={categoria._id} value={categoria._id}>
+                    {categoria.nombre}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <button

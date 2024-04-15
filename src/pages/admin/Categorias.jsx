@@ -93,14 +93,14 @@ const Categorias = () => {
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
           <div>
-            <h1 className="text-2xl font-bold mb-4 pt-4">Registro de categorías</h1>
+            <h1 className="text-2xl font-bold mb-4 pt-4">Listado de categorías</h1>
           </div>
           <div className="flex gap-4">
             <div>
               <input
                 className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
                 type="search"
-                placeholder="Buscar categoría"
+                placeholder="Buscar "
                 value={searchTerm}
                 onChange={handleSearch}
               />
@@ -108,7 +108,7 @@ const Categorias = () => {
             <div className="">
               <Link to="/categorias/registrar-categoria">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Agregar nueva categoría
+                  Agregar 
                 </button>
               </Link>
             </div>

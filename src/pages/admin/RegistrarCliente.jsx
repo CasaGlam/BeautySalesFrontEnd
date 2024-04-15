@@ -62,47 +62,53 @@ const RegistrarCliente = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Registrar cliente</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-white">Registrar cliente</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+            <div className="flex flex-col md:flex-row gap-12 mb-10">
+              <div className="relative flex-1">
+                <label htmlFor="nombre" className="text-white mb-2">Nombre</label>
+                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-white" />
                 <input
                   type="text"
+                  id="nombre"
                   placeholder="Nombre"
                   name="nombre"
                   value={cliente.nombre}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full"
                 />
               </div>
-              <div className="relative">
-                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+              <div className="relative flex-1">
+                <label htmlFor="telefono" className="text-white mb-2">Teléfono</label>
+                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-white" />
                 <input
                   type="text"
+                  id="telefono"
                   placeholder="Teléfono"
                   name="telefono"
                   value={cliente.telefono}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full"
                 />
               </div>
             </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="email"
-                  placeholder="Correo electrónico"
-                  name="correo"
-                  value={cliente.correo}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                />
-              </div>
-            </div>
+            <div className="flex flex-col gap-12 mb-10">
+  <div className="relative">
+    <label htmlFor="correo" className="text-white mb-2 block text-center">Correo electrónico</label>
+    <input
+      type="email"
+      id="correo"
+      placeholder="Correo electrónico"
+      name="correo"
+      value={cliente.correo}
+      onChange={handleChange}
+      className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 w-full md:w-[43%] mx-auto block"
+    />
+  </div>
+</div>
+
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <button
                 type="submit"

@@ -35,6 +35,7 @@ const EditarCategoria = () => {
       [e.target.name]: e.target.value
     });
   };
+
   const handleActualizarCategoria = () => {
     // Verificar que ningún campo esté vacío
     if (
@@ -92,33 +93,44 @@ const EditarCategoria = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <input
-              type="text"
-              placeholder="Nombre de la categoría"
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
-              name="nombre"
-              value={categoria.nombre}
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              placeholder="Descripción"
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
-              name="descripcion"
-              value={categoria.descripcion}
-              onChange={handleChange}
-            />
+            <div className="flex-1">
+              <label htmlFor="nombre" className="text-white mb-2 block text-center">Nombre</label>
+              <input
+                type="text"
+                placeholder="Nombre de la categoría"
+                className="text-black px-4 py-3 rounded-lg w-full"
+                name="nombre"
+                value={categoria.nombre}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="flex-1">
+              <label htmlFor="descripcion" className="text-white mb-2 block text-center">Descripción</label>
+              <input
+                type="text"
+                placeholder="Descripción"
+                className="text-black px-4 py-3 rounded-lg w-full"
+                name="descripcion"
+                value={categoria.descripcion}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <select
-              name="estado"
-              value={categoria.estado}
-              onChange={handleChange}
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
-            >
-              <option value={true}>Activo</option>
-              <option value={false}>Inactivo</option>
-            </select>
+          <div className="w-full flex justify-center mb-10">
+            <div className="flex-1">
+              <label htmlFor="estado" className="text-white mb-2 block text-center">Estado</label>
+              <div className="flex justify-center">
+                <select
+                  name="estado"
+                  value={categoria.estado}
+                  onChange={handleChange}
+                  className="text-black px-4 py-3 rounded-lg w-full md:w-[43%] "
+                >
+                  <option value={true}>Activo</option>
+                  <option value={false}>Inactivo</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <button

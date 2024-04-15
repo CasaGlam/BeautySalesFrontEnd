@@ -89,6 +89,13 @@ const Clientes = () => {
     });
   };
 
+  const handleEstadoChange = (id, estado) => {
+    const updatedClientes = clientes.map(cliente =>
+      cliente._id === id ? { ...cliente, estado: !estado } : cliente
+    );
+    setClientes(updatedClientes);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -98,14 +105,14 @@ const Clientes = () => {
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
           <div>
-            <h1 className="text-2xl font-bold mb-4 pt-4">Registro de clientes</h1>
+            <h1 className="text-2xl font-bold mb-4 pt-4">Listado de clientes</h1>
           </div>
           <div className="flex gap-4">
             <div>
               <input
                 className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
                 type="search"
-                placeholder="Buscar cliente"
+                placeholder="Buscar "
                 value={searchTerm}
                 onChange={handleSearch}
               />
@@ -113,7 +120,7 @@ const Clientes = () => {
             <div className="">
               <Link to="/clientes/registrar-cliente">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Agregar nuevo cliente
+                  Agregar 
                 </button>
               </Link>
             </div>
@@ -133,6 +140,9 @@ const Clientes = () => {
                   Correo electrónico
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                  Estado
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>
@@ -143,6 +153,14 @@ const Clientes = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.nombre}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.telefono}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.correo}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${cliente.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                      onClick={() => handleEstadoChange(cliente._id, cliente.estado)}
+                    >
+                      {cliente.estado ? 'Activo' : 'Inactivo'}
+                    </button>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
                     <Link to={`/clientes/editar-cliente/${cliente._id}`}>
                       <FaEdit className="text-black hover:text-gray-700 transition-colors cursor-pointer" />
