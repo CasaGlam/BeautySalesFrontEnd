@@ -1,10 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
+import { obtenerDatosDesdeToken } from "../functions/token";
+import getPermisosDesdeToken from "../functions/PermisosDesdeToken";
+
 
 const LayoutAdmin = () => {
   const location = useLocation();
+  const [permisos, setPermisos] = useState([]);
+
+  useEffect(() => {
+    // Llama a la función para obtener los datos del token
+    const tokenData = obtenerDatosDesdeToken();
+    
+    // Verifica si se obtuvieron los datos del token
+    if (tokenData) {
+      // Extrae el rol del tokenData
+      const { rol } = tokenData;
+
+      // Llama a la función para obtener los permisos basados en el rol
+      const obtenerPermisos = async () => {
+        try {
+          const permisos = await getPermisosDesdeToken(rol);
+          setPermisos(permisos);
+        } catch (error) {
+          console.error("Error al obtener permisos desde el token:", error);
+        }
+      };
+
+      obtenerPermisos();
+    }
+  }, []);
 
   let title = "";
   switch (location.pathname) {
@@ -92,7 +119,7 @@ const LayoutAdmin = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 xl:grid-cols-6">
-      <Sidebar />
+      <Sidebar permisos={permisos} />
       <div className="xl:col-span-5">
         <Header title={title} />
         <div className="h-[90vh] overflow-y-scroll p-8">
