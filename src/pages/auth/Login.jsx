@@ -40,7 +40,7 @@ const Login = () => {
 
       const data = await response.json();
       localStorage.setItem("token", data.token);
-      window.location.href = "http://localhost:5173"; // Redireccionar al usuario
+      window.location.href = "http://localhost:5173/perfil"; // Redireccionar al usuario
     } catch (error) {
       console.error("Error al iniciar sesión:", error.message);
       Swal.fire({

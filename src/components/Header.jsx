@@ -16,11 +16,16 @@ const Header = ({ title }) => {
     setUsuario(datosUsuario);
   }, []);
 
+  const handleLogout = () => {
+    // Borra el token del localStorage
+    localStorage.removeItem('token');
+  };
+
   return (
     <header className="h-[7vh] md:h-[10vh] border-b border-secondary-100 p-8 flex items-center justify-between bg-secondary-100">
       <h2>{title}</h2>
       <nav className="flex items-center gap-x-4">
-        {usuario ? ( // Verifica si usuario no es null
+        {usuario ? (
           <Menu
             menuButton={
               <MenuButton className="flex items-center gap-x-2 hover:bg-secondary-100 py-2 px-4 rounded-lg">
@@ -51,7 +56,7 @@ const Header = ({ title }) => {
             </MenuItem>
             <hr className="my-4 border-gray-500" />
             <MenuItem className="rounded-lg transition-colors text-gray-300 hover:bg-secondary-900">
-              <Link to="/login" className="flex items-center gap-x-4 ">
+              <Link to="/login" className="flex items-center gap-x-4 " onClick={handleLogout}>
                 <CiLogout className="ml-[10px] text-primary object-cover rounded-full" />
                 <div className="flex flex-col text-sm">
                   <span className="text-sm">Cerrar sesión</span>
@@ -60,7 +65,6 @@ const Header = ({ title }) => {
             </MenuItem>
           </Menu>
         ) : (
-          // Si usuario es null, muestra otro contenido o nada
           null
         )}
       </nav>

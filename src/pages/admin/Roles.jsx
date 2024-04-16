@@ -41,51 +41,88 @@ const Roles = () => {
     setSelectedRole(null);
   };
 
-  const handleDelete = (objectId) => {
-    MySwal.fire({
-      title: "¿Estás seguro?",
-      text: "Esta acción no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Si el usuario confirma la eliminación, enviar la solicitud DELETE
-        fetch(`http://localhost:8080/api/roles/${objectId}`, {
-          method: "DELETE",
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Error deleting role");
-            }
-            return response.json();
-          })
-          .then(() => {
-            // Recargar roles después de eliminar
-            fetchRoles();
-            // Mostrar alerta de éxito
-            MySwal.fire({
-              icon: "success",
-              title: "Eliminado con éxito",
-              timer: 2000,
-              showConfirmButton: false,
-            });
-          })
-          .catch((error) => {
-            console.error("Error deleting role:", error.message);
-            // Mostrar alerta de error
-            MySwal.fire({
-              icon: "error",
-              title: "Error al eliminar",
-              text: error.message,
-            });
-          });
-      }
-    });
+  const handleDelete = (roleId, roleName) => {
+    // Verificar si el rol es el "SUPER ADMINISTRADOR"
+    if (roleName === "SUPER ADMINISTRADOR") {
+      MySwal.fire(
+        'Error!',
+        'No se puede eliminar al SUPER ADMINISTRADOR.',
+        'error'
+      );
+      return; // Evitar que se continúe con la eliminación
+    }
+  
+    // Verificar si hay usuarios asignados a este rol
+    fetch('http://localhost:8080/api/usuarios')
+      .then(response => response.json())
+      .then(data => {
+        const usersAssignedToRole = data.usuarios.filter(usuario => usuario.rol === roleName);
+        if (usersAssignedToRole.length > 0) {
+          MySwal.fire(
+            'Error!',
+            'No se puede eliminar el rol porque hay usuarios asignados a él.',
+            'error'
+          );
+          return; // Evitar que se continúe con la eliminación
+        }
+  
+        // Si no hay usuarios asignados al rol, proceder con la eliminación
+        MySwal.fire({
+          title: "¿Estás seguro?",
+          text: "Esta acción no se puede revertir",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Sí, eliminar",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Si el usuario confirma la eliminación, enviar la solicitud DELETE
+            fetch(`http://localhost:8080/api/roles/${roleId}`, {
+              method: "DELETE",
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Error deleting role");
+                }
+                return response.json();
+              })
+              .then(() => {
+                // Recargar roles después de eliminar
+                fetchRoles();
+                // Mostrar alerta de éxito
+                MySwal.fire({
+                  icon: "success",
+                  title: "Eliminado con éxito",
+                  timer: 2000,
+                  showConfirmButton: false,
+                });
+              })
+              .catch((error) => {
+                console.error("Error deleting role:", error.message);
+                // Mostrar alerta de error
+                MySwal.fire({
+                  icon: "error",
+                  title: "Error al eliminar",
+                  text: error.message,
+                });
+              });
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching usuarios:', error);
+        // Mostrar alerta de error
+        MySwal.fire({
+          icon: "error",
+          title: "Error al obtener la lista de usuarios",
+          text: "Hubo un error al obtener la lista de usuarios.",
+        });
+      });
   };
+  
+  
 
   const allPermissions = [
     "dashboard",
@@ -191,7 +228,7 @@ const Roles = () => {
                       </button>
                     </Link>
                     <button
-                      onClick={() => handleDelete(rol._id)}
+                      onClick={() => handleDelete(rol._id, rol.rol)}
                       className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
                     >
                       <FaTrash />
