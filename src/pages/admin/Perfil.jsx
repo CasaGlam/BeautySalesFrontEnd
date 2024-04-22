@@ -14,7 +14,7 @@ const Perfil = () => {
   return (
     <div className="bg-secondary-100 p-8 rounded-xl mb-10">
       <div className="mb-10 w-full flex items-center justify-center">
-        <div className="rounded-full" style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}>
+        <div className="rounded-full border border-black" style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}>
         <img
           src="src/assets/img/LogoBeautySales.png"
           className="w-40 h-40 rounded-full"
@@ -22,18 +22,18 @@ const Perfil = () => {
         </div>
       </div>
       <hr className="mb-10 border-gray-500"/>
-      <h3 className="text-xl text-white pb-10">Información de usuario</h3>
+      <h3 className="text-xl text-texto-100 pb-10">Información de usuario</h3>
       <div className="bg-secondary-900 p-8 rounded-xl mb-10">
         <form>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
             <div className="w-full md:w-1/4">
-              <p>Nombre</p>
+              <p className='text-texto-100'>Nombre</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <input
                   type="text"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Nombre"
                   value={usuario ? usuario.nombre : ''}
                   onChange={(e) => setUsuario({...usuario, nombre: e.target.value})}
@@ -43,13 +43,13 @@ const Perfil = () => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
             <div className="w-full md:w-1/4">
-              <p>Rol</p>
+              <p className='text-texto-100'>Rol</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <input
                   type="text"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Rol"
                   value={usuario ? usuario.rol : ''}
                   onChange={(e) => setUsuario({...usuario, rol: e.target.value})}
@@ -60,11 +60,11 @@ const Perfil = () => {
           <hr className="m-8 border-gray-500/30 border-dashed"/>
           <div className="mb-10 flex flex-col md:flex-row md:items-center gap-y-4 justify-between">
             <div>
-              <h5 className="text-gray-100 text-xl">Correo electrónico</h5>
+              <h5 className="text-texto-100 text-xl">Correo electrónico</h5>
               <p className="text-gray-500 text-sm">{usuario ? usuario.correo : ''}</p>
             </div>
             <div>
-              <button className="w-full md:w-auto bg-[#3c3c3c] text-[#888888] py-3 px-4 rounded-lg hover:bg-black hover:text-white transition-colors duration-500">
+              <button className="w-full md:w-auto bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-black hover:text-texto-900 transition-colors duration-500">
                 Cambiar email
               </button>
             </div>
@@ -72,11 +72,11 @@ const Perfil = () => {
           
           <div className="mb-10 flex flex-col md:flex-row md:items-center gap-y-4 justify-between">
             <div>
-              <h5 className="text-gray-100 text-xl">Contraseña</h5>
+              <h5 className="text-texto-100 text-xl">Contraseña</h5>
               <p className="text-gray-500 text-sm">*******</p>
             </div>
             <div>
-              <button className="w-full md:w-auto bg-[#3c3c3c] text-[#888888] py-3 px-4 rounded-lg hover:bg-black hover:text-white  transition-colors duration-500">
+              <button className="w-full md:w-auto bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-black hover:text-texto-900 transition-colors duration-500">
                 Cambiar contraseña
               </button>
             </div>
@@ -84,21 +84,21 @@ const Perfil = () => {
         </form>
       </div>
       <div className="flex justify-end">
-        <button className="mb-10 bg-primary text-black py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors">Guardar</button>
+        <button className="mb-10 bg-primary text-texto-900 font-bold py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors">Guardar</button>
       </div>
       <hr className="mb-10 border-gray-500"/>
-      <h3 className="text-xl text-white pb-10">Información de la empresa</h3>
+      <h3 className="text-xl text-texto-100 pb-10">Información de la empresa</h3>
       <div className="mb-10 bg-secondary-900 p-8 rounded-xl">
         <form>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
             <div className="w-full md:w-1/4">
-              <p>Nombre de la empresa</p>
+              <p className='text-texto-100'>Nombre de la empresa</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <input
                   type="text"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Nombre"
                 />
               </div>
@@ -106,12 +106,12 @@ const Perfil = () => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
             <div className="w-full md:w-1/4">
-              <p>Descripción</p>
+              <p className='text-texto-100'>Descripción</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <textarea
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 resize-none"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 resize-none text-texto-100"
                   rows={4}
                   placeholder="Descripción de la empresa"
                   
@@ -121,13 +121,13 @@ const Perfil = () => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
             <div className="w-full md:w-1/4">
-              <p>Email de la empresa</p>
+              <p className='text-texto-100'>Email de la empresa</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <input
                   type="email"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Correo electrónico"
                 />
               </div>
@@ -135,13 +135,13 @@ const Perfil = () => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
             <div className="w-full md:w-1/4">
-              <p>Dirección</p>
+              <p className='text-texto-100'>Dirección</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <input
                   type="text"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Dirección de la empresa"
                 />
               </div>
@@ -149,13 +149,13 @@ const Perfil = () => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
             <div className="w-full md:w-1/4">
-              <p>Teléfono</p>
+              <p className='text-texto-100'>Teléfono</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <input
                   type="number"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Número de teléfono"
                 />
               </div>
@@ -163,13 +163,13 @@ const Perfil = () => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
             <div className="w-full md:w-1/4">
-              <p>Celular</p>
+              <p className='text-texto-100'>Celular</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <input
                   type="number"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Número de celular"
                 />
               </div>
@@ -177,13 +177,13 @@ const Perfil = () => {
           </div>
           <div className="flex flex-col md:flex-row md:items-center gap-y-2">
             <div className="w-full md:w-1/4">
-              <p>Página web</p>
+              <p className='text-texto-100'>Página web</p>
             </div>
             <div className="flex-1 flex items-center">
               <div className="w-full">
                 <input
                   type="url"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100"
+                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="URL de la web"
                 />
               </div>
@@ -192,7 +192,7 @@ const Perfil = () => {
         </form>
       </div>
       <div className="flex justify-end">
-        <button className="mb-10 bg-primary text-black py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors">Guardar</button>
+        <button className="mb-10 bg-primary text-texto-900 font-bold py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors">Guardar</button>
       </div>
     </div>
   );
