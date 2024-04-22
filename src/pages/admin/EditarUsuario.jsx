@@ -119,12 +119,12 @@ const EditarUsuario = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Editar usuario</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar usuario</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="flex flex-col">
-              <label htmlFor="nombre" className="pb-1">
+              <label htmlFor="nombre" className="pb-1 text-texto-100">
                 Nombre de usuario
               </label>
               <div className="relative">
@@ -132,7 +132,7 @@ const EditarUsuario = () => {
                 <input
                   type="text"
                   placeholder="Nombre de usuario"
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="nombre"
                   id="nombre"
                   value={usuario.nombre}
@@ -141,7 +141,7 @@ const EditarUsuario = () => {
               </div>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="correo" className="pb-1">
+              <label htmlFor="correo" className="pb-1 text-texto-100">
                 Correo electrónico
               </label>
               <div className="relative">
@@ -149,7 +149,7 @@ const EditarUsuario = () => {
                 <input
                   type="email"
                   placeholder="Correo electrónico"
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="correo"
                   id="correo"
                   value={usuario.correo}
@@ -160,14 +160,14 @@ const EditarUsuario = () => {
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="flex flex-col w-full">
-              <label htmlFor="rol" className="pb-1">
+              <label htmlFor="rol" className="pb-1 text-texto-100">
                 Rol
               </label>
               <div className="relative">
                 <select
                   name="rol"
                   id="rol"
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full md:w-full md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full md:w-full md:pl-8 md:pr-12 bg-secondary-900"
                   value={usuario.rol}
                   onChange={handleChange}
                 >
@@ -181,14 +181,14 @@ const EditarUsuario = () => {
               </div>
             </div>
             <div className="flex flex-col w-full">
-              <label htmlFor="estado" className="pb-1">
+              <label htmlFor="estado" className="pb-1 text-texto-100">
                 Estado
               </label>
               <div className="relative">
                 <select
                   name="estado"
                   id="estado"
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full md:w-[100%] md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 w-full md:w-[100%] md:pl-8 md:pr-12 bg-secondary-900"
                   onChange={handleChange}
                 >
                   <option value="">Seleccione el estado</option>

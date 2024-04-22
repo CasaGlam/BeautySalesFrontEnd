@@ -39,29 +39,29 @@ class Dashboard extends Component {
         <ul className="flex gap-4 mb-8">
           <li className="bg-secondary-100 flex items-center w-[33%] py-4 px-8 gap-4 rounded-xl">
             <div className="bg-[#8142ff] p-8 rounded-lg">
-            <FaShoppingCart className="text-4xl"/>
+            <FaShoppingCart className="text-4xl text-white"/>
             </div>
             <span >
-            <h3 className="font-bold text-3xl">${totalCompras.toLocaleString()}</h3>
-              <p className="font-bold">Compras</p>
+            <h3 className="font-bold text-3xl text-texto-100">${totalCompras.toLocaleString()}</h3>
+              <p className="font-bold text-texto-100">Compras</p>
             </span>
           </li>
           <li className="bg-secondary-100 flex items-center w-[33%] py-4 px-8 gap-4 rounded-xl">
           <div className="bg-[#059bff] p-8 rounded-lg">
-          <MdSell className="text-4xl"/>
+          <MdSell className="text-4xl text-white"/>
             </div>
             <span >
-              <h3 className="font-bold text-3xl">$1.350.000</h3>
-              <p className="font-bold">Ventas</p>
+              <h3 className="font-bold text-3xl text-texto-100">$1.350.000</h3>
+              <p className="font-bold text-texto-100">Ventas</p>
             </span>
           </li>
           <li className="bg-secondary-100 flex items-center w-[33%] py-4 px-8 gap-4 rounded-xl">
           <div className="bg-[#ff4069] p-8 rounded-lg">
-            <TbCoinFilled className="text-4xl"/>
+            <TbCoinFilled className="text-4xl text-white"/>
             </div>
             <span>
-              <h3 className="font-bold text-3xl">$712.000</h3>
-              <p className="font-bold">Ganancias</p>
+              <h3 className="font-bold text-3xl text-texto-100">$712.000</h3>
+              <p className="font-bold text-texto-100">Ganancias</p>
             </span>
           </li>
         </ul>

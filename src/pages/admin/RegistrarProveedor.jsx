@@ -58,7 +58,7 @@ const RegistrarProveedor = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Registrar proveedor nuevo</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Registrar proveedor nuevo</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
@@ -71,7 +71,7 @@ const RegistrarProveedor = () => {
                   name="nombre"
                   value={proveedor.nombre}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
               <div className="relative flex-1">
@@ -82,7 +82,7 @@ const RegistrarProveedor = () => {
                   name="telefono"
                   value={proveedor.telefono}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>
@@ -95,7 +95,7 @@ const RegistrarProveedor = () => {
                   name="correo"
                   value={proveedor.correo}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
               <div className="relative flex-1">
@@ -106,7 +106,7 @@ const RegistrarProveedor = () => {
                   name="direccion"
                   value={proveedor.direccion}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>
@@ -119,7 +119,7 @@ const RegistrarProveedor = () => {
                   name="descripcion"
                   value={proveedor.descripcion}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>
