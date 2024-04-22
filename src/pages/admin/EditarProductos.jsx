@@ -93,14 +93,14 @@ const EditarProducto = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Editar producto</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar producto</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <input
               type="text"
               placeholder="Nombre del producto"
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
               name="nombre"
               value={producto.nombre}
               onChange={handleChange}
@@ -110,7 +110,7 @@ const EditarProducto = () => {
               <input
                 type="text"
                 placeholder="Precio"
-                className="text-black px-4 py-3 rounded-lg"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900"
                 name="precio"
                 value={producto.precio}
                 onChange={handleChange}
@@ -122,7 +122,7 @@ const EditarProducto = () => {
             <input
               type="text"
               placeholder="Cantidad"
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
               name="cantidad"
               value={producto.cantidad}
               onChange={handleChange}
@@ -130,7 +130,7 @@ const EditarProducto = () => {
             <input
               type="text"
               placeholder="Descripción"
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
               name="descripcion"
               value={producto.descripcion}
               onChange={handleChange}
@@ -141,7 +141,7 @@ const EditarProducto = () => {
               name="estado"
               value={producto.estado}
               onChange={handleChange}
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
             >
               <option value={true}>Activo</option>
               <option value={false}>Inactivo</option>

@@ -60,7 +60,7 @@ const RegistrarProducto = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Registrar producto nuevo</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Registrar producto nuevo</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
@@ -73,7 +73,7 @@ const RegistrarProducto = () => {
                   name="nombre"
                   value={producto.nombre}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
               <div className="relative">
@@ -84,7 +84,7 @@ const RegistrarProducto = () => {
                   name="precio"
                   value={producto.precio}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>
@@ -97,7 +97,7 @@ const RegistrarProducto = () => {
                   name="cantidad"
                   value={producto.cantidad}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
               <div className="relative">
@@ -108,7 +108,7 @@ const RegistrarProducto = () => {
                   name="descripcion"
                   value={producto.descripcion}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>

@@ -98,12 +98,12 @@ const Clientes = () => {
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
           <div>
-            <h1 className="text-2xl font-bold mb-4 pt-4">Registro de clientes</h1>
+            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Registro de clientes</h1>
           </div>
           <div className="flex gap-4">
             <div>
               <input
-                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
+                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
                 type="search"
                 placeholder="Buscar cliente"
                 value={searchTerm}
@@ -123,16 +123,16 @@ const Clientes = () => {
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Nombre
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Teléfono
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Correo electrónico
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>

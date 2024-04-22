@@ -102,12 +102,12 @@ const Usuarios = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
         <div>
-          <h1 className="text-2xl font-bold mb-4 pt-4">Listado de usuarios</h1>
+          <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de usuarios</h1>
         </div>
-        <div className="flex flex-col gap-4 md:flex-row ">
+        <div className="flex flex-col gap-4 md:flex-row mr-5">
           <div>
             <input
-              className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
+              className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
               type="search"
               placeholder="Buscar"
               value={searchTerm}
@@ -135,31 +135,31 @@ const Usuarios = () => {
               <tr className="">
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Nombre
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Correo
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Rol
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Estado
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Acciones
                 </th>

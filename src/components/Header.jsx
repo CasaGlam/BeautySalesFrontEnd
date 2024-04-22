@@ -22,8 +22,8 @@ const Header = ({ title }) => {
   };
 
   return (
-    <header className="h-[7vh] md:h-[10vh] border-b border-secondary-100 p-8 flex items-center justify-between bg-secondary-100">
-      <h2>{title}</h2>
+    <header className="h-[7vh] md:h-[10vh] border-b border-secondary-100 p-8 flex items-center justify-between bg-secondary-900">
+      <h2 className='text-texto-100 font-bold'>{title}</h2>
       <nav className="flex items-center gap-x-4">
         {usuario ? (
           <Menu
@@ -33,8 +33,8 @@ const Header = ({ title }) => {
                   src="/src/assets/img/pfp.jpg"
                   className="w-6 h-6 object-cover rounded-full"
                 />
-                <span>{usuario.nombre}</span>
-                <IoIosArrowDown />
+                <span className='text-texto-100 font-bold'>{usuario.nombre}</span>
+                <IoIosArrowDown className='text-texto-100'/>
               </MenuButton>
             }
             transition
@@ -47,8 +47,8 @@ const Header = ({ title }) => {
                   className="w-8 h-8 object-cover rounded-full"
                 />
                 <div className="flex flex-col text-sm">
-                  <span className="text-sm">{usuario.nombre}</span>
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-sm text-texto-100 font-bold">{usuario.nombre}</span>
+                  <span className="text-[10px] text-gray-500 font-bold">
                     {usuario.correo}
                   </span>
                 </div>
@@ -57,9 +57,9 @@ const Header = ({ title }) => {
             <hr className="my-4 border-gray-500" />
             <MenuItem className="rounded-lg transition-colors text-gray-300 hover:bg-secondary-900">
               <Link to="/login" className="flex items-center gap-x-4 " onClick={handleLogout}>
-                <CiLogout className="ml-[10px] text-primary object-cover rounded-full" />
+                <CiLogout className="ml-[10px] text-primary object-cover rounded-full " />
                 <div className="flex flex-col text-sm">
-                  <span className="text-sm">Cerrar sesión</span>
+                  <span className="text-sm text-texto-100 font-bold">Cerrar sesión</span>
                 </div>
               </Link>
             </MenuItem>

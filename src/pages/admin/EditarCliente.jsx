@@ -89,14 +89,14 @@ const EditarCliente = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Editar cliente</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar cliente</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <input
               type="text"
               placeholder="Nombre del cliente"
-              className="text-black px-2 py-3 rounded-lg"
+              className="text-black px-2 py-3 rounded-lg bg-secondary-900"
               name="nombre"
               value={cliente.nombre}
               onChange={handleChange}
@@ -104,7 +104,7 @@ const EditarCliente = () => {
             <input
               type="tel"
               placeholder="Teléfono"
-              className="text-black px-2 py-3 rounded-lg"
+              className="text-black px-2 py-3 rounded-lg bg-secondary-900"
               name="telefono"
               value={cliente.telefono}
               onChange={handleChange}
@@ -114,7 +114,7 @@ const EditarCliente = () => {
             <input
               type="email"
               placeholder="Correo electrónico"
-              className="text-black px-2 py-3 rounded-lg"
+              className="text-black px-2 py-3 rounded-lg bg-secondary-900"
               name="correo"
               value={cliente.correo}
               onChange={handleChange}

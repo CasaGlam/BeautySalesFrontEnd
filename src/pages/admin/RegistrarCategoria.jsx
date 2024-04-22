@@ -49,7 +49,7 @@ const RegistrarCategoria = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Registrar nueva categoría</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Registrar nueva categoría</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
@@ -62,7 +62,7 @@ const RegistrarCategoria = () => {
                   name="nombre"
                   value={categoria.nombre}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>
@@ -75,7 +75,7 @@ const RegistrarCategoria = () => {
                   name="descripcion"
                   value={categoria.descripcion}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>
@@ -86,7 +86,7 @@ const RegistrarCategoria = () => {
                   name="estado"
                   value={categoria.estado}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 >
                   <option value="">Seleccionar estado</option>
                   <option value="Activo">Activo</option>

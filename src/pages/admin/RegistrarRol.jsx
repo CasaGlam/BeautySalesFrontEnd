@@ -80,18 +80,18 @@ const RegistrarRol = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Registrar rol nuevo</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Registrar rol nuevo</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="flex flex-col ">
-            <label htmlFor="rol" className="pb-1">Nombre de rol</label>
+            <label htmlFor="rol" className="pb-1 text-texto-100">Nombre de rol</label>
             <div className="relative">
               <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
                 type="text"
                 placeholder="Nombre de rol"
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 value={rol}
                 onChange={(e) => setRol(e.target.value)}
                 id="rol"
@@ -100,9 +100,9 @@ const RegistrarRol = () => {
             </div>
           </div>
           <div className="flex justify-center">
-            <h2 className="text-3xl font-bold">Permisos</h2>
+            <h2 className="text-3xl font-bold text-texto-100">Permisos</h2>
           </div>
-          <div className="w-full flex flex-wrap justify-center gap-4 mb-10 mt-10 border py-4 border-white rounded-lg">
+          <div className="w-full flex flex-wrap justify-center gap-4 mb-10 mt-10 border py-4 border-texto-100 rounded-lg">
             {[
               "dashboard",
               "productos",
