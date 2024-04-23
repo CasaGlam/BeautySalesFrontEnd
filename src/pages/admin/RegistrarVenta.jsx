@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaTrashAlt, FaSave, FaTimesCircle, FaPlus } from "react-icons/fa";
-import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
+import { FaSearch,  FaTrash, FaPlus, FaMinus } from "react-icons/fa";
+
 import Swal from 'sweetalert2';
 
 const RegistrarVenta = () => {
+  
   const [clientes, setClientes] = useState([]);
   const [productosEncontrados, setProductosEncontrados] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -11,10 +12,16 @@ const RegistrarVenta = () => {
   const [clienteSeleccionado, setClienteSeleccionado] = useState('');
   const [numeroVenta, setNumeroVenta] = useState('');
   const [fecha, setFecha] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [totalVenta, setTotalVenta] = useState(0); 
+  const [showModal, setShowModal] = useState(false); 
+  const [nuevoCliente, setNuevoCliente] = useState({
+    nombre: '',
+    telefono: '',
+    correo: '',
+    estado: true, 
+  });
 
   useEffect(() => {
-    // Obtener clientes desde la API
     fetch('http://localhost:8080/api/clientes')
       .then(response => response.json())
       .then(data => {
@@ -29,6 +36,55 @@ const RegistrarVenta = () => {
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNuevoCliente(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = () => {
+    fetch('http://localhost:8080/api/clientes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(nuevoCliente)
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Error al guardar el cliente');
+      })
+      .then(data => {
+        console.log('Cliente guardado correctamente:', data);
+        Swal.fire(
+          'Cliente Guardado',
+          'El cliente ha sido guardado correctamente.',
+          'success'
+        ).then(() => {
+          setClientes([...clientes, data.cliente]);
+          setShowModal(false);
+          setNuevoCliente({
+            nombre: '',
+            telefono: '',
+            correo: '',
+            estado: true,
+          });
+        });
+      })
+      .catch(error => {
+        console.error('Error al guardar el cliente:', error);
+        Swal.fire(
+          'Error',
+          'Hubo un problema al guardar el cliente.',
+          'error'
+        );
+      });
+  };
 
   const buscarProducto = (e) => {
     const value = e.target.value;
@@ -52,7 +108,7 @@ const RegistrarVenta = () => {
 
     if (productoExistente) {
       const nuevosProductos = productosEncontrados.map(item =>
-        item.nombre === producto ? { ...item, cantidad: cantidad } : item
+        item.nombre === producto ? { ...item, cantidad: cantidad, total: cantidad * item.precio } : item
       );
       setProductosEncontrados(nuevosProductos);
     } else {
@@ -65,7 +121,8 @@ const RegistrarVenta = () => {
               nombre: producto,
               cantidad: cantidad,
               precio: productoEncontrado.precio,
-              idProducto: productoEncontrado._id // Enviar el ID del producto en lugar del nombre
+              total: cantidad * productoEncontrado.precio, 
+              idProducto: productoEncontrado._id 
             }]);
           } else {
             console.error('Producto no encontrado:', producto);
@@ -83,22 +140,18 @@ const RegistrarVenta = () => {
     setProductosEncontrados(nuevosProductos);
   };
 
-  const subtotal = productosEncontrados.reduce((total, producto) => total + producto.cantidad * producto.precio, 0);
-
   const guardarVentaApi = () => {
-    // Calcular el total de la venta
-    const total = productosEncontrados.reduce((total, producto) => total + producto.cantidad * producto.precio, 0);
+    const total = productosEncontrados.reduce((acc, producto) => acc + producto.total, 0);
 
-    // Construir el objeto de venta
     const venta = {
       numeroVenta: numeroVenta,
       fecha: fecha,
       idCliente: clienteSeleccionado,
       detallesVenta: productosEncontrados,
-      total: total // Agregar el total de la venta al objeto de venta
+      total: total, 
+      descripcionEstado: "Porqué cambias de estado?" 
     };
 
-    // Enviar la solicitud POST con el objeto de venta
     fetch('http://localhost:8080/api/ventas', {
       method: 'POST',
       headers: {
@@ -114,12 +167,30 @@ const RegistrarVenta = () => {
       })
       .then(data => {
         console.log('Venta guardada correctamente:', data);
+
+        for (let producto of productosEncontrados) {
+          fetch(`http://localhost:8080/api/productos/${producto.idProducto}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cantidadVendida: producto.cantidad })
+          })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Error al actualizar la cantidad de productos');
+              }
+            })
+            .catch(error => console.error('Error al actualizar la cantidad de productos:', error));
+        }
+
         Swal.fire(
           'Venta Guardada',
           'La venta ha sido guardada correctamente.',
           'success'
         ).then(() => {
           setProductosEncontrados([]);
+          setTotalVenta(0); 
         });
       })
       .catch(error => {
@@ -144,6 +215,7 @@ const RegistrarVenta = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         setProductosEncontrados([]);
+        setTotalVenta(0); 
         Swal.fire(
           'Creación de cliente cancelada',
           'La creación de cliente ha sido cancelada.',
@@ -153,39 +225,32 @@ const RegistrarVenta = () => {
     });
   };
 
-  const handleGuardarCliente = () => {
-    handleCloseModal();
-    Swal.fire(
-      'Cliente Guardado',
-      'El nuevo cliente ha sido guardado correctamente.',
-      'success'
-    );
-  };
-
-  const handleDateChange = (e) => {
-    const selectedDate = new Date(e.target.value);
+  useEffect(() => {
     const currentDate = new Date();
-    if (selectedDate < currentDate) {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth() + 1;
-      const day = currentDate.getDate();
-      const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-      setFecha(formattedDate);
-      Swal.fire(
-        'Fecha inválida',
-        'No puedes seleccionar una fecha anterior a la actual.',
-        'error'
-      );
-    } else {
-      setFecha(e.target.value);
-    }
-  };
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const day = currentDate.getDate();
+    const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+    setFecha(formattedDate);
+  }, []);
+
+  useEffect(() => {
+    const total = productosEncontrados.reduce((acc, producto) => acc + producto.total, 0);
+    setTotalVenta(total);
+  }, [productosEncontrados]);
 
   return (
     <div className="bg-secondary-100 w-full rounded-lg">
       <div className="flex justify-between p-4">
-        <h3 className="text-2xl font-bold text-texto-100">Registrar venta</h3>
-        <div className="flex items-center">
+        <div className="flex items-center w-full">
+          <div className='flex justify-between w-full'>
+          <div className=''>
+          <input
+            type="date"
+            className="border border-gray-300 rounded-md w-32 pl-3 py-[7px] mt-1 mb-2 bg-gray-200 text-texto-100 mr-2"
+            value={fecha}
+            readOnly
+          />
           <input
             type="text"
             placeholder="Número de venta"
@@ -193,26 +258,23 @@ const RegistrarVenta = () => {
             value={numeroVenta}
             onChange={(e) => setNumeroVenta(e.target.value)}
           />
-          <input
-            type="date"
-            className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-black mr-2"
-            value={fecha}
-            onChange={handleDateChange}
-          />
+          </div>
+          <div>
           <select
             value={clienteSeleccionado}
             onChange={(e) => setClienteSeleccionado(e.target.value)}
-            className="px-4 py-1 text-black text-sm rounded-full bg-gray-300 border border-white mr-2"
-            style={{ fontSize: '12px', width: '140px' }}
+            className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-texto-100 mr-2"
           >
-            <option value="">Seleccione cliente</option>
+            <option value="" className=''>Cliente</option>
             {clientes.map(cliente => (
-              <option key={cliente._id} value={cliente._id}>{cliente.nombre}</option> // Cambiado para enviar el ID del cliente
+              <option key={cliente._id} value={cliente._id}>{cliente.nombre}</option>
             ))}
           </select>
           <button onClick={handleShowModal} className="px-3 py-2 bg-gray-800 text-texto-900 rounded-full hover:bg-gray-700 focus:outline-none">
             <FaPlus />
           </button>
+          </div>
+          </div>
         </div>
       </div>
       <div className="flex justify-center p-8">
@@ -247,78 +309,132 @@ const RegistrarVenta = () => {
                   <div>
                     <div className="flex items-center">
                       <button
-                        className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        className="bg-primary text-texto-100 rounded-md p-1 text-xs  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         onClick={() => {
                           const newCantidad = Math.max(producto.cantidad - 1, 0);
                           agregarProducto(producto.nombre, newCantidad);
                         }}
                         type="button"
                       >
-                        <CiCircleMinus />
+                        <FaMinus className='text-texto-900'/>
                       </button>
                       <input
                         type="number"
-                        className="bg-gray-200 border border-gray-300 rounded-md w-16 px-3 py-1 text-black ml-2"
+                        className="bg-gray-200 border border-gray-300 rounded-md w-16 px-3 py-1 text-black mx-2"
                         value={producto.cantidad}
-                        onChange={(e) => agregarProducto(producto.nombre, parseInt(e.target.value))}
+                        onChange={(e) => {
+                          const newCantidad = parseInt(e.target.value);
+                          setProductosEncontrados(prevProductos => prevProductos.map((p, i) => {
+                            if (i === index) {
+                              return { ...p, cantidad: newCantidad };
+                            }
+                            return p;
+                          }));
+                        }}
                       />
                       <button
-                        className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        className="bg-primary text-texto-100 rounded-md p-1 text-xs  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         onClick={() => {
                           const newCantidad = producto.cantidad + 1;
                           agregarProducto(producto.nombre, newCantidad);
                         }}
                         type="button"
                       >
-                        <CiCirclePlus />
+                        <FaPlus className='text-texto-900'/>
                       </button>
                     </div>
                     <span className="text-texto-100 font-medium">{producto.nombre}</span>
                     <div>
                       <span className="text-texto-100 mr-2">Precio Unitario: ${producto.precio}</span>
-                      <span className="text-texto-100">Subtotal: ${producto.cantidad * producto.precio}</span>
+                      <span className="text-texto-100">Subtotal: ${producto.total}</span>
                     </div>
                   </div>
-                  <FaTrashAlt className="text-[#FF0000] cursor-pointer" onClick={() => eliminarProducto(producto)} />
+                  <FaTrash className="text-[#FF0000] cursor-pointer" onClick={() => eliminarProducto(producto)} />
                 </li>
               ))}
             </ul>
           </div>
-          <div className="flex justify-end gap-4">
-            <p className="text-texto-100 font-bold">Total: ${subtotal}</p>
-            <button onClick={guardarVentaApi} className="px-6 py-2 mt-10 bg-green-500 rounded-full text-texto-100"><FaSave /></button>
-            <button onClick={cancelarVenta} className="px-6 py-2 mt-10 bg-red-500 rounded-full text-texto-100"><FaTimesCircle /></button>
+          <div className="flex flex-col gap-4">
+            <div className='flex justify-end mr-14'>
+            <p className="text-texto-100 font-bold">Total: ${totalVenta}</p>
+            </div>
+              <div className='flex flex-col md:flex-row justify-center gap-12 mb-10'>
+              <button onClick={cancelarVenta} className="md:w-[43%] w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">Cancelar</button>
+            <button onClick={guardarVentaApi} className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">Guardar</button>
+
+              </div>
           </div>
         </div>
       </div>
-
       {showModal && (
         <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-700 opacity-75"></div>
+              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
-              <div className="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-texto-100">Agregar Nuevo Cliente</h3>
-                    <div className="mt-2">
-                      <input type="text" placeholder="Nombre" className="border border-gray-300 rounded-md w-full px-3 py-2 mt-1 mb-2 bg-gray-200 text-black" />
-                      <input type="text" placeholder="Teléfono" className="border border-gray-300 rounded-md w-full px-3 py-2 mt-1 mb-2 bg-gray-200 text-black" />
-                      <input type="text" placeholder="Correo" className="border border-gray-300 rounded-md w-full px-3 py-2 mt-1 mb-2 bg-gray-200 text-black" />
+                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                      Nuevo Cliente
+                    </h3>
+                    <div className="mt-2 w-full">
+                      <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">
+                          Nombre
+                        </label>
+                        <input
+                          type="text"
+                          name="nombre"
+                          id="nombre"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          placeholder="Nombre"
+                          value={nuevoCliente.nombre}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="telefono">
+                          Teléfono
+                        </label>
+                        <input
+                          type="text"
+                          name="telefono"
+                          id="telefono"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          placeholder="Teléfono"
+                          value={nuevoCliente.telefono}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="correo">
+                          Correo Electrónico
+                        </label>
+                        <input
+                          type="email"
+                          name="correo"
+                          id="correo"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          placeholder="Correo Electrónico"
+                          value={nuevoCliente.correo}
+                          onChange={handleInputChange}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" onClick={handleGuardarCliente} className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-texto-100 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                  <FaSave className="mr-2" /> 
+              <div className="flex flex-col md:flex-row justify-center gap-8 mb-10">
+                
+                <button onClick={handleCloseModal} type="button" className="md:w-[43%] w-full px-2 py-2 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                  Cancelar
                 </button>
-                <button type="button" onClick={handleCloseModal} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-texto-100 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                  <FaTimesCircle className="mr-2" /> 
-                </button>
+                <button onClick={handleSubmit} type="button" className="w-full md:w-[43%] px-2 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                  Guardar
+                </button> 
               </div>
             </div>
           </div>
@@ -326,6 +442,6 @@ const RegistrarVenta = () => {
       )}
     </div>
   );
-}
+};
 
 export default RegistrarVenta;

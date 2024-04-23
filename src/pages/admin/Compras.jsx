@@ -3,6 +3,10 @@ import { FaSearch, FaAngleDown, FaAngleUp, FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 
+// Icons
+import { GoChevronLeft, GoChevronRight } from "react-icons/go";
+import { MdEdit } from "react-icons/md";
+
 const Compras = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [compras, setCompras] = useState([]);
@@ -14,7 +18,7 @@ const Compras = () => {
   const [nuevoEstadoCompra, setNuevoEstadoCompra] = useState('');
   const [descripcionEstadoCompra, setDescripcionEstadoCompra] = useState('');
   const [compraSeleccionada, setCompraSeleccionada] = useState(null);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchCompras();
@@ -153,24 +157,32 @@ const Compras = () => {
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
           <div>
-            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Registro de compras</h1>
+            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de compras</h1>
           </div>
           <div className="flex gap-4">
             <div>
               <input
                 className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
                 type="search"
-                placeholder="Buscar compra"
+                placeholder="Buscar"
                 value={searchTerm}
                 onChange={handleSearch}
               />
             </div>
-            <div className="">
+            <div className="flex flex-col gap-4">
+              <div>
               <Link to="/compras/registrar-compra">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Agregar nueva compra
+                  Agregar
                 </button>
               </Link>
+              </div>
+              <div className='w-full'>
+                <select name="" id="" className='w-full px-4 py-2 rounded-lg border border-black text-texto-100'>
+                  <option value="">Activas</option>
+                  <option value="">Inactivas</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -230,12 +242,13 @@ const Compras = () => {
                       ${compra.detallesCompra.reduce((acc, detalle) => acc + (detalle.precioVenta * detalle.cantidad), 0)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button onClick={() => handleModalOpen(compra)} className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                        <MdEdit />
+                      </button>
                       <button onClick={() => setCompraExpandida(compraExpandida === compra._id ? null : compra._id)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
                         {compraExpandida === compra._id ? <FaAngleUp /> : <FaAngleDown />}
                       </button>
-                      <button onClick={() => handleModalOpen(compra)} className="text-green-600 hover:text-green-900 focus:outline-none ml-2">
-                        <FaEdit />
-                      </button>
+                      
                     </td>
                   </tr>
                   {compraExpandida === compra._id && (
@@ -270,7 +283,7 @@ const Compras = () => {
           </table>
         </div>
         {/* Paginación */}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-4 mb-4">
           <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
             <button
               onClick={() => paginate(currentPage - 1)}
@@ -278,10 +291,7 @@ const Compras = () => {
               className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span className="sr-only">Previous</span>
-              {/* Heroicon name: solid/chevron-left */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
-              </svg>
+              <GoChevronLeft/>
             </button>
             {/* Otras páginas */}
             {/* El contenido aquí depende de la cantidad de páginas */}
@@ -305,10 +315,7 @@ const Compras = () => {
               className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span className="sr-only">Next</span>
-              {/* Heroicon name: solid/chevron-right */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L9.914 10 4.293 4.293a1 1 0 1 1 1.414-1.414l6 6a1 1 0 0 1 0 1.414l-6 6z" clipRule="evenodd" />
-              </svg>
+              <GoChevronRight/>
             </button>
           </nav>
         </div>
@@ -321,34 +328,33 @@ const Compras = () => {
               <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
               {/* Modal panel, show/hide based on modal state */}
               <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-primary-100 sm:mx-0 sm:h-10 sm:w-10">
-                      {/* Heroicon name: outline/exclamation */}
-                      <svg className="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.61-1.59 1.864-3.014L13.864 4.986C13.12 3.61 11.999 3.61 11.255 4.986L4.938 18zm0 0v-5.999L4.999 4h14l.061 8.001M12 9h.01"></path>
-                      </svg>
+                <div className="bg-white w-full px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:flex-col sm:items-start w-full">
+                    <div className="">
+
                     </div>
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                      <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                        Actualizar estado de compra
-                      </h3>
-                      <div className="mt-2">
+                    <div className="mt-3 text-center sm:mt-0  sm:text-left w-full">
+                      <div className="mt-2 mb-12">
+                        <label htmlFor="estado" className='block text-sm font-medium text-gray-700'>Estado:</label>
                         <select
                           value={nuevoEstadoCompra}
                           onChange={handleEstadoChange}
                           className="w-full text-black rounded-md border border-gray-300 shadow-sm p-2 focus:outline-none focus:border-primary"
-                        >
+                          id='estado'
+                       >
                           <option value="Activa">Activa</option>
                           <option value="Inactiva">Inactiva</option>
                         </select>
                       </div>
-                      <div className="mt-2">
+                      <div className="w-full">
+                        <label htmlFor="descripcion" className='block text-sm font-medium text-gray-700'>Descripción del estado:</label>
                         <textarea
+                        id='descripcion'
                           value={descripcionEstadoCompra}
                           onChange={handleDescripcionEstadoChange}
                           placeholder="Ingrese la descripción del cambio de estado..."
-                          className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none"
+                          className="mt-1 p-2 border border-gray-300 rounded-md w-full text-black resize-none"
+                          rows="3"
                         ></textarea>
                       </div>
                     </div>

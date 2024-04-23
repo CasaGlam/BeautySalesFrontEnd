@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch, FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { FaSearch, FaAngleDown, FaAngleUp, FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2';
+
+// Icons
+import { GoChevronLeft, GoChevronRight } from "react-icons/go";
+import { MdEdit } from "react-icons/md";
+
 
 const Ventas = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [ventaEditando, setVentaEditando] = useState(null); 
+  const [descripcion, setDescripcion] = useState(''); 
   const [ventas, setVentas] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [productos, setProductos] = useState([]);
   const [ventaExpandida, setVentaExpandida] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetch('http://localhost:8080/api/ventas')
@@ -51,15 +59,50 @@ const Ventas = () => {
     setMostrarModal(!mostrarModal);
   };
 
-  const handleSubmit = (e) => {
+  const abrirModalEdicion = (venta) => {
+    setVentaEditando(venta);
+    setDescripcion(venta.descripcionEstado || ''); 
+    setMostrarModal(true);
+  };
+
+  const handleEditSubmit = (e) => {
     e.preventDefault();
-    // Lógica para guardar la venta
-    setMostrarModal(false);
+    const formData = new FormData(e.target);
+    const estado = formData.get('estado') === 'true';
+    const updatedVenta = { ...ventaEditando, estado }; 
+    updatedVenta.descripcionEstado = descripcion; // Actualizando la descripción del estado
+    fetch(`http://localhost:8080/api/ventas/${ventaEditando._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedVenta)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Venta actualizada con éxito:', data);
+      // Actualizar el estado local de ventas
+      const updatedVentas = ventas.map(venta => venta._id === updatedVenta._id ? updatedVenta : venta);
+      setVentas(updatedVentas);
+      setMostrarModal(false);
+      setVentaEditando(null);
+      setDescripcion(''); 
+      // Mostrar Sweet Alert de éxito
+      Swal.fire({
+        icon: 'success',
+        title: '¡Éxito!',
+        text: 'La descripción del estado ha sido actualizada.',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Ok'
+      });
+    })
+    .catch(error => console.error('Error al actualizar la venta:', error));
   };
 
   const handleCancel = () => {
-    // Lógica para cancelar la venta
     setMostrarModal(false);
+    setVentaEditando(null);
+    setDescripcion(''); 
   };
 
   const toggleVentaExpandida = (id) => {
@@ -72,7 +115,7 @@ const Ventas = () => {
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
-    setCurrentPage(1); // Resetear a la primera página al buscar
+    setCurrentPage(1);
   };
 
   const getClienteName = (idCliente) => {
@@ -117,24 +160,32 @@ const Ventas = () => {
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
           <div>
-            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Registro de ventas</h1>
+            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de ventas</h1>
           </div>
           <div className="flex gap-4">
             <div>
               <input
                 className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
                 type="search"
-                placeholder="Buscar venta"
+                placeholder="Buscar"
                 value={searchTerm}
                 onChange={handleSearch}
               />
             </div>
-            <div className="">
+            <div className=" flex flex-col gap-4">
+              <div>
               <Link to="/ventas/registrar-venta">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Agregar nueva venta
+                  Agregar
                 </button>
               </Link>
+              </div>
+              <div className='w-full'>
+                <select name="" id="" className='w-full px-4 py-2 rounded-lg border border-black text-texto-100'>
+                  <option value="">Activas</option>
+                  <option value="">Inactivas</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -157,7 +208,10 @@ const Ventas = () => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Total
                 </th>
-                <th scope="col" className="relative px-6 py-3 ">
+                <th scope="col" className="relative px-6 py-3">
+                  <span className="sr-only">Mostrar Detalles</span>
+                </th>
+                <th scope="col" className="relative px-6 py-3">
                   <span className="sr-only">Mostrar Detalles</span>
                 </th>
               </tr>
@@ -180,6 +234,11 @@ const Ventas = () => {
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-black">{getClienteName(venta.idCliente)}</td>
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-black">
                       ${getTotalVentaTabla(venta)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <button onClick={() => abrirModalEdicion(venta)} className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                        <MdEdit/>
+                      </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button onClick={() => toggleVentaExpandida(venta._id)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
@@ -216,8 +275,7 @@ const Ventas = () => {
             </tbody>
           </table>
         </div>
-        {/* Paginación */}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-4 mb-4">
           <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
             <button
               onClick={() => paginate(currentPage - 1)}
@@ -225,13 +283,8 @@ const Ventas = () => {
               className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span className="sr-only">Previous</span>
-              {/* Heroicon name: solid/chevron-left */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
-              </svg>
+              <GoChevronLeft/>
             </button>
-            {/* Otras páginas */}
-            {/* El contenido aquí depende de la cantidad de páginas */}
             {[...Array(Math.ceil(filteredVentas.length / itemsPerPage)).keys()].map((number) => (
               <button
                 key={number}
@@ -251,16 +304,12 @@ const Ventas = () => {
               className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span className="sr-only">Next</span>
-              {/* Heroicon name: solid/chevron-right */}
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <GoChevronRight/>
             </button>
           </nav>
         </div>
       </div>
       {mostrarModal && (
-        // Modal de registro de venta
         <div className="fixed z-10 inset-0 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -268,8 +317,33 @@ const Ventas = () => {
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <form onSubmit={handleSubmit}>
-                {/* Contenido del formulario de registro de venta */}
+              <form onSubmit={handleEditSubmit}>
+                <div className="p-6">
+                  <label htmlFor="estado" className="block text-sm font-medium text-gray-700">Estado:</label>
+                  <select name="estado" id="estado" className="mt-1 p-2 border border-gray-300 rounded-md w-full text-texto-100" defaultValue={ventaEditando ? ventaEditando.estado.toString() : ''}>
+                    <option value="true">Activa</option>
+                    <option value="false">Inactiva</option>
+                  </select>
+                </div>
+                <div className="p-6">
+                  <label htmlFor="descripcionEstado" className="block text-sm font-medium text-gray-700">Descripción de estado:</label>
+                  <textarea
+                    name="descripcion"
+                    id="descripcionEstado"
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full text-black resize-none" // Cambio de color de texto a negro
+                    rows="3"
+                    value={descripcion}
+                    onChange={(e) => setDescripcion(e.target.value)}
+                  ></textarea>
+                </div>
+                <div className="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
+                  <button type="submit" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-opacity-[80%] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
+                    Guardar Cambios
+                  </button>
+                  <button onClick={handleCancel} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancelar
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -277,6 +351,6 @@ const Ventas = () => {
       )}
     </div>
   );
-}
+};
 
 export default Ventas;
