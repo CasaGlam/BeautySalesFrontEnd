@@ -146,6 +146,16 @@ const Compras = () => {
           });
 
           if (response.ok) {
+            await Promise.all(productosSeleccionados.map(producto =>
+              fetch(`http://localhost:8080/api/productos/${producto.idProducto}`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cantidadVendida: producto.cantidad, tipo: 'compra' })
+              })
+            ));
+
             Swal.fire(
               'Compra realizada',
               'La compra ha sido realizada correctamente.',
@@ -410,41 +420,39 @@ const Compras = () => {
               <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
               <textarea
                 id="descripcion"
-                className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Descripción"
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
               />
             </div>
             </div>
-            
-            
-            <div className="mb-4" style={{ display: 'none' }}>
-              {/* Ocultamos visualmente el campo de descripción del cambio de estado */}
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcionEstado">Porque cambias de estado la compra?</label>
-              <input
+            <div className='flex justify-center'>
+            <div className="mb-4 w-full flex flex-col justify-center items-center">
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcionEstado"></label>
+              <textarea
                 id="descripcionEstado"
-                className="appearance-none bg-gray-200 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                placeholder="Descripción del cambio de estado"
+                className="hidden appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Estado"
                 value={descripcionEstado}
                 onChange={(e) => setDescripcionEstado(e.target.value)}
               />
             </div>
-            <div className="flex items-center justify-between">
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                type="submit"
-              >
-                Guardar
-              </button>
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                type="button"
-                onClick={handleCancel}
-              >
-                Cancelar
-              </button>
+            </div>
+            <div className="flex justify-center">
+            <button
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              Confirmar Compra
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-4 focus:outline-none focus:shadow-outline"
+              type="button"
+              onClick={handleCancel}
+            >
+              Cancelar
+            </button>
             </div>
           </form>
         </div>
