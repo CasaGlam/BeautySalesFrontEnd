@@ -3,6 +3,11 @@ import { FaSearch, FaAngleDown, FaAngleUp, FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 
+// Icons
+import { GoChevronLeft, GoChevronRight } from "react-icons/go";
+import { MdEdit } from "react-icons/md";
+
+
 const Ventas = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [ventaEditando, setVentaEditando] = useState(null); 
@@ -155,24 +160,32 @@ const Ventas = () => {
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
           <div>
-            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Registro de ventas</h1>
+            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de ventas</h1>
           </div>
           <div className="flex gap-4">
             <div>
               <input
                 className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
                 type="search"
-                placeholder="Buscar venta"
+                placeholder="Buscar"
                 value={searchTerm}
                 onChange={handleSearch}
               />
             </div>
-            <div className="">
+            <div className=" flex flex-col gap-4">
+              <div>
               <Link to="/ventas/registrar-venta">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Agregar nueva venta
+                  Agregar
                 </button>
               </Link>
+              </div>
+              <div className='w-full'>
+                <select name="" id="" className='w-full px-4 py-2 rounded-lg border border-black text-texto-100'>
+                  <option value="">Activas</option>
+                  <option value="">Inactivas</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -194,6 +207,9 @@ const Ventas = () => {
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Total
+                </th>
+                <th scope="col" className="relative px-6 py-3">
+                  <span className="sr-only">Mostrar Detalles</span>
                 </th>
                 <th scope="col" className="relative px-6 py-3">
                   <span className="sr-only">Mostrar Detalles</span>
@@ -220,8 +236,8 @@ const Ventas = () => {
                       ${getTotalVentaTabla(venta)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button onClick={() => abrirModalEdicion(venta)} className="text-indigo-600 hover:text-indigo-900 focus:outline-none">
-                        <FaEdit />
+                      <button onClick={() => abrirModalEdicion(venta)} className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                        <MdEdit/>
                       </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -259,7 +275,7 @@ const Ventas = () => {
             </tbody>
           </table>
         </div>
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-4 mb-4">
           <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
             <button
               onClick={() => paginate(currentPage - 1)}
@@ -267,9 +283,7 @@ const Ventas = () => {
               className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span className="sr-only">Previous</span>
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M13.707 4.293a1 1 0 0 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 8.086l3.293-3.293a1 1 0 0 1 1.414 0z" clipRule="evenodd" />
-              </svg>
+              <GoChevronLeft/>
             </button>
             {[...Array(Math.ceil(filteredVentas.length / itemsPerPage)).keys()].map((number) => (
               <button
@@ -290,9 +304,7 @@ const Ventas = () => {
               className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <span className="sr-only">Next</span>
-              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M6.293 15.707a1 1 0 0 1-1.414-1.414L10 10.914l-3.293-3.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <GoChevronRight/>
             </button>
           </nav>
         </div>
@@ -308,7 +320,7 @@ const Ventas = () => {
               <form onSubmit={handleEditSubmit}>
                 <div className="p-6">
                   <label htmlFor="estado" className="block text-sm font-medium text-gray-700">Estado:</label>
-                  <select name="estado" id="estado" className="mt-1 p-2 border border-gray-300 rounded-md w-full" defaultValue={ventaEditando ? ventaEditando.estado.toString() : ''}>
+                  <select name="estado" id="estado" className="mt-1 p-2 border border-gray-300 rounded-md w-full text-texto-100" defaultValue={ventaEditando ? ventaEditando.estado.toString() : ''}>
                     <option value="true">Activa</option>
                     <option value="false">Inactiva</option>
                   </select>
@@ -318,7 +330,7 @@ const Ventas = () => {
                   <textarea
                     name="descripcion"
                     id="descripcionEstado"
-                    className="mt-1 p-2 border border-gray-300 rounded-md w-full text-black" // Cambio de color de texto a negro
+                    className="mt-1 p-2 border border-gray-300 rounded-md w-full text-black resize-none" // Cambio de color de texto a negro
                     rows="3"
                     value={descripcion}
                     onChange={(e) => setDescripcion(e.target.value)}
@@ -326,7 +338,7 @@ const Ventas = () => {
                 </div>
                 <div className="px-4 py-3 bg-gray-50 sm:px-6 sm:flex sm:flex-row-reverse">
                   <button type="submit" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-opacity-[80%] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:ml-3 sm:w-auto sm:text-sm">
-                    Guardar cambios
+                    Guardar Cambios
                   </button>
                   <button onClick={handleCancel} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                     Cancelar

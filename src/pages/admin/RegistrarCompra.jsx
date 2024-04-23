@@ -235,9 +235,9 @@ const Compras = () => {
     <div className="bg-secondary-100 w-full rounded-lg">
       <div className="flex justify-center p-8">
         <div className='w-full'>
-          <h3 className="text-2xl font-bold mb-4 text-texto-100">Registro de compra</h3>
-          <div className="mb-4 flex justify-end">
-            <label className="block text-texto-100 text-sm font-bold mb-2 ml-auto" htmlFor="fechaRegistro">Fecha de Registro</label>
+          <div className='flex justify-end'>
+          <div className="mb-4 flex flex-col items-start">
+            <label className="text-texto-100 text-sm font-bold mb-2" htmlFor="fechaRegistro">Fecha de Registro</label>
             <input
               id="fechaRegistro"
               type="date"
@@ -248,6 +248,8 @@ const Compras = () => {
               disabled
             />
           </div>
+          </div>
+          
           <div className="mb-4">
             <label className="block text-texto-100 text-sm font-bold mb-2">Productos Seleccionados</label>
             <div className="border border-white rounded-lg p-4">
@@ -255,7 +257,7 @@ const Compras = () => {
                 <div key={index} className="flex items-center justify-between text-sm border-b border-gray-200 py-2">
                   <div className="flex items-center">
                     <button
-                      className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      className="bg-primary text-texto-900 rounded-md p-1 text-xs  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                       onClick={() => restarCantidad(producto._id)}
                       type="button"
                     >
@@ -263,7 +265,7 @@ const Compras = () => {
                     </button>
                     <input
                       type="number"
-                      className="bg-gray-200 border border-gray-300 rounded-md w-16 px-2 py-1 text-black ml-2"
+                      className="bg-gray-200 border border-gray-300 rounded-md w-16 px-2 py-1 text-black mx-2"
                       value={producto.cantidad}
                       onChange={(e) => {
                         const newCantidad = parseInt(e.target.value);
@@ -271,7 +273,7 @@ const Compras = () => {
                       }}
                     />
                     <button
-                      className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      className="bg-primary text-texto-900 rounded-md p-1 text-xs  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                       onClick={() => {
                         const newCantidad = producto.cantidad + 1;
                         agregarProducto(producto._id, newCantidad - producto.cantidad);
@@ -281,8 +283,8 @@ const Compras = () => {
                       <FaPlus />
                     </button>
                   </div>
-                  <span className="font-medium truncate">{producto.nombre}</span>
-                  <span className="font-medium truncate">{producto.precio}</span>
+                  <span className="font-medium truncate text-texto-100 w-[20%]">{producto.nombre}</span>
+                  <span className="font-medium truncate text-texto-100 w-[20%]">{producto.precio}</span>
                   <FaTrash
                     className="cursor-pointer text-red-500 hover:text-red-700"
                     onClick={() => eliminarProductoSeleccionado(producto._id)}
@@ -353,13 +355,13 @@ const Compras = () => {
                 <ul className="border border-gray-200 rounded-md divide-y divide-gray-200 ">
                   {productosFiltrados.map((producto, index) => (
                     <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
-                      <span className="font-medium truncate">{producto.nombre}</span>
+                      <span className="font-medium truncate text-texto-100">{producto.nombre}</span>
                       <button
-                        className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        className="bg-primary text-texto-900 rounded-md p-2 text-xs focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         onClick={() => agregarProducto(producto._id)}
                         type="button"
                       >
-                        Agregar
+                        <FaPlus/>
                       </button>
                     </li>
                   ))}
@@ -420,7 +422,8 @@ const Compras = () => {
               <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
               <textarea
                 id="descripcion"
-                className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                className="appearance-none bg-gray-200 border resize-none rounded w-[70%] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                rows={4}
                 placeholder="Descripción"
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
@@ -440,19 +443,20 @@ const Compras = () => {
                 onChange={(e) => setDescripcionEstado(e.target.value)}
               />
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row justify-center gap-12 mb-10">
+              
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                type="submit"
-              >
-                Guardar
-              </button>
-              <button
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className=" md:w-[43%] w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold"
                 type="button"
                 onClick={handleCancel}
               >
                 Cancelar
+              </button>
+              <button
+                className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+                type="submit"
+              >
+                Guardar
               </button>
             </div>
           </form>
