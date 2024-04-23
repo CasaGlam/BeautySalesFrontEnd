@@ -154,7 +154,7 @@ const Proveedores = () => {
             </div>
           </div>
         </div>
-        <div className='p-5 overflow-x-auto rounded-lg'>
+        <div className='p-5 overflow-x-auto rounded-lg mx-[50px]'>
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
@@ -214,7 +214,7 @@ const Proveedores = () => {
           </table>
         </div>
         {/* Paginación */}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center my-4">
           <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
             <button
               onClick={() => paginate(currentPage - 1)}

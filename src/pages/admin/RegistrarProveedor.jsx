@@ -39,7 +39,7 @@ const RegistrarProveedor = () => {
           throw new Error("Error al verificar el nombre del proveedor");
         })
         .then((data) => {
-          if (data.length > 0) {
+          if (data.proveedores.length > 0) {
             // Si el nombre ya está en uso, mostrar alerta y salir de la función
             Swal.fire(
               "¡Error!",
@@ -159,7 +159,8 @@ const RegistrarProveedor = () => {
                     name="descripcion"
                     value={proveedor.descripcion}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 w-full"
+                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[96%] resize-none"
+                    rows={1}
                     style={{ minHeight: "50px" }}
                   />
                 </div>

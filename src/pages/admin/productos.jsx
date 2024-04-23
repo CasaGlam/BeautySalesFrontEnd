@@ -82,7 +82,7 @@ const Productos = () => {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Hubo un problema al verificar las compras relacionadas con el producto. Por favor, inténtalo de nuevo más tarde.'
+          text: ' No se puede eliminar el producto porque hay compras relacionadas con el producto.'
         });
       });
   };
@@ -115,7 +115,7 @@ const Productos = () => {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Hubo un problema al verificar las ventas relacionadas con el producto. Por favor, inténtalo de nuevo más tarde.'
+          text: 'No se puede eliminar el producto porque hay ventas relacionadas con el producto.'
         });
       });
   };
@@ -198,7 +198,7 @@ const Productos = () => {
             </div>
           </div>
         </div>
-        <div className='p-5 overflow-x-auto rounded-lg'>
+        <div className='p-5 overflow-x-auto rounded-lg mx-[50px]'>
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
@@ -250,8 +250,8 @@ const Productos = () => {
             </tbody>
           </table>
         </div>
-        <div className="flex justify-center mt-4">
-          <div className="flex justify-center mt-4">
+        
+          <div className="flex justify-center my-4 ">
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -285,7 +285,6 @@ const Productos = () => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 

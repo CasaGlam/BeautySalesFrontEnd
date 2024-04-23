@@ -9,10 +9,10 @@ const RegistrarProducto = () => {
     precio: "",
     cantidad: "",
     descripcion: "",
-    categoria: "" // Agregamos categoría al estado del producto
+    categoria: ""
   });
 
-  const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías obtenidas
+  const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/categorias")
@@ -33,7 +33,6 @@ const RegistrarProducto = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validar que todos los campos estén llenos
     if (
       producto.nombre &&
       producto.precio &&
@@ -51,9 +50,7 @@ const RegistrarProducto = () => {
         });
 
         if (response.ok) {
-          // Mostrar alerta de producto creado
           Swal.fire("¡Producto creado!", "", "success");
-          // Redirigir a la página de productos después de 2 segundos
           setTimeout(() => {
             window.location.href = "/productos";
           }, 2000);
@@ -66,7 +63,6 @@ const RegistrarProducto = () => {
         Swal.fire("¡Error!", error.message, "error");
       }
     } else {
-      // Mostrar alerta de campos vacíos
       Swal.fire("¡Debes llenar todos los campos!", "", "error");
     }
   };
@@ -128,20 +124,22 @@ const RegistrarProducto = () => {
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              {/* Selector para la categoría */}
-              <select
-                name="categoria"
-                value={producto.categoria}
-                onChange={handleChange}
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-              >
-                <option value="">Selecciona una categoría</option>
-                {categorias.map((categoria) => (
-                  <option key={categoria._id} value={categoria._id}>
-                    {categoria.nombre}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <select
+                  name="categoria"
+                  value={producto.categoria}
+                  onChange={handleChange}
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                >
+                  <option value="">Selecciona una categoría</option>
+                  {categorias.map((categoria) => (
+                    <option key={categoria._id} value={categoria._id}>
+                      {categoria.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <button
