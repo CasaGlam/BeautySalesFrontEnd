@@ -135,7 +135,7 @@ const Compras = () => {
           detallesCompra,
           descripcionEstado
         };
-
+//uwu
         try {
           const response = await fetch('http://localhost:8080/api/compras', {
             method: 'POST',
