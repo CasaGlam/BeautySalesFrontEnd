@@ -88,14 +88,14 @@ const EditarCategoria = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Editar categoría</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar categoría</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <input
               type="text"
               placeholder="Nombre de la categoría"
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
+              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%] bg-secondary-900"
               name="nombre"
               value={categoria.nombre}
               onChange={handleChange}
@@ -103,7 +103,7 @@ const EditarCategoria = () => {
             <input
               type="text"
               placeholder="Descripción"
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
+              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%] bg-secondary-900"
               name="descripcion"
               value={categoria.descripcion}
               onChange={handleChange}
@@ -114,7 +114,7 @@ const EditarCategoria = () => {
               name="estado"
               value={categoria.estado}
               onChange={handleChange}
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%]"
+              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%] bg-secondary-900"
             >
               <option value={true}>Activo</option>
               <option value={false}>Inactivo</option>

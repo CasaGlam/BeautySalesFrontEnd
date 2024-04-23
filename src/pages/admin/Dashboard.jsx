@@ -1,115 +1,194 @@
 import React, { Component } from "react";
 import Chart from "chart.js/auto";
-import { FaTag, FaMoneyBillAlt } from "react-icons/fa";
-import { FaBasketShopping } from "react-icons/fa6";
+import { FaShoppingCart } from "react-icons/fa";
+import { MdSell } from "react-icons/md";
+import { TbCoinFilled } from "react-icons/tb";
 
 class Dashboard extends Component {
-  // Datos ficticios para el gráfico de barras
-  data = {
-    labels: ["Producto A", "Producto B", "Producto C", "Producto D", "Producto E"],
-    datasets: [{
-      label: 'Cantidad Vendida',
-      data: [25, 40, 15, 30, 20],
-      backgroundColor: 'rgb(179, 115, 103)',
-      borderColor: 'rgb(179, 115, 103)',
-      borderWidth: 1
-    }]
-  };
-
-  chartRef = React.createRef();
+  constructor(props) {
+    super(props);
+    this.state = {
+      totalCompras: 0,
+      totalVentas: 0,
+      ventasMensuales: [],
+      selectedMonth: new Date().toISOString().slice(0, 7),
+    };
+    this.chartRef = React.createRef();
+    this.chartInstance = null;
+  }
 
   componentDidMount() {
-    const ctx = this.chartRef.current.getContext("2d");
-    if (window.myChart) {
-      window.myChart.destroy();
+    this.fetchComprasTotal();
+    this.fetchVentasTotal();
+    this.fetchVentasMensuales();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.selectedMonth !== this.state.selectedMonth) {
+      this.fetchVentasMensuales();
     }
-    window.myChart = new Chart(ctx, {
-      type: "bar",
-      data: this.data,
+  }
+
+  fetchComprasTotal = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/compras');
+      const data = await response.json();
+      const totalCompras = data.reduce((total, compra) => total + compra.total, 0);
+      this.setState({ totalCompras });
+    } catch (error) {
+      console.error('Error al obtener el total de compras:', error);
+    }
+  };
+
+  fetchVentasTotal = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/ventas');
+      const data = await response.json();
+      const totalVentas = data.reduce((total, venta) => total + (venta.detallesVenta.reduce((subtotal, detalle) => subtotal + detalle.total, 0)), 0);
+      this.setState({ totalVentas });
+    } catch (error) {
+      console.error('Error al obtener el total de ventas:', error);
+    }
+  };
+
+  fetchVentasMensuales = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/ventas');
+      const data = await response.json();
+      const ventasMensuales = this.groupSalesByMonth(data);
+      this.setState({ ventasMensuales }, () => {
+        this.renderChart();
+      });
+    } catch (error) {
+      console.error('Error al obtener las ventas mensuales:', error);
+    }
+  };
+
+  groupSalesByMonth = (sales) => {
+    const monthlySales = {};
+
+    sales.forEach((sale) => {
+      const saleDate = new Date(sale.fecha);
+      const month = `${saleDate.getFullYear()}-${(saleDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}`;
+
+      if (month === this.state.selectedMonth) {
+        if (!monthlySales[saleDate.getDate()]) {
+          monthlySales[saleDate.getDate()] = 0;
+        }
+
+        sale.detallesVenta.forEach((detalle) => {
+          monthlySales[saleDate.getDate()] += detalle.total;
+        });
+      }
+    });
+
+    return monthlySales;
+  };
+
+  handleChangeMonth = (event) => {
+    this.setState({ selectedMonth: event.target.value });
+  };
+
+  renderChart = () => {
+    const chartRef = this.chartRef.current.getContext("2d");
+    if (this.chartInstance !== null) {
+      this.chartInstance.destroy();
+    }
+    this.chartInstance = new Chart(chartRef, {
+      type: "line",
+      data: {
+        labels: Object.keys(this.state.ventasMensuales),
+        datasets: [
+          {
+            label: "Ventas Diarias",
+            data: Object.values(this.state.ventasMensuales),
+            fill: false,
+            borderColor: "rgb(75, 192, 192)",
+            tension: 0.1,
+          },
+        ],
+      },
       options: {
-        scales: {
-          y: {
-            beginAtZero: true
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                var label = context.dataset.label || '';
+
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += new Intl.NumberFormat().format(context.parsed.y);
+                }
+                return label;
+              },
+              title: function (context) {
+                return new Date().toISOString().slice(0, 7);
+              }
+            }
           }
         },
-        plugins: {
-          legend: {
-            labels: {
-              padding: 20 // Ajusta el margen inferior del label de leyenda
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Día',
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Ventas ($)',
             }
           }
         }
       }
     });
-  }
+  };
 
   render() {
+    const { totalCompras, totalVentas } = this.state;
     return (
-      <div className="container mx-auto">
-        <div className="bg-secondary-100 py-4 px-8 rounded-lg mb-5">
-          <div className="flex flex-col gap-4 md:flex-row justify-around">
-            <div className="bg-primary p-6 rounded-lg flex gap-4 items-center w-full md:w-[32%]">
-              <div className="w-[40%] flex justify-center items-center rounded-lg py-4 border border-black">
-                <FaTag className="w-12 h-12 text-black" />
-              </div>
-              <div className="w-[60%]items-center flex flex-col justify-center">
-                <h2 className="text-xl font-bold text-black">
-                  Total
-                  <br /> de ventas:
-                </h2>
-                <div className="">
-                  <span className="text-black text-xl">$ 2.500.000</span>
-                </div>
-              </div>
+      <div>
+        <ul className="flex gap-4 mb-8">
+          <li className="bg-secondary-100 flex items-center w-[33%] py-4 px-8 gap-4 rounded-xl">
+            <div className="bg-[#8142ff] p-8 rounded-lg">
+              <FaShoppingCart className="text-4xl text-white"/>
             </div>
-            <div className="bg-primary p-6 rounded-lg flex gap-4 items-center w-full md:w-[32%]">
-              <div className="w-[40%] flex justify-center items-center rounded-lg py-4 border border-black">
-                <FaBasketShopping className="w-12 h-12 text-black" />
-              </div>
-              <div className="w-[60%]items-center flex flex-col justify-center">
-                <h2 className="text-xl font-bold text-black">
-                  Total
-                  <br /> de compras:
-                </h2>
-                <div className="">
-                  <span className="text-black text-xl">$ 1.500.000</span>
-                </div>
-              </div>
+            <span>
+              <h3 className="font-bold text-3xl text-texto-100">${totalCompras.toLocaleString()}</h3>
+              <p className="font-bold text-texto-100">Compras</p>
+            </span>
+          </li>
+          <li className="bg-secondary-100 flex items-center w-[33%] py-4 px-8 gap-4 rounded-xl">
+            <div className="bg-[#059bff] p-8 rounded-lg">
+              <MdSell className="text-4xl text-white"/>
             </div>
-            <div className="bg-primary p-6 rounded-lg flex gap-4 items-center w-full md:w-[32%] ">
-              <div className="w-[40%] flex justify-center items-center rounded-lg py-4 border border-black">
-                <FaMoneyBillAlt className="w-12 h-12 text-black" />
-              </div>
-              <div className="w-[60%]items-center flex flex-col justify-center">
-                <h2 className="text-xl font-bold text-black">
-                  Ganancias totales:
-                </h2>
-                <div className="">
-                  <span className="text-black text-xl">$ 1.000.000</span>
-                </div>
-              </div>
+            <span>
+              <h3 className="font-bold text-3xl text-texto-100">${totalVentas.toLocaleString()}</h3>
+              <p className="font-bold text-texto-100">Ventas</p>
+            </span>
+          </li>
+          <li className="bg-secondary-100 flex items-center w-[33%] py-4 px-8 gap-4 rounded-xl">
+            <div className="bg-[#ff4069] p-8 rounded-lg">
+              <TbCoinFilled className="text-4xl text-white"/>
             </div>
+            <span>
+              <h3 className="font-bold text-3xl text-texto-100">${(totalVentas - totalCompras).toLocaleString()}</h3>
+              <p className="font-bold text-texto-100">Ganancias</p>
+            </span>
+          </li>
+        </ul>
+
+        <div className="w-full flex gap-12">
+          <div className="bg-secondary-100 w-[55%] rounded-lg">
+            <canvas ref={this.chartRef} />
           </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-6">
-          <div className="bg-secondary-100 py-4 px-8 rounded-lg w-full md:w-[63%]">
-            <h2 className="text-black font-bold mb-4">Productos Vendidos</h2>
-            <canvas ref={this.chartRef}></canvas>
-          </div>
-          <div className="bg-secondary-100 py-4 px-8 rounded-lg w-full md:w-[35%]">
-            <h2 className="bg-primary p-4 rounded-t-xl text-black font-bold">
-              Productos recomendados
-            </h2>
-            <table className="w-full">
-              <tbody className="border-l border-r border-b border-primary rounded-b-lg">
-                {[...Array(10).keys()].map(index => (
-                  <tr key={index + 1} className={`${index % 2 === 0 ? 'bg-secondary-900' : 'bg-secondary-100'}`}>
-                    <td className="p-2">{index + 1}</td>
-                    <td className="p-2">Producto de belleza {index + 1}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="bg-secondary-100 w-[45%] rounded-lg">
+            {/* Aquí puedes agregar el segundo gráfico */}
           </div>
         </div>
       </div>

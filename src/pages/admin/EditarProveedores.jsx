@@ -94,14 +94,14 @@ const EditarProveedor = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Editar proveedor</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar proveedor</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <input
               type="text"
               placeholder="Nombre del proveedor"
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
               name="nombre"
               value={proveedor.nombre}
               onChange={handleChange}
@@ -109,7 +109,7 @@ const EditarProveedor = () => {
             <input
               type="text"
               placeholder="Teléfono"
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
               name="telefono"
               value={proveedor.telefono}
               onChange={handleChange}
@@ -119,7 +119,7 @@ const EditarProveedor = () => {
             <input
               type="email"
               placeholder="Correo electrónico"
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
               name="correo"
               value={proveedor.correo}
               onChange={handleChange}
@@ -127,7 +127,7 @@ const EditarProveedor = () => {
             <input
               type="text"
               placeholder="Dirección"
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
               name="direccion"
               value={proveedor.direccion}
               onChange={handleChange}
@@ -137,7 +137,7 @@ const EditarProveedor = () => {
             <input
               type="text"
               placeholder="Descripción"
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
               name="descripcion"
               value={proveedor.descripcion}
               onChange={handleChange}
@@ -146,7 +146,7 @@ const EditarProveedor = () => {
               name="estado"
               value={proveedor.estado}
               onChange={handleChange}
-              className="text-black px-4 py-3 rounded-lg"
+              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
             >
               <option value={true}>Activo</option>
               <option value={false}>Inactivo</option>

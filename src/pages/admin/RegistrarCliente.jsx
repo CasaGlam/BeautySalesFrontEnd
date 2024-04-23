@@ -62,7 +62,7 @@ const RegistrarCliente = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Registrar cliente</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Registrar cliente</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
@@ -75,7 +75,7 @@ const RegistrarCliente = () => {
                   name="nombre"
                   value={cliente.nombre}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
               <div className="relative">
@@ -86,7 +86,7 @@ const RegistrarCliente = () => {
                   name="telefono"
                   value={cliente.telefono}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>
@@ -99,7 +99,7 @@ const RegistrarCliente = () => {
                   name="correo"
                   value={cliente.correo}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>

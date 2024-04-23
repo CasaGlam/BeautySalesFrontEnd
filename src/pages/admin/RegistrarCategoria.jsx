@@ -6,8 +6,7 @@ import Swal from "sweetalert2";
 const RegistrarCategoria = () => {
   const [categoria, setCategoria] = useState({
     nombre: "",
-    descripcion: "",
-    estado: "" // Nuevo campo "estado"
+    descripcion: ""
   });
 
   const handleChange = (e) => {
@@ -21,16 +20,12 @@ const RegistrarCategoria = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Convertir el valor del campo "estado" a booleano
-      const estado = categoria.estado === "Activo" ? true : false;
-      const categoriaToSend = { ...categoria, estado };
-
       const response = await fetch("http://localhost:8080/api/categorias", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(categoriaToSend)
+        body: JSON.stringify(categoria)
       });
       if (response.ok) {
         Swal.fire("¡Categoría creada!", "", "success");
@@ -49,49 +44,35 @@ const RegistrarCategoria = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4">Registrar nueva categoría</h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-black">Registrar nueva categoría</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
-                <FaDollarSign className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <label htmlFor="nombre" className="text-black mb-2 block">Nombre</label>
                 <input
                   type="text"
                   placeholder="Nombre"
                   name="nombre"
                   value={categoria.nombre}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="relative">
-                <FaBoxes className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <label htmlFor="descripcion" className="text-black mb-2 block">Descripción</label>
+
                 <input
                   type="text"
                   placeholder="Descripción"
                   name="descripcion"
                   value={categoria.descripcion}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
-              </div>
-            </div>
-            {/* Nuevo campo "estado" */}
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
-                <select
-                  name="estado"
-                  value={categoria.estado}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12"
-                >
-                  <option value="">Seleccionar estado</option>
-                  <option value="Activo">Activo</option>
-                  <option value="Inactivo">Inactivo</option>
-                </select>
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">

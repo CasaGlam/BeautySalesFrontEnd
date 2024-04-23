@@ -235,9 +235,9 @@ const Compras = () => {
     <div className="bg-secondary-100 w-full rounded-lg">
       <div className="flex justify-center p-8">
         <div className='w-full'>
-          <h3 className="text-2xl font-bold mb-4 text-white">Registro de compra</h3>
+          <h3 className="text-2xl font-bold mb-4 text-texto-100">Registro de compra</h3>
           <div className="mb-4 flex justify-end">
-            <label className="block text-white text-sm font-bold mb-2 ml-auto" htmlFor="fechaRegistro">Fecha de Registro</label>
+            <label className="block text-texto-100 text-sm font-bold mb-2 ml-auto" htmlFor="fechaRegistro">Fecha de Registro</label>
             <input
               id="fechaRegistro"
               type="date"
@@ -249,13 +249,13 @@ const Compras = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2">Productos Seleccionados</label>
+            <label className="block text-texto-100 text-sm font-bold mb-2">Productos Seleccionados</label>
             <div className="border border-white rounded-lg p-4">
               {productosSeleccionados.map((producto, index) => (
                 <div key={index} className="flex items-center justify-between text-sm border-b border-gray-200 py-2">
                   <div className="flex items-center">
                     <button
-                      className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                       onClick={() => restarCantidad(producto._id)}
                       type="button"
                     >
@@ -271,7 +271,7 @@ const Compras = () => {
                       }}
                     />
                     <button
-                      className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                       onClick={() => {
                         const newCantidad = producto.cantidad + 1;
                         agregarProducto(producto._id, newCantidad - producto.cantidad);
@@ -288,7 +288,7 @@ const Compras = () => {
                     onClick={() => eliminarProductoSeleccionado(producto._id)}
                   />
                   <div>
-                    <label className="block text-white text-sm font-bold mb-2" htmlFor={`precioCompra_${index}`}>Precio de Compra</label>
+                    <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor={`precioCompra_${index}`}>Precio de Compra</label>
                     <input
                       id={`precioCompra_${index}`}
                       type="number"
@@ -305,7 +305,7 @@ const Compras = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-white text-sm font-bold mb-2" htmlFor={`precioVenta_${index}`}>Precio de Venta</label>
+                    <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor={`precioVenta_${index}`}>Precio de Venta</label>
                     <input
                       id={`precioVenta_${index}`}
                       type="text"
@@ -327,18 +327,18 @@ const Compras = () => {
             </div>
           </div>
           <div className="mb-4 ">
-            <label className="block text-white text-sm font-bold mb-2" htmlFor="buscarProducto">Buscar Producto</label>
+            <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="buscarProducto">Buscar Producto</label>
             <div className="flex items-center  border-b-2 border-teal-500 py-2 gap-4">
               <input
                 id="buscarProducto"
-                className="appearance-none bg-transparent border rounded-none w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                className="appearance-none bg-transparent border rounded-none w-full py-2 px-3 text-texto-100 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 placeholder="Buscar"
                 value={busquedaProducto}
                 onChange={(e) => setBusquedaProducto(e.target.value)}
               />
               <button
-                className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+                className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-texto-100 py-1 px-2 rounded"
                 type="button"
                 onClick={() => setBusquedaProducto('')}
               >
@@ -348,14 +348,14 @@ const Compras = () => {
           </div>
           {busquedaProducto && (
             <div className="mb-4">
-              <label className="block text-white text-sm font-bold mb-2">Productos</label>
+              <label className="block text-texto-100 text-sm font-bold mb-2">Productos</label>
               <div className="overflow-y-scroll max-h-40">
                 <ul className="border border-gray-200 rounded-md divide-y divide-gray-200 ">
                   {productosFiltrados.map((producto, index) => (
                     <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
                       <span className="font-medium truncate">{producto.nombre}</span>
                       <button
-                        className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         onClick={() => agregarProducto(producto._id)}
                         type="button"
                       >
@@ -370,7 +370,7 @@ const Compras = () => {
           <form onSubmit={handleSubmit}>
             <div className="flex justify-around">
             <div className="mb-4 w-full flex flex-col justify-center items-center">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
+              <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
               <input
                 id="numeroCompra"
                 className="appearance-none bg-gray-200 border rounded w-[70%]   py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -381,7 +381,7 @@ const Compras = () => {
               />
             </div>
             <div className="mb-4 w-full flex flex-col justify-center items-center">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
+              <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
               <input
                 id="fecha"
                 type="date"
@@ -394,7 +394,7 @@ const Compras = () => {
             </div>
             <div className='flex justify-around'>
             <div className="mb-4 w-full flex flex-col justify-center items-center">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
+              <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
               <select
                 id="proveedor"
                 className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -411,13 +411,13 @@ const Compras = () => {
               </select>
             </div >
             <div className="mb-4 w-full flex flex-col justify-center items-center">
-              <label className="block text-white text-sm font-bold mb-2">Total de la compra</label>
+              <label className="block text-texto-100 text-sm font-bold mb-2">Total de la compra</label>
               <span className="bg-gray-200 border w-[70%] border-gray-300 rounded-md px-4 py-2 text-black font-semibold">{totalCompra}</span>
             </div>
             </div>
             <div className='flex justify-center '>
             <div className="mb-4 w-full flex flex-col justify-center items-center">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
+              <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="descripcion">Descripción</label>
               <textarea
                 id="descripcion"
                 className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -427,10 +427,12 @@ const Compras = () => {
               />
             </div>
             </div>
-            <div className='flex justify-center'>
-            <div className="mb-4 w-full flex flex-col justify-center items-center">
-              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcionEstado"></label>
-              <textarea
+            
+            
+            <div className="mb-4" style={{ display: 'none' }}>
+              {/* Ocultamos visualmente el campo de descripción del cambio de estado */}
+              <label className="block text-white text-sm font-bold mb-2" htmlFor="descripcionEstado">Porque cambias de estado la compra?</label>
+              <input
                 id="descripcionEstado"
                 className="hidden appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Estado"
@@ -438,21 +440,20 @@ const Compras = () => {
                 onChange={(e) => setDescripcionEstado(e.target.value)}
               />
             </div>
-            </div>
-            <div className="flex justify-center">
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="submit"
-            >
-              Confirmar Compra
-            </button>
-            <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-4 focus:outline-none focus:shadow-outline"
-              type="button"
-              onClick={handleCancel}
-            >
-              Cancelar
-            </button>
+            <div className="flex items-center justify-between">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit"
+              >
+                Guardar
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="button"
+                onClick={handleCancel}
+              >
+                Cancelar
+              </button>
             </div>
           </form>
         </div>

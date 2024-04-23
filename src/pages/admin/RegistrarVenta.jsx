@@ -242,12 +242,12 @@ const RegistrarVenta = () => {
   return (
     <div className="bg-secondary-100 w-full rounded-lg">
       <div className="flex justify-between p-4">
-        <h3 className="text-2xl font-bold text-white">Registrar venta</h3>
+        <h3 className="text-2xl font-bold text-texto-100">Registrar venta</h3>
         <div className="flex items-center">
           <input
             type="text"
             placeholder="Número de venta"
-            className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-black mr-2"
+            className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-texto-100 mr-2"
             value={numeroVenta}
             onChange={(e) => setNumeroVenta(e.target.value)}
           />
@@ -268,7 +268,7 @@ const RegistrarVenta = () => {
               <option key={cliente._id} value={cliente._id}>{cliente.nombre}</option>
             ))}
           </select>
-          <button onClick={handleShowModal} className="px-3 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 focus:outline-none">
+          <button onClick={handleShowModal} className="px-3 py-2 bg-gray-800 text-texto-900 rounded-full hover:bg-gray-700 focus:outline-none">
             <FaPlus />
           </button>
         </div>
@@ -276,16 +276,16 @@ const RegistrarVenta = () => {
       <div className="flex justify-center p-8">
         <div className="w-full">
           <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2">Buscar Producto</label>
+            <label className="block text-texto-100 text-sm font-bold mb-2">Buscar Producto</label>
             <div className="flex items-center border-b border-b-2 border-gray-200 py-2">
               <input
                 type="text"
                 placeholder="Buscar producto"
-                className="appearance-none bg-transparent border-none w-full text-white mr-3 py-1 px-2 leading-tight focus:outline-none"
+                className="appearance-none bg-transparent border-none w-full text-texto-100 mr-3 py-1 px-2 leading-tight focus:outline-none"
                 value={inputValue}
                 onChange={buscarProducto}
               />
-              <FaSearch className="text-white" />
+              <FaSearch className="text-texto-100" />
             </div>
             {suggestions.length > 0 && (
               <ul className="suggestions bg-gray-300 text-black absolute mt-1 border border-gray-400 rounded-md py-2 w-[400px] overflow-x-auto" style={{ maxHeight: '200px' }}>
@@ -298,14 +298,14 @@ const RegistrarVenta = () => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-white text-sm font-bold mb-2">Productos Agregados</label>
+            <label className="block text-texto-100 text-sm font-bold mb-2">Productos Agregados</label>
             <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
               {productosEncontrados.map((producto, index) => (
                 <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
                   <div>
                     <div className="flex items-center">
                       <button
-                        className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         onClick={() => {
                           const newCantidad = Math.max(producto.cantidad - 1, 0);
                           agregarProducto(producto.nombre, newCantidad);
@@ -329,7 +329,7 @@ const RegistrarVenta = () => {
                         }}
                       />
                       <button
-                        className="bg-green-500 text-white rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        className="bg-green-500 text-texto-100 rounded-md p-1 text-xs hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         onClick={() => {
                           const newCantidad = producto.cantidad + 1;
                           agregarProducto(producto.nombre, newCantidad);
@@ -339,10 +339,10 @@ const RegistrarVenta = () => {
                         <CiCirclePlus />
                       </button>
                     </div>
-                    <span className="text-white font-medium">{producto.nombre}</span>
+                    <span className="text-texto-100 font-medium">{producto.nombre}</span>
                     <div>
                       <span className="text-white mr-2">Precio Unitario: ${producto.precio}</span>
-                      <span className="text-white">Subtotal: ${producto.total}</span>
+                      <span className="text-white">Subtotal: ${producto.cantidad * producto.precio}</span>
                     </div>
                   </div>
                   <FaTrashAlt className="text-[#FF0000] cursor-pointer" onClick={() => eliminarProducto(producto)} />
@@ -351,7 +351,7 @@ const RegistrarVenta = () => {
             </ul>
           </div>
           <div className="flex justify-end gap-4">
-            <p className="text-white font-bold">Total: ${totalVenta}</p>
+            <p className="text-white font-bold">Total: ${subtotal}</p>
             <button onClick={guardarVentaApi} className="px-6 py-2 mt-10 bg-green-500 rounded-full text-white"><FaSave /></button>
             <button onClick={cancelarVenta} className="px-6 py-2 mt-10 bg-red-500 rounded-full text-white"><FaTimesCircle /></button>
           </div>
@@ -368,9 +368,7 @@ const RegistrarVenta = () => {
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                      Nuevo Cliente
-                    </h3>
+                    <h3 className="text-lg leading-6 font-medium text-white">Agregar Nuevo Cliente</h3>
                     <div className="mt-2">
                       <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nombre">
@@ -418,12 +416,12 @@ const RegistrarVenta = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button onClick={handleSubmit} type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                  Guardar
+              <div className="bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onClick={handleGuardarCliente} className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                  <FaSave className="mr-2" /> 
                 </button>
-                <button onClick={handleCloseModal} type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm">
-                  Cancelar
+                <button type="button" onClick={handleCloseModal} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                  <FaTimesCircle className="mr-2" /> 
                 </button>
               </div>
             </div>

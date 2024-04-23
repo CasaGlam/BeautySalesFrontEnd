@@ -41,51 +41,88 @@ const Roles = () => {
     setSelectedRole(null);
   };
 
-  const handleDelete = (objectId) => {
-    MySwal.fire({
-      title: "¿Estás seguro?",
-      text: "Esta acción no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Si el usuario confirma la eliminación, enviar la solicitud DELETE
-        fetch(`http://localhost:8080/api/roles/${objectId}`, {
-          method: "DELETE",
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Error deleting role");
-            }
-            return response.json();
-          })
-          .then(() => {
-            // Recargar roles después de eliminar
-            fetchRoles();
-            // Mostrar alerta de éxito
-            MySwal.fire({
-              icon: "success",
-              title: "Eliminado con éxito",
-              timer: 2000,
-              showConfirmButton: false,
-            });
-          })
-          .catch((error) => {
-            console.error("Error deleting role:", error.message);
-            // Mostrar alerta de error
-            MySwal.fire({
-              icon: "error",
-              title: "Error al eliminar",
-              text: error.message,
-            });
-          });
-      }
-    });
+  const handleDelete = (roleId, roleName) => {
+    // Verificar si el rol es el "SUPER ADMINISTRADOR"
+    if (roleName === "SUPER ADMINISTRADOR") {
+      MySwal.fire(
+        'Error!',
+        'No se puede eliminar al SUPER ADMINISTRADOR.',
+        'error'
+      );
+      return; // Evitar que se continúe con la eliminación
+    }
+  
+    // Verificar si hay usuarios asignados a este rol
+    fetch('http://localhost:8080/api/usuarios')
+      .then(response => response.json())
+      .then(data => {
+        const usersAssignedToRole = data.usuarios.filter(usuario => usuario.rol === roleName);
+        if (usersAssignedToRole.length > 0) {
+          MySwal.fire(
+            'Error!',
+            'No se puede eliminar el rol porque hay usuarios asignados a él.',
+            'error'
+          );
+          return; // Evitar que se continúe con la eliminación
+        }
+  
+        // Si no hay usuarios asignados al rol, proceder con la eliminación
+        MySwal.fire({
+          title: "¿Estás seguro?",
+          text: "Esta acción no se puede revertir",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Sí, eliminar",
+          cancelButtonText: "Cancelar",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Si el usuario confirma la eliminación, enviar la solicitud DELETE
+            fetch(`http://localhost:8080/api/roles/${roleId}`, {
+              method: "DELETE",
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Error deleting role");
+                }
+                return response.json();
+              })
+              .then(() => {
+                // Recargar roles después de eliminar
+                fetchRoles();
+                // Mostrar alerta de éxito
+                MySwal.fire({
+                  icon: "success",
+                  title: "Eliminado con éxito",
+                  timer: 2000,
+                  showConfirmButton: false,
+                });
+              })
+              .catch((error) => {
+                console.error("Error deleting role:", error.message);
+                // Mostrar alerta de error
+                MySwal.fire({
+                  icon: "error",
+                  title: "Error al eliminar",
+                  text: error.message,
+                });
+              });
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching usuarios:', error);
+        // Mostrar alerta de error
+        MySwal.fire({
+          icon: "error",
+          title: "Error al obtener la lista de usuarios",
+          text: "Hubo un error al obtener la lista de usuarios.",
+        });
+      });
   };
+  
+  
 
   const allPermissions = [
     "dashboard",
@@ -119,12 +156,12 @@ const Roles = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
         <div>
-          <h1 className="text-2xl font-bold mb-4 pt-4">Listado de roles</h1>
+          <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de roles</h1>
         </div>
-        <div className="flex flex-col gap-4 md:flex-row ">
+        <div className="flex flex-col gap-4 md:flex-row mr-5">
           <div>
             <input
-              className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
+              className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
               type="search"
               placeholder="Buscar"
               value={searchTerm}
@@ -133,7 +170,7 @@ const Roles = () => {
           </div>
           <div className="">
             <Link to="/roles/registrar-rol" className="">
-              <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
+              <button className="w-full px-4 py-2 rounded-lg bg-primary text-texto-900 hover:bg-opacity-[80%] transition-colors font-bold">
                 Agregar
               </button>
             </Link>
@@ -152,19 +189,19 @@ const Roles = () => {
               <tr className="">
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Nombre
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Permisos
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Acciones
                 </th>
@@ -179,20 +216,20 @@ const Roles = () => {
                   <td>
                     <button
                       onClick={() => openPermissionsModal(rol)}
-                      className="text-black border border-black p-2 rounded-lg  hover:bg-black hover:text-white transition-colors"
+                      className="text-black border border-black p-2 rounded-lg  hover:bg-black hover:text-texto-900 transition-colors"
                     >
                       Ver permisos
                     </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link to={`/roles/editar-rol/${rol._id}`}>
-                      <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                      <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-texto-900 transition-colors">
                         <MdEdit />
                       </button>
                     </Link>
                     <button
-                      onClick={() => handleDelete(rol._id)}
-                      className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
+                      onClick={() => handleDelete(rol._id, rol.rol)}
+                      className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-texto-900 transition-colors"
                     >
                       <FaTrash />
                     </button>
@@ -208,7 +245,7 @@ const Roles = () => {
         <button
           onClick={() => paginate(currentPage - 1)}
           disabled={currentPage === 1}
-          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
+          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-texto-100 transition-colors"
         >
           <IoIosArrowBack />
         </button>
@@ -220,7 +257,7 @@ const Roles = () => {
               onClick={() => paginate(i + 1)}
               className={`${
                 currentPage === i + 1
-                  ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                  ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-texto-100 hover:bg-opacity-[80%]"
                   : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -233,7 +270,7 @@ const Roles = () => {
           disabled={
             currentPage === Math.ceil(filteredRoles.length / rolesPerPage)
           }
-          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
+          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-texto-100 transition-colors"
         >
           <IoIosArrowForward />
         </button>
@@ -262,15 +299,15 @@ const Roles = () => {
               <div>
                 <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <h3
-                    className="text-lg leading-6 text-white font-bold mb-4"
+                    className="text-lg leading-6 text-texto-100 font-bold mb-4"
                     id="modal-headline"
                   >
                     Permisos de {selectedRole.rol}
                   </h3>
                   <div className="flex flex-wrap gap-4">
                     {allPermissions.map((permission) => (
-                      <div key={permission} className="w-full sm:w-1/2">
-                        <strong>{permission}:</strong>{" "}
+                      <div key={permission} className="w-full sm:w-1/2 text-texto-100">
+                        <strong className="text-gray-500">{permission}:</strong>{" "}
                         {getPermissionStatus(permission)}
                       </div>
                     ))}
@@ -280,7 +317,7 @@ const Roles = () => {
                   <button
                     onClick={closePermissionsModal}
                     type="button"
-                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:text-sm"
+                    className="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-texto-900 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary sm:text-sm"
                   >
                     Cerrar
                   </button>

@@ -153,12 +153,12 @@ const Compras = () => {
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
           <div>
-            <h1 className="text-2xl font-bold mb-4 pt-4">Registro de compras</h1>
+            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Registro de compras</h1>
           </div>
           <div className="flex gap-4">
             <div>
               <input
-                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black"
+                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
                 type="search"
                 placeholder="Buscar compra"
                 value={searchTerm}
@@ -178,25 +178,25 @@ const Compras = () => {
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Número de Compra
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Descripción
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Fecha de Registro
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Fecha de Compra
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Estado
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Proveedor
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Total
                 </th>
                 <th scope="col" className="relative px-6 py-3">
@@ -244,11 +244,11 @@ const Compras = () => {
                         <div className="mt-4 mb-2 px-8">
                           <ul className="border border-gray-400 rounded-md divide-y divide-gray-500">
                             <li className="px-4 py-2 bg-secondary-900 flex items-center justify-between text-sm font-medium">
-                              <span>Producto</span>
-                              <span>Precio de compra</span>
-                              <span>Precio de venta</span>
-                              <span>Cantidad</span>
-                              <span>Total</span>
+                              <span className='text-texto-100'>Producto</span>
+                              <span className='text-texto-100'>Precio de compra</span>
+                              <span className='text-texto-100'>Precio de venta</span>
+                              <span className='text-texto-100'>Cantidad</span>
+                              <span className='text-texto-100'>Total</span>
                             </li>
                             {compra.detallesCompra.map((detalle) => (
                               <li key={detalle._id} className="px-4 py-4 flex items-center justify-between text-sm">
@@ -289,7 +289,7 @@ const Compras = () => {
               <button
                 key={number}
                 onClick={() => paginate(number + 1)}
-                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium ${
+                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-texto-900 text-sm font-medium ${
                   currentPage === number + 1
                     ? 'text-primary bg-primary'
                     : 'text-gray-700 hover:text-gray-500'
