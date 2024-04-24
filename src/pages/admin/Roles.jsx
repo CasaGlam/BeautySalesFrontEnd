@@ -245,7 +245,7 @@ const Roles = () => {
         <button
           onClick={() => paginate(currentPage - 1)}
           disabled={currentPage === 1}
-          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-texto-100 transition-colors"
+          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-texto-900 transition-colors"
         >
           <IoIosArrowBack />
         </button>
@@ -257,7 +257,7 @@ const Roles = () => {
               onClick={() => paginate(i + 1)}
               className={`${
                 currentPage === i + 1
-                  ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-texto-100 hover:bg-opacity-[80%]"
+                  ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-texto-900 hover:bg-opacity-[80%]"
                   : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -270,7 +270,7 @@ const Roles = () => {
           disabled={
             currentPage === Math.ceil(filteredRoles.length / rolesPerPage)
           }
-          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-texto-100 transition-colors"
+          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-texto-900 transition-colors"
         >
           <IoIosArrowForward />
         </button>
