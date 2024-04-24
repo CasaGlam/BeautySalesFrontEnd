@@ -43,6 +43,40 @@ const Proveedores = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleDelete = (id) => {
+    // Consultar la API de compras para verificar si el proveedor está relacionado con alguna compra
+    fetch(`http://localhost:8080/api/compras/proveedor/${id}`)
+      .then(response => {
+        if (response.ok) {
+          // Si la consulta es exitosa, verificar si hay alguna compra relacionada con el proveedor
+          return response.json();
+        }
+        throw new Error('Error al consultar las compras relacionadas con el proveedor');
+      })
+      .then(data => {
+        // Si hay compras relacionadas, mostrar una alerta y evitar la eliminación
+        if (data && data.comprasRelacionadas && data.comprasRelacionadas.length > 0) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Proveedor relacionado con una compra',
+            text: 'Este proveedor no se puede eliminar porque está relacionado con una compra.'
+          });
+        } else {
+          // Si no hay compras relacionadas, proceder con la eliminación del proveedor
+          confirmDelete(id);
+        }
+      })
+      .catch(error => {
+        console.error('Error al verificar las compras relacionadas con el proveedor:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al verificar las compras relacionadas con el proveedor. Por favor, inténtalo de nuevo más tarde.'
+        });
+      });
+  };
+  
+  const confirmDelete = (id) => {
+    // Mostrar la confirmación de eliminación solo si no hay compras relacionadas con el proveedor
     Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás deshacer esta acción',
@@ -54,53 +88,59 @@ const Proveedores = () => {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:8080/api/proveedores/${id}`, {
-          method: 'DELETE'
-        })
-        .then(response => {
-          if (response.ok) {
-            // Filtrar los proveedores para eliminar el proveedor eliminado de la lista
-            const updatedProveedores = proveedores.filter(proveedor => proveedor.idProveedor !== id);
-            setProveedores(updatedProveedores);
-            Swal.fire(
-              '¡Eliminado!',
-              'El proveedor ha sido eliminado',
-              'success'
-            );
-          } else {
-            console.error('Error al eliminar el proveedor:', response.statusText);
-            Swal.fire(
-              'Error',
-              'Hubo un problema al eliminar el proveedor',
-              'error'
-            );
-          }
-        })
-        .catch(error => {
-          console.error('Error al eliminar el proveedor:', error);
-          Swal.fire(
-            'Error',
-            'Hubo un problema al eliminar el proveedor',
-            'error'
-          );
-        });
+        // Si se confirma la eliminación, realizar la solicitud de eliminación del proveedor
+        deleteProveedor(id);
       }
     });
   };
+  
+  const deleteProveedor = (id) => {
+    fetch(`http://localhost:8080/api/proveedores/${id}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (response.ok) {
+        // Si la eliminación es exitosa, actualizar la lista de proveedores
+        const updatedProveedores = proveedores.filter(proveedor => proveedor._id !== id);
+        setProveedores(updatedProveedores);
+        Swal.fire(
+          '¡Eliminado!',
+          'El proveedor ha sido eliminado',
+          'success'
+        );
+      } else {
+        console.error('Error al eliminar el proveedor:', response.statusText);
+        Swal.fire(
+          'Error',
+          'Hubo un problema al eliminar el proveedor',
+          'error'
+        );
+      }
+    })
+    .catch(error => {
+      console.error('Error al eliminar el proveedor:', error);
+      Swal.fire(
+        'Error',
+        'Hubo un problema al eliminar el proveedor',
+        'error'
+      );
+    });
+  };
+  
 
   return (
     <div className="flex justify-center">
       <div className='bg-secondary-100 w-full rounded-lg'>
         <div className="flex flex-col md:flex-row justify-between items-center gap-6  p-8">
           <div>
-            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Registro de proveedores</h1>
+            <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de proveedores</h1>
           </div>
           <div className="flex gap-4">
             <div>
               <input
                 className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
                 type="search"
-                placeholder="Buscar proveedor"
+                placeholder="Buscar"
                 value={searchTerm}
                 onChange={handleSearch}
               />
@@ -108,13 +148,13 @@ const Proveedores = () => {
             <div className="">
               <Link to="/proveedores/registrar-proveedor">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Agregar nuevo proveedor
+                  Agregar
                 </button>
               </Link>
             </div>
           </div>
         </div>
-        <div className='p-5 overflow-x-auto rounded-lg'>
+        <div className='p-5 overflow-x-auto rounded-lg mx-[47px]'>
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
@@ -174,7 +214,7 @@ const Proveedores = () => {
           </table>
         </div>
         {/* Paginación */}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center my-4">
           <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
             <button
               onClick={() => paginate(currentPage - 1)}

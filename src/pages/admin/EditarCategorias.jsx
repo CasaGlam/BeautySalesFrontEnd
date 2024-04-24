@@ -16,7 +16,7 @@ const EditarCategoria = () => {
       try {
         const response = await fetch(`http://localhost:8080/api/categorias/${objectId}`);
         if (!response.ok) {
-          throw new Error('Error al obtener los datos del usuario');
+          throw new Error('Error al obtener los datos de la categoría');
         }
         const data = await response.json();
         setCategoria(data.categoria);
@@ -35,6 +35,7 @@ const EditarCategoria = () => {
       [e.target.name]: e.target.value
     });
   };
+
   const handleActualizarCategoria = () => {
     // Verificar que ningún campo esté vacío
     if (
@@ -91,48 +92,58 @@ const EditarCategoria = () => {
       <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar categoría</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <input
-              type="text"
-              placeholder="Nombre de la categoría"
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%] bg-secondary-900"
-              name="nombre"
-              value={categoria.nombre}
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              placeholder="Descripción"
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%] bg-secondary-900"
-              name="descripcion"
-              value={categoria.descripcion}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <select
-              name="estado"
-              value={categoria.estado}
-              onChange={handleChange}
-              className="text-black px-4 py-3 rounded-lg w-full md:w-[45%] bg-secondary-900"
-            >
-              <option value={true}>Activo</option>
-              <option value={false}>Inactivo</option>
-            </select>
-          </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <button
-              className="w-full md:w-[43%] px-4 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              onClick={handleActualizarCategoria}
-            >
-              Actualizar categoría
-            </button>
-            <Link to="/categorias" className="w-full md:w-[43%]">
-              <button className="w-full px-4 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                Volver
+          <form>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="nombre" className="block text-black font-bold mb-1">Nombre de la categoría</label>
+                <input
+                  type="text"
+                  placeholder="Nombre de la categoría"
+                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                  name="nombre"
+                  value={categoria.nombre}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="estado" className="block text-black font-bold mb-1">Estado</label>
+                <select
+                  name="estado"
+                  value={categoria.estado}
+                  onChange={handleChange}
+                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                >
+                  <option value={true}>Activo</option>
+                  <option value={false}>Inactivo</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="descripcion" className="block text-black font-bold mb-1">Descripción</label>
+                <textarea
+                  placeholder="Descripción"
+                  name="descripcion"
+                  value={categoria.descripcion}
+                  onChange={handleChange}
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[210%] resize-none bg-secondary-900"
+                    rows={1}
+                    style={{ minHeight: "50px" }}
+                />
+              </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 my-4">
+            <Link to="/categorias" className="w-full md:w-[50%]">
+                <button className="w-full px-4 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                  Volver
+                </button>
+              </Link>
+              <button
+                className="w-full md:w-[50%] px-4 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+                onClick={handleActualizarCategoria}
+              >
+                Actualizar categoría
               </button>
-            </Link>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

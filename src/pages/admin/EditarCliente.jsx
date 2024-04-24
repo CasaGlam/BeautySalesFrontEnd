@@ -6,7 +6,8 @@ const EditarCliente = () => {
   const [cliente, setCliente] = useState({
     nombre: "",
     telefono: "",
-    correo: ""
+    correo: "",
+    estado: false // Estado inicial como un booleano
   });
 
   const { objectId } = useParams();
@@ -41,7 +42,8 @@ const EditarCliente = () => {
     if (
       cliente.nombre.trim() === "" ||
       cliente.telefono.trim() === "" ||
-      cliente.correo.trim() === ""
+      cliente.correo.trim() === "" ||
+      cliente.estado === ""
     ) {
       Swal.fire({
         icon: 'error',
@@ -92,47 +94,68 @@ const EditarCliente = () => {
       <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar cliente</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <input
-              type="text"
-              placeholder="Nombre del cliente"
-              className="text-black px-2 py-3 rounded-lg bg-secondary-900"
-              name="nombre"
-              value={cliente.nombre}
-              onChange={handleChange}
-            />
-            <input
-              type="tel"
-              placeholder="Teléfono"
-              className="text-black px-2 py-3 rounded-lg bg-secondary-900"
-              name="telefono"
-              value={cliente.telefono}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <input
-              type="email"
-              placeholder="Correo electrónico"
-              className="text-black px-2 py-3 rounded-lg bg-secondary-900"
-              name="correo"
-              value={cliente.correo}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <button
-              className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              onClick={handleActualizarCliente}
-            >
-              Actualizar cliente
-            </button>
-            <Link to="/clientes" className="w-full md:w-[43%]">
-              <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                Volver
+          <form>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="nombre" className="block text-black font-bold mb-1">Nombre del cliente</label>
+                <input
+                  type="text"
+                  placeholder="Nombre del cliente"
+                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                  name="nombre"
+                  value={cliente.nombre}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="telefono" className="block text-black font-bold mb-1">Teléfono</label>
+                <input
+                  type="text"
+                  placeholder="Teléfono"
+                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                  name="telefono"
+                  value={cliente.telefono}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="correo" className="block text-black font-bold mb-1">Correo electrónico</label>
+                <input
+                  type="email"
+                  placeholder="Correo electrónico"
+                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                  name="correo"
+                  value={cliente.correo}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label htmlFor="estado" className="block text-black font-bold mb-1">Estado</label>
+                <select
+                  name="estado"
+                  value={cliente.estado}
+                  onChange={handleChange}
+                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                >
+                  <option value={true}>Activo</option>
+                  <option value={false}>Inactivo</option>
+                </select>
+              </div>
+            </div>
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 my-4">
+              <Link to="/clientes" className="w-full md:w-[50%]">
+                <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                  Volver
+                </button>
+              </Link>
+              <button
+                className="w-full md:w-[47%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+                onClick={handleActualizarCliente}
+              >
+                Actualizar cliente
               </button>
-            </Link>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
