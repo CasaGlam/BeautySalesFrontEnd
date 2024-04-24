@@ -123,16 +123,16 @@ const EditarUsuario = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <div className="flex flex-col">
+            <div className="flex flex-col w-full">
               <label htmlFor="nombre" className="pb-1 text-texto-100">
                 Nombre de usuario
               </label>
-              <div className="relative">
+              <div className="relative w-full">
                 <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
                   placeholder="Nombre de usuario"
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="nombre"
                   id="nombre"
                   value={usuario.nombre}
@@ -140,16 +140,16 @@ const EditarUsuario = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col w-full">
               <label htmlFor="correo" className="pb-1 text-texto-100">
                 Correo electrónico
               </label>
-              <div className="relative">
+              <div className="relative w-full">
                 <MdEmail className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="email"
                   placeholder="Correo electrónico"
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                  className="text-black px-2 py-3 w-full rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="correo"
                   id="correo"
                   value={usuario.correo}
@@ -199,17 +199,17 @@ const EditarUsuario = () => {
             </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <Link to="/usuarios" className="w-full md:w-[46%]">
+              <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                Volver
+              </button>
+            </Link>
             <button
               className="w-full md:w-[46%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
               onClick={handleActualizarUsuario}
             >
               Actualizar usuario
             </button>
-            <Link to="/usuarios" className="w-full md:w-[46%]">
-              <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                Volver
-              </button>
-            </Link>
           </div>
         </div>
       </div>

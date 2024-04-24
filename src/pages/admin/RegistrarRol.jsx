@@ -125,7 +125,7 @@ const RegistrarRol = () => {
                   onChange={handleCheckboxChange}
                   className="form-checkbox text-primary border-primary"
                 />
-                <label htmlFor={permiso} className="text-primary">
+                <label htmlFor={permiso} className="text-primary font-bold">
                   {permiso.charAt(0).toUpperCase() + permiso.slice(1)}
                 </label>
               </div>
@@ -133,17 +133,18 @@ const RegistrarRol = () => {
           </div>
 
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            
+            <Link to="/roles" className="w-full md:w-[43%]">
+              <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                Volver
+              </button>
+            </Link>
             <button
               className="w-full md:w-[43%]  px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
               onClick={handleSubmit} // Llama a handleSubmit al hacer clic en el botón
             >
               Crear rol
             </button>
-            <Link to="/roles" className="w-full md:w-[43%]">
-              <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                Volver
-              </button>
-            </Link>
           </div>
         </div>
       </div>

@@ -26,7 +26,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,9 @@ const Login = () => {
         <div className="text-black  w-[60%] flex flex-col justify-center items-center backdrop-blur-sm rounded-lg">
           <h1 className="text-5xl font-bold mb-10">Bienvenido</h1>
           <hr className=" border-black h-px w-[95%]" />
-          <h2 className="text-4xl font-bold mb-10 mt-10">Iniciar sesión</h2>
+          <div className="flex justify-center items-center">
+          <h2 className="text-4xl font-bold mb-10 mt-10 pl-12 md:pl-0">Iniciar sesión</h2>
+          </div>
           <form className=" w-[80%]" onSubmit={handleSubmit}>
             <div className="relative mb-8">
               <FaUser className="absolute top-1/2 -translate-y-1/2 left-2" />
@@ -103,11 +105,14 @@ const Login = () => {
             </div>
             <button
               type="submit"
-              className=" text-center py-3 pl-8 pr-12  w-full outline-none bg-primary rounded-lg cursor-pointer font-semibold"
+              className=" text-center py-3 pl-8 pr-12  w-full outline-none bg-primary rounded-lg cursor-pointer text-texto-900 font-bold hover:bg-opacity-[90%] hover:text-white transition-all duration-400"
             >
               Ingresar
             </button>
           </form>
+          <Link to="/recuperar-contrasena" className="mt-2">
+          <span className="text-blue-500 hover:border-b hover:border-blue-500">¿Olvidaste tu contraseña?</span>
+          </Link>
         </div>
       </div>
     </div>
