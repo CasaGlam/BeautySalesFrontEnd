@@ -37,12 +37,12 @@ const RegistrarRol = () => {
       text: "¿Quieres crear este rol?",
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Sí",
       cancelButtonText: "Cancelar",
+      confirmButtonText: "Sí",
     }).then((result) => {
       if (result.isConfirmed) {
         // Lógica para enviar el formulario
-        fetch("http://localhost:8080/api/roles", {
+        fetch("https://beautysalesbackend.onrender.com/api/roles", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -84,14 +84,14 @@ const RegistrarRol = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <div className="flex flex-col ">
+            <div className="flex flex-col w-full">
             <label htmlFor="rol" className="pb-1 text-texto-100">Nombre de rol</label>
-            <div className="relative">
+            <div className="relative w-ful">
               <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
                 type="text"
                 placeholder="Nombre de rol"
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                className="w-full text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 value={rol}
                 onChange={(e) => setRol(e.target.value)}
                 id="rol"

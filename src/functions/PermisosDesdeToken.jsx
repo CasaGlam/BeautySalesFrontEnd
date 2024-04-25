@@ -4,7 +4,7 @@ async function getPermisosDesdeToken(rol) {
   try {
     console.log("Rol del token:", rol);
 
-    const response = await axios.get("http://localhost:8080/api/roles");
+    const response = await axios.get("https://beautysalesbackend.onrender.com/api/roles");
     console.log("Respuesta de la API:", response.data);
 
     const roles = response.data.roles;
