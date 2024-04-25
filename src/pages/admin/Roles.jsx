@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
+// Icons
 import { MdEdit } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { BsFillXSquareFill, BsFillCheckSquareFill  } from "react-icons/bs";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -20,7 +23,7 @@ const Roles = () => {
   }, []);
 
   const fetchRoles = () => {
-    fetch("http://localhost:8080/api/roles")
+    fetch("https://beautysalesbackend.onrender.com/api/roles")
       .then((response) => response.json())
       .then((data) => {
         setRolesData(data.roles);
@@ -53,7 +56,7 @@ const Roles = () => {
     }
   
     // Verificar si hay usuarios asignados a este rol
-    fetch('http://localhost:8080/api/usuarios')
+    fetch('https://beautysalesbackend.onrender.com/api/usuarios')
       .then(response => response.json())
       .then(data => {
         const usersAssignedToRole = data.usuarios.filter(usuario => usuario.rol === roleName);
@@ -79,7 +82,7 @@ const Roles = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             // Si el usuario confirma la eliminación, enviar la solicitud DELETE
-            fetch(`http://localhost:8080/api/roles/${roleId}`, {
+            fetch(`https://beautysalesbackend.onrender.com/api/roles/${roleId}`, {
               method: "DELETE",
             })
               .then((response) => {
@@ -138,8 +141,8 @@ const Roles = () => {
 
   const getPermissionStatus = (permission) => {
     return selectedRole && selectedRole.permisos.includes(permission)
-      ? "Sí"
-      : "No";
+      ? <BsFillCheckSquareFill  className="text-green-500"/>
+      : <BsFillXSquareFill className="text-red-500"/>;
   };
 
   const filteredRoles = rolesData.filter((rol) =>
@@ -306,9 +309,11 @@ const Roles = () => {
                   </h3>
                   <div className="flex flex-wrap gap-4">
                     {allPermissions.map((permission) => (
-                      <div key={permission} className="w-full sm:w-1/2 text-texto-100">
-                        <strong className="text-gray-500">{permission}:</strong>{" "}
+                      <div key={permission} className="w-full sm:w-1/2 text-texto-100 flex items-center">
+                        <strong className="text-gray-500 w-[50%]">{permission}:</strong>{" "}
+                        <div className="flex ">
                         {getPermissionStatus(permission)}
+                        </div>
                       </div>
                     ))}
                   </div>

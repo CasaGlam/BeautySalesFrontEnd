@@ -17,7 +17,7 @@ const RegistrarUsuario = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/roles")
+    fetch("https://beautysalesbackend.onrender.com/api/roles")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data.roles);
@@ -63,7 +63,7 @@ const RegistrarUsuario = () => {
       confirmButtonText: "Sí, crear usuario",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("http://localhost:8080/api/usuarios", {
+        fetch("https://beautysalesbackend.onrender.com/api/usuarios", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -106,7 +106,7 @@ const RegistrarUsuario = () => {
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
               <div className="flex flex-col w-full">
               <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre de usuario</label>
-              <div className="relative">
+              <div className="relative w-full">
                 <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
@@ -168,12 +168,12 @@ const RegistrarUsuario = () => {
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <div className="flex flex-col w-[47%]">
+            <div className="flex flex-col md:w-[47%]">
               <label htmlFor="rol" className="pb-1 text-texto-100">Rol</label>
               <div className="relative">
                 <select
                   name="rol"
-                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 w-full md:pl-8 md:pr-12 bg-secondary-900"
+                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   value={usuario.rol}
                   id="rol"
                   onChange={handleChange}

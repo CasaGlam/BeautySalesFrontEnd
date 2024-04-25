@@ -11,7 +11,7 @@ const EditarRol = () => {
   });
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/roles/${objectId}`)
+    fetch(`https://beautysalesbackend.onrender.com/api/roles/${objectId}`)
       .then(response => response.json())
       .then(data => {
         if (data && data.role) {
@@ -54,7 +54,7 @@ const EditarRol = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:8080/api/roles/${objectId}`, {
+        fetch(`https://beautysalesbackend.onrender.com/api/roles/${objectId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -95,14 +95,14 @@ const EditarRol = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-          <div className="flex flex-col ">
+          <div className="flex flex-col w-full">
             <label htmlFor="rol" className="pb-1 text-texto-100">Nombre de rol</label>
-            <div className="relative">
+            <div className="relative w-full">
               <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
                 type="text"
                 placeholder="Nombre de rol"
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                className="w-full text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 value={rolData.rol}
                 onChange={(e) => setRolData({ ...rolData, rol: e.target.value })}
               />

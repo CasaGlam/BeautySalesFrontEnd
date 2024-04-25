@@ -4,12 +4,48 @@ import { obtenerDatosDesdeToken } from "../../functions/token";
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
+  const [empresa, setEmpresa] = useState({
+    nombre: "",
+    descripcion: "",
+    email: "",
+    direccion: "",
+    telefono: "",
+    celular: "",
+    web: "",
+  });
 
   useEffect(() => {
     // Llama a la función para obtener los datos del token cuando el componente se monta
     const datosUsuario = obtenerDatosDesdeToken();
     setUsuario(datosUsuario);
+
+    // Trae los datos de la empresa
+    const fetchEmpresa = async () =>{
+      try{
+        const response = await fetch(
+          `https://beautysalesbackend.onrender.com/api/empresa/6628edfd2d05b66ef04ef368`
+        );
+        if(!response.ok){
+          throw new Error("Error al obtener los datos del usuario");
+        }
+        const data = await response.json();
+        setEmpresa(data.empresa)
+      }catch(error){
+        console.error("Error fetching info: ", error);
+      }
+    };
+
+    fetchEmpresa();
+
   }, []);
+  
+  const handleChange = (e) => {
+    setEmpresa({
+      ...empresa,
+      [e.target.name]: e.target.value,
+    });
+  };
+
 
   return (
     <div className="bg-secondary-100 p-8 rounded-xl mb-10">
@@ -64,7 +100,7 @@ const Perfil = () => {
               <p className="text-gray-500 text-sm">{usuario ? usuario.correo : ''}</p>
             </div>
             <div>
-              <button className="w-full md:w-auto bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-black hover:text-texto-900 transition-colors duration-500">
+              <button className="w-full md:w-[200px] bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-black hover:text-texto-900 transition-colors duration-500">
                 Cambiar email
               </button>
             </div>
@@ -76,7 +112,7 @@ const Perfil = () => {
               <p className="text-gray-500 text-sm">*******</p>
             </div>
             <div>
-              <button className="w-full md:w-auto bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-black hover:text-texto-900 transition-colors duration-500">
+              <button className="w-full md:w-[200px] bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-black hover:text-texto-900 transition-colors duration-500">
                 Cambiar contraseña
               </button>
             </div>
@@ -100,6 +136,8 @@ const Perfil = () => {
                   type="text"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Nombre"
+                  value={empresa.nombre}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -114,7 +152,8 @@ const Perfil = () => {
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 resize-none text-texto-100"
                   rows={4}
                   placeholder="Descripción de la empresa"
-                  
+                  value={empresa.descripcion}
+                  onChange={handleChange}
                 ></textarea>
               </div>
             </div>
@@ -129,6 +168,8 @@ const Perfil = () => {
                   type="email"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Correo electrónico"
+                  value={empresa.email}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -143,6 +184,8 @@ const Perfil = () => {
                   type="text"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Dirección de la empresa"
+                  value={empresa.direccion}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -157,6 +200,8 @@ const Perfil = () => {
                   type="number"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Número de teléfono"
+                  value={empresa.telefono}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -171,6 +216,8 @@ const Perfil = () => {
                   type="number"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="Número de celular"
+                  value={empresa.celular}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -185,6 +232,8 @@ const Perfil = () => {
                   type="url"
                   className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
                   placeholder="URL de la web"
+                  value={empresa.web}
+                  onChange={handleChange}
                 />
               </div>
             </div>

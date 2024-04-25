@@ -20,7 +20,7 @@ const EditarUsuario = () => {
     const fetchUsuario = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/usuarios/${objectId}`
+          `https://beautysalesbackend.onrender.com/api/usuarios/${objectId}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener los datos del usuario");
@@ -34,7 +34,7 @@ const EditarUsuario = () => {
 
     fetchUsuario();
 
-    fetch("http://localhost:8080/api/roles")
+    fetch("https://beautysalesbackend.onrender.com/api/roles")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data.roles);
@@ -85,7 +85,7 @@ const EditarUsuario = () => {
       estado: usuario.estado === "activo" ? true : false,
     };
 
-    fetch(`http://localhost:8080/api/usuarios/${objectId}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/usuarios/${objectId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const EditarUsuario = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar usuario</h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[60%]">
+        <div className="w-full md:flex flex-col md:w-[90%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="flex flex-col w-full">
               <label htmlFor="nombre" className="pb-1 text-texto-100">
@@ -140,7 +140,7 @@ const EditarUsuario = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full ">
               <label htmlFor="correo" className="pb-1 text-texto-100">
                 Correo electrónico
               </label>
@@ -149,7 +149,7 @@ const EditarUsuario = () => {
                 <input
                   type="email"
                   placeholder="Correo electrónico"
-                  className="text-black px-2 py-3 w-full rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="correo"
                   id="correo"
                   value={usuario.correo}
@@ -198,14 +198,14 @@ const EditarUsuario = () => {
               </div>
             </div>
           </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <Link to="/usuarios" className="w-full md:w-[46%]">
+          <div className="flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <Link to="/usuarios" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
               </button>
             </Link>
             <button
-              className="w-full md:w-[46%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              className="w-full md:w-[35%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
               onClick={handleActualizarUsuario}
             >
               Actualizar usuario
