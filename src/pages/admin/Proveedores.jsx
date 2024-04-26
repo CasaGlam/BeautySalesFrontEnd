@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaEdit as EditIcon, FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Swal from "sweetalert2";
+import { MdEdit } from "react-icons/md";
 
 const Proveedores = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -201,7 +202,7 @@ const Proveedores = () => {
                     {/* Botón de Editar */}
                     <Link to={`/proveedores/editar-proveedor/${proveedor._id}`}>
                       <button className="text-black hover:text-blue-700 transition-colors cursor-pointer">
-                        <EditIcon />
+                        <MdEdit />
                       </button>
                     </Link>
                     {/* Botón de Eliminar */}

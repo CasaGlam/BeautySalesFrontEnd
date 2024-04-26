@@ -9,7 +9,7 @@ const RegistrarProducto = () => {
     precio: "",
     cantidad: "",
     descripcion: "",
-    categoria: "" // Agregamos categoría al estado del producto
+    idCategoria: "" // Cambiamos el nombre del campo a idCategoria
   });
 
   const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías obtenidas
@@ -39,22 +39,15 @@ const RegistrarProducto = () => {
       producto.precio &&
       producto.cantidad &&
       producto.descripcion &&
-      producto.categoria
+      producto.idCategoria // Aseguramos que haya una categoría seleccionada
     ) {
       try {
-        // Creamos un objeto con los datos del producto a enviar
-        const productoData = {
-          ...producto,
-          // Enviamos el ID de la categoría en lugar del nombre
-          categoria: producto.categoria
-        };
-
         const response = await fetch("http://localhost:8080/api/productos", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(productoData),
+          body: JSON.stringify(producto),
         });
 
         if (response.ok) {
@@ -74,7 +67,7 @@ const RegistrarProducto = () => {
       }
     } else {
       // Mostrar alerta de campos vacíos
-      Swal.fire("¡Debes llenar todos los campos!", "", "error");
+      Swal.fire("¡Debes llenar todos los campos y seleccionar una categoría!", "", "error");
     }
   };
 
@@ -130,10 +123,10 @@ const RegistrarProducto = () => {
                 </div>
               </div>
               <div>
-                <label htmlFor="categoria" className="block text-black font-bold mb-1">Categoría</label>
+                <label htmlFor="idCategoria" className="block text-black font-bold mb-1">Categoría</label>
                 <select
-                  name="categoria"
-                  value={producto.categoria}
+                  name="idCategoria" // Cambiamos el name del campo a idCategoria
+                  value={producto.idCategoria}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 md:w-[94%]"
                 >

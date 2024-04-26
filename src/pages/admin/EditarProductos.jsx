@@ -5,46 +5,50 @@ import Swal from 'sweetalert2';
 const EditarProducto = () => {
   const [producto, setProducto] = useState({
     nombre: "",
-    precio: "",
-    cantidad: "",
     descripcion: "",
+    categoria: "",
     estado: false // Estado inicial como un booleano
   });
-
+  const [categorias, setCategorias] = useState([]);
   const { objectId } = useParams();
 
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/productos/${objectId}`);
-        if (!response.ok) {
-          throw new Error('Error al obtener los datos del producto');
+        const responseProducto = await fetch(`http://localhost:8080/api/productos/${objectId}`);
+        const responseCategorias = await fetch(`http://localhost:8080/api/categorias`);
+        
+        if (!responseProducto.ok || !responseCategorias.ok) {
+          throw new Error('Error al obtener los datos');
         }
-        const data = await response.json();
-        setProducto(data.producto);
+        
+        const dataProducto = await responseProducto.json();
+        const dataCategorias = await responseCategorias.json();
+        
+        setProducto(dataProducto.producto);
+        setCategorias(dataCategorias.categorias);
       } catch (error) {
-        console.error("Error fetching producto:", error);
+        console.error("Error fetching data:", error);
       }
     };
   
     fetchProducto();
   
   }, [objectId]);
-  
+
   const handleChange = (e) => {
     setProducto({
       ...producto,
       [e.target.name]: e.target.value
     });
   };
-  
 
   const handleActualizarProducto = () => {
     // Verificar que ningún campo esté vacío
     if (
       producto.nombre.trim() === "" ||
-      producto.cantidad.trim() === "" ||
       producto.descripcion.trim() === "" ||
+      producto.categoria.trim() === "" ||
       producto.estado === ""
     ) {
       Swal.fire({
@@ -96,56 +100,58 @@ const EditarProducto = () => {
       <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar producto</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <input
-              type="text"
-              placeholder="Nombre del producto"
-              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
-              name="nombre"
-              value={producto.nombre}
-              onChange={handleChange}
-            />
-            { /* Añadir capa para ocultar el precio */ }
-            <div className="relative">
+          <div className="w-full flex flex-col md:flex-row gap-6 mb-10">
+            <div className="w-full">
+              <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del producto</label>
               <input
                 type="text"
-                placeholder="Precio"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900"
-                name="precio"
-                value={producto.precio}
+                placeholder="Nombre del producto"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
+                name="nombre"
+                value={producto.nombre}
                 onChange={handleChange}
               />
-              <div className="absolute top-0 left-0 h-full w-full bg-white opacity-70"></div>
+            </div>
+            <div className="w-full">
+              <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descripción</label>
+              <textarea
+                placeholder="Descripción"
+                name="descripcion"
+                value={producto.descripcion}
+                onChange={handleChange}
+                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[101%] resize-none bg-secondary-900"
+                rows={1}
+                style={{ minHeight: "10px" }}
+              />
             </div>
           </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <input
-              type="text"
-              placeholder="Cantidad"
-              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
-              name="cantidad"
-              value={producto.cantidad}
-              onChange={handleChange}
-            />
-            <input
-              type="text"
-              placeholder="Descripción"
-              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
-              name="descripcion"
-              value={producto.descripcion}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <select
-              name="estado"
-              value={producto.estado}
-              onChange={handleChange}
-              className="text-black px-4 py-3 rounded-lg bg-secondary-900"
-            >
-              <option value={true}>Activo</option>
-              <option value={false}>Inactivo</option>
-            </select>
+          <div className="w-full flex flex-col md:flex-row gap-6 mb-10">
+            <div className="w-full">
+              <label htmlFor="categoria" className="text-texto-100 mb-2 block">Categoría</label>
+              <select
+                name="categoria"
+                value={producto.categoria}
+                onChange={handleChange}
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
+              >
+                <option value="">Seleccionar categoría</option>
+                {categorias.map((categoria) => (
+                  <option key={categoria._id} value={categoria._id}>{categoria.nombre}</option>
+                ))}
+              </select>
+            </div>
+            <div className="w-full">
+              <label htmlFor="estado" className="text-texto-100 mb-2 block">Estado</label>
+              <select
+                name="estado"
+                value={producto.estado}
+                onChange={handleChange}
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
+              >
+                <option value={true}>Activo</option>
+                <option value={false}>Inactivo</option>
+              </select>
+            </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <button
