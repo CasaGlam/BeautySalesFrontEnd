@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Swal from "sweetalert2";
+import { MdEdit } from "react-icons/md";
 
 const Clientes = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -188,15 +189,15 @@ const Clientes = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-black">{cliente.correo}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${cliente.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${cliente.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
                       disabled
                     >
-                      {cliente.activo ? 'Activo' : 'Inactivo'}
+                      {cliente.estado ? 'Activo' : 'Inactivo'}
                     </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
                     <Link to={`/clientes/editar-cliente/${cliente._id}`}>
-                      <FaEdit className="text-black hover:text-gray-700 transition-colors cursor-pointer" />
+                      <MdEdit className="text-black hover:text-gray-700 transition-colors cursor-pointer" />
                     </Link>
                     <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer ml-2" onClick={() => handleDelete(cliente._id)} />
                   </td>

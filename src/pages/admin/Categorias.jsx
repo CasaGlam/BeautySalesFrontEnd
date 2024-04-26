@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Swal from "sweetalert2";
+import { MdEdit } from "react-icons/md";
 
 const Categorias = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -148,7 +149,7 @@ const Categorias = () => {
                   <td className="px-6 py-4 whitespace-nowrap flex justify-end">
                     <Link to={`/categorias/editar-categoria/${categoria._id}`}>
                       <button className="text-black hover:text-gray-700 transition-colors">
-                        <FaEdit />
+                        <MdEdit />
                       </button>
                     </Link>
                     <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer ml-2" onClick={() => handleDelete(categoria._id)} />

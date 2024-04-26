@@ -142,17 +142,18 @@ const RegistrarProveedor = () => {
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <Link to="/proveedores" className="w-full md:w-[47%]">
+            <Link to="/proveedores" className="w-full md:w-[100%]">
                 <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Volver
                 </button>
               </Link>
               <button
                 type="submit"
-                className="w-full md:w-[47%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+                className="w-full md:w-[90%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
               >
                 Crear proveedor
               </button>
+           
   
             </div>
           </form>

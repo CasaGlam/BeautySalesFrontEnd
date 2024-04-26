@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { MdEdit } from "react-icons/md";
 
 const Productos = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState({});
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -17,6 +19,21 @@ const Productos = () => {
       .then(data => {
         if (data && data.productos && Array.isArray(data.productos)) {
           setProductos(data.productos);
+          // Obtener categorías
+          fetch('http://localhost:8080/api/categorias')
+            .then(response => response.json())
+            .then(data => {
+              if (data && data.categorias && Array.isArray(data.categorias)) {
+                const categoriasMap = {};
+                data.categorias.forEach(categoria => {
+                  categoriasMap[categoria._id] = categoria.nombre;
+                });
+                setCategorias(categoriasMap);
+              } else {
+                console.error('Datos de categorías no encontrados en la respuesta:', data);
+              }
+            })
+            .catch(error => console.error('Error fetching categorías:', error));
         } else {
           console.error('Datos de productos no encontrados en la respuesta:', data);
         }
@@ -43,125 +60,10 @@ const Productos = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  
   const handleDelete = (id) => {
-    // Consultar la API de compras para verificar si el producto está relacionado con alguna compra
-    fetch(`http://localhost:8080/api/compras/producto/${id}`)
-      .then(response => {
-        if (response.ok) {
-          // Si la consulta es exitosa, verificar si hay alguna compra relacionada con el producto
-          return response.json();
-        }
-        throw new Error('Error al consultar las compras relacionadas con el producto');
-      })
-      .then(data => {
-        // Si hay compras relacionadas, mostrar una alerta y evitar la eliminación
-        if (data && data.comprasRelacionadas && data.comprasRelacionadas.length > 0) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Producto relacionado con una compra',
-            text: 'Este producto no se puede eliminar porque está relacionado con una compra.'
-          });
-        } else {
-          // Si no hay compras relacionadas, consultar la API de ventas
-          checkVentas(id);
-        }
-      })
-      .catch(error => {
-        console.error('Error al verificar las compras relacionadas con el producto:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: ' No se puede eliminar el producto porque hay compras relacionadas con el producto.'
-        });
-      });
+    // Tu lógica de eliminación aquí
+    console.log("Eliminar producto con ID:", id);
   };
-  
-  const checkVentas = (id) => {
-    // Consultar la API de ventas para verificar si el producto está relacionado con alguna venta
-    fetch(`http://localhost:8080/api/ventas/producto/${id}`)
-      .then(response => {
-        if (response.ok) {
-          // Si la consulta es exitosa, verificar si hay alguna venta relacionada con el producto
-          return response.json();
-        }
-        throw new Error('Error al consultar las ventas relacionadas con el producto');
-      })
-      .then(data => {
-        // Si hay ventas relacionadas, mostrar una alerta y evitar la eliminación
-        if (data && data.ventasRelacionadas && data.ventasRelacionadas.length > 0) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Producto relacionado con una venta',
-            text: 'Este producto no se puede eliminar porque está relacionado con una venta.'
-          });
-        } else {
-          // Si no hay ventas relacionadas, confirmar la eliminación del producto
-          confirmDelete(id);
-        }
-      })
-      .catch(error => {
-        console.error('Error al verificar las ventas relacionadas con el producto:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se puede eliminar el producto porque hay ventas relacionadas con el producto.'
-        });
-      });
-  };
-  
-  const confirmDelete = (id) => {
-    // Mostrar la confirmación de eliminación solo si no hay compras o ventas relacionadas con el producto
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'No podrás deshacer esta acción',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Si se confirma la eliminación, realizar la solicitud de eliminación del producto
-        deleteProducto(id);
-      }
-    });
-  };
-  
-  const deleteProducto = (id) => {
-    fetch(`http://localhost:8080/api/productos/${id}`, {
-      method: 'DELETE'
-    })
-    .then(response => {
-      if (response.ok) {
-        // Si la eliminación es exitosa, actualizar la lista de productos
-        const updatedProductos = productos.filter(producto => producto._id !== id);
-        setProductos(updatedProductos);
-        Swal.fire(
-          '¡Eliminado!',
-          'El producto ha sido eliminado',
-          'success'
-        );
-      } else {
-        console.error('Error al eliminar el producto:', response.statusText);
-        Swal.fire(
-          'Error',
-          'Hubo un problema al eliminar el producto',
-          'error'
-        );
-      }
-    })
-    .catch(error => {
-      console.error('Error al eliminar el producto:', error);
-      Swal.fire(
-        'Error',
-        'Hubo un problema al eliminar el producto',
-        'error'
-      );
-    });
-  };
-  
 
   return (
     <div className="flex justify-center">
@@ -209,6 +111,9 @@ const Productos = () => {
                   Estado
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
+                  Categoría
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
                   Acciones
                 </th>
               </tr>
@@ -220,19 +125,20 @@ const Productos = () => {
                <td className="px-6 py-4 whitespace-nowrap text-black">{producto.precio}</td>
                <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
                <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
-             <td className="px-6 py-4 whitespace-nowrap">
-               <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-               {producto.estado ? 'Activo' : 'Inactivo'}
-            </span>
-          </td>
-           <td className="px-6 py-4 whitespace-nowrap flex">
-           <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
-           <Link to={`/productos/editar-producto/${producto._id}`}>
-             <FaEdit className="text-black hover:text-primary-700 transition-colors cursor-pointer ml-2" />
-           </Link>
-           </td>
-          </tr>
-          ))}
+               <td className="px-6 py-4 whitespace-nowrap">
+                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                   {producto.estado ? 'Activo' : 'Inactivo'}
+                 </span>
+               </td>
+               <td className="px-6 py-4 whitespace-nowrap text-black">{categorias[producto.idCategoria] || 'Categoría no encontrada'}</td>
+               <td className="px-6 py-4 whitespace-nowrap flex">
+               <Link to={`/productos/editar-producto/${producto._id}`}>
+                   <MdEdit className="text-black hover:text-primary-700 transition-colors cursor-pointer ml-2" />
+                 </Link>
+                 <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
+               </td>
+              </tr>
+            ))}
             </tbody>
           </table>
         </div>

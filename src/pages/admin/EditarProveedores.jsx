@@ -97,90 +97,93 @@ const EditarProveedor = () => {
       <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar proveedor</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
-          <form>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="nombre" className="block text-black font-bold mb-1">Nombre del proveedor</label>
-                <input
-                  type="text"
-                  placeholder="Nombre del proveedor"
-                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
-                  name="nombre"
-                  value={proveedor.nombre}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="telefono" className="block text-black font-bold mb-1">Teléfono</label>
-                <input
-                  type="text"
-                  placeholder="Teléfono"
-                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
-                  name="telefono"
-                  value={proveedor.telefono}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="correo" className="block text-black font-bold mb-1">Correo electrónico</label>
-                <input
-                  type="email"
-                  placeholder="Correo electrónico"
-                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
-                  name="correo"
-                  value={proveedor.correo}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="direccion" className="block text-black font-bold mb-1">Dirección</label>
-                <input
-                  type="text"
-                  placeholder="Dirección"
-                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
-                  name="direccion"
-                  value={proveedor.direccion}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="descripcion" className="block text-black font-bold mb-1">Descripción</label>
-                <input
-                  type="text"
-                  placeholder="Descripción"
-                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
-                  name="descripcion"
-                  value={proveedor.descripcion}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label htmlFor="estado" className="block text-black font-bold mb-1">Estado</label>
-                <select
-                  name="estado"
-                  value={proveedor.estado}
-                  onChange={handleChange}
-                  className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
-                >
-                  <option value={true}>Activo</option>
-                  <option value={false}>Inactivo</option>
-                </select>
-              </div>
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <div className="w-full">
+              <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del proveedor</label>
+              <input
+                type="text"
+                placeholder="Nombre del proveedor"
+                name="nombre"
+                value={proveedor.nombre}
+                onChange={handleChange}
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900  w-full md:w- [100%]"
+                rows={1}
+                style={{ minHeight: "50px" }}
+              />
             </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 my-4">
-            <Link to="/proveedores" className="w-full md:w-[50%]">
-                <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
-                  Volver
-                </button>
-              </Link>
-              <button
-                className="w-full md:w-[47%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-                onClick={handleActualizarProveedor}
+            <div className="w-full">
+              <label htmlFor="telefono" className="text-texto-100 mb-2 block">Teléfono</label>
+              <input
+                type="text"
+                placeholder="Teléfono"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                name="telefono"
+                value={proveedor.telefono}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <div className="w-full">
+              <label htmlFor="correo" className="text-texto-100 mb-2 block">Correo electrónico</label>
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                name="correo"
+                value={proveedor.correo}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="w-full">
+              <label htmlFor="direccion" className="text-texto-100 mb-2 block">Dirección</label>
+              <input
+                type="text"
+                placeholder="Dirección"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                name="direccion"
+                value={proveedor.direccion}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <div className="w-full">
+              <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descripción</label>
+              <textarea
+                placeholder="Descripción"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                name="descripcion"
+                value={proveedor.descripcion}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="w-full">
+              <label htmlFor="estado" className="text-texto-100 mb-2 block">Estado</label>
+              <select
+                name="estado"
+                value={proveedor.estado}
+                onChange={handleChange}
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
               >
-                Actualizar proveedor
-              </button>
+                <option value={true}>Activo</option>
+                <option value={false}>Inactivo</option>
+              </select>
             </div>
-          </form>
+          </div>
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <button
+              className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              onClick={handleActualizarProveedor}
+            >
+              Actualizar proveedor
+            </button>
+            <Link to="/proveedores" className="w-full md:w-[43%]">
+              <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+                Volver
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
