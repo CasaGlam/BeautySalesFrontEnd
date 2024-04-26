@@ -30,7 +30,7 @@ const Header = ({ title }) => {
             menuButton={
               <MenuButton className="flex items-center gap-x-2 hover:bg-secondary-100 py-2 px-4 rounded-lg">
                 <img
-                  src="/src/assets/img/pfp.jpg"
+                  src="/src/assets/img/aleja.png"
                   className="w-6 h-6 object-cover rounded-full"
                 />
                 <span className='text-texto-100 font-bold'>{usuario.nombre}</span>
@@ -43,7 +43,7 @@ const Header = ({ title }) => {
             <MenuItem className="rounded-lg transition-colors text-gray-300 hover:bg-secondary-900">
               <Link to="/perfil" className="flex items-center gap-x-4 ">
                 <img
-                  src="/src/assets/img/pfp.jpg"
+                  src="/src/assets/img/aleja.png"
                   className="w-8 h-8 object-cover rounded-full"
                 />
                 <div className="flex flex-col text-sm">
