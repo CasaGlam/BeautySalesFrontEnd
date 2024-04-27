@@ -48,7 +48,7 @@ const EditarProducto = () => {
     if (
       producto.nombre.trim() === "" ||
       producto.descripcion.trim() === "" ||
-      producto.categoria.trim() === "" ||
+      producto.idCategoria.trim() === "" ||
       producto.estado === ""
     ) {
       Swal.fire({
@@ -99,8 +99,8 @@ const EditarProducto = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar producto</h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[60%]">
-          <div className="w-full flex flex-col md:flex-row gap-6 mb-10">
+        <div className="w-full md:flex flex-col md:w-[90%]">
+          <div className="w-full flex flex-col md:flex-row gap-12 mb-10">
             <div className="w-full">
               <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del producto</label>
               <input
@@ -112,7 +112,24 @@ const EditarProducto = () => {
                 onChange={handleChange}
               />
             </div>
+            
             <div className="w-full">
+              <label htmlFor="idCategoria" className="text-texto-100 mb-2 block">Categoría</label>
+              <select
+                name="idCategoria"
+                value={producto.idCategoria}
+                onChange={handleChange}
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
+              >
+                <option value="">Seleccionar categoría</option>
+                {categorias.map((categoria) => (
+                  <option key={categoria._id} value={categoria._id}>{categoria.nombre}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="w-full flex flex-col md:flex-row gap-12 mb-10">
+          <div className="w-full">
               <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descripción</label>
               <textarea
                 placeholder="Descripción"
@@ -123,22 +140,6 @@ const EditarProducto = () => {
                 rows={1}
                 style={{ minHeight: "10px" }}
               />
-            </div>
-          </div>
-          <div className="w-full flex flex-col md:flex-row gap-6 mb-10">
-            <div className="w-full">
-              <label htmlFor="categoria" className="text-texto-100 mb-2 block">Categoría</label>
-              <select
-                name="categoria"
-                value={producto.categoria}
-                onChange={handleChange}
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
-              >
-                <option value="">Seleccionar categoría</option>
-                {categorias.map((categoria) => (
-                  <option key={categoria._id} value={categoria._id}>{categoria.nombre}</option>
-                ))}
-              </select>
             </div>
             <div className="w-full">
               <label htmlFor="estado" className="text-texto-100 mb-2 block">Estado</label>
@@ -154,17 +155,18 @@ const EditarProducto = () => {
             </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <button
-              className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              onClick={handleActualizarProducto}
-            >
-              Actualizar producto
-            </button>
-            <Link to="/productos" className="w-full md:w-[43%]">
+          <Link to="/productos" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
               </button>
             </Link>
+            <button
+              className="w-full md:w-[35%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              onClick={handleActualizarProducto}
+            >
+              Actualizar producto
+            </button>
+           
           </div>
         </div>
       </div>

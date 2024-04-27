@@ -77,12 +77,12 @@ const RegistrarProducto = () => {
         Registrar producto nuevo
       </h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[60%]">
+        <div className="w-full md:flex flex-col md:w-[90%]">
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full">
+              <div className="w-full">
                 <label htmlFor="nombre" className="block text-black font-bold mb-1">Nombre</label>
-                <div className="relative">
+                <div className="relative w-full">
                   <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
@@ -90,7 +90,38 @@ const RegistrarProducto = () => {
                     name="nombre"
                     value={producto.nombre}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
+                  />
+                </div>
+              </div>
+              <div className="w-full">
+                <label htmlFor="idCategoria" className="block text-black font-bold mb-1">Categoría</label>
+                <select
+                  name="idCategoria" // Cambiamos el name del campo a idCategoria
+                  value={producto.idCategoria}
+                  onChange={handleChange}
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 md:w-full"
+                >
+                  <option value="">Selecciona una categoría</option>
+                  {categorias.map((categoria) => (
+                    <option key={categoria._id} value={categoria._id}>
+                      {categoria.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="w-full">
+                <label htmlFor="cantidad" className="block text-black font-bold mb-1">Cantidad</label>
+                <div className="relative w-full">
+                  <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <input
+                    type="text"
+                    placeholder="Cantidad"
+                    name="cantidad"
+                    value={producto.cantidad}
+                    onChange={handleChange}
+                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
                   />
                 </div>
               </div>
@@ -104,39 +135,9 @@ const RegistrarProducto = () => {
                     name="precio"
                     value={producto.precio}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
                   />
                 </div>
-              </div>
-              <div>
-                <label htmlFor="cantidad" className="block text-black font-bold mb-1">Cantidad</label>
-                <div className="relative">
-                  <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                  <input
-                    type="text"
-                    placeholder="Cantidad"
-                    name="cantidad"
-                    value={producto.cantidad}
-                    onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="idCategoria" className="block text-black font-bold mb-1">Categoría</label>
-                <select
-                  name="idCategoria" // Cambiamos el name del campo a idCategoria
-                  value={producto.idCategoria}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 md:w-[94%]"
-                >
-                  <option value="">Selecciona una categoría</option>
-                  {categorias.map((categoria) => (
-                    <option key={categoria._id} value={categoria._id}>
-                      {categoria.nombre}
-                    </option>
-                  ))}
-                </select>
               </div>
               <div>
                 <label htmlFor="descripcion" className="block text-black font-bold mb-1">Descripción</label>
@@ -147,7 +148,7 @@ const RegistrarProducto = () => {
                     name="descripcion"
                     value={producto.descripcion}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[203%] resize-none bg-secondary-900"
+                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[211%] resize-none bg-secondary-900 w-full"
                     rows={1}
                     style={{ minHeight: "50px" }}
                   />
@@ -155,14 +156,14 @@ const RegistrarProducto = () => {
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 my-4">
-            <Link to="/productos" className="w-full md:w-[47%]">
+            <Link to="/productos" className="w-full md:w-[35%]">
                 <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Volver
                 </button>
               </Link>
               <button
                 type="submit"
-                className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+                className="w-full md:w-[35%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
               >
                 Crear producto
               </button>

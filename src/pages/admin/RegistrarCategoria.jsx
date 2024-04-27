@@ -46,10 +46,10 @@ const RegistrarCategoria = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-black">Registrar nueva categoría</h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[60%]">
+        <div className="w-full md:flex flex-col md:w-[80%]">
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
+              <div className="relative w-full">
                 <label htmlFor="nombre" className="text-black mb-2 block">Nombre</label>
                 <input
                   type="text"
@@ -57,12 +57,12 @@ const RegistrarCategoria = () => {
                   name="nombre"
                   value={categoria.nombre}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
                 />
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative">
+              <div className="relative w-full">
                 <label htmlFor="descripcion" className="text-black mb-2 block">Descripción</label>
 
                 <input
@@ -71,22 +71,25 @@ const RegistrarCategoria = () => {
                   name="descripcion"
                   value={categoria.descripcion}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 resize-none bg-secondary-900 w-full"
+                  rows={4}
+                  style={{ minHeight: "50px" }}
                 />
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <button
-                type="submit"
-                className="w-full md:w-[43%]  px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              >
-                Crear categoría
-              </button>
-              <Link to="/categorias" className="w-full md:w-[43%]">
-                <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
+            <Link to="/categorias" className="w-full md:w-[35%]">
+                <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Volver
                 </button>
               </Link>
+              <button
+                type="submit"
+                className="w-full md:w-[35%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              >
+                Crear categoría
+              </button>
+            
             </div>
           </form>
         </div>
