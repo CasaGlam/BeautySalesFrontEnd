@@ -96,7 +96,7 @@ const EditarProveedor = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar proveedor</h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[60%]">
+        <div className="w-full md:flex flex-col md:w-[90%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="w-full">
               <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del proveedor</label>
@@ -106,7 +106,7 @@ const EditarProveedor = () => {
                 name="nombre"
                 value={proveedor.nombre}
                 onChange={handleChange}
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900  w-full md:w- [100%]"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900  w-full"
                 rows={1}
                 style={{ minHeight: "50px" }}
               />
@@ -116,7 +116,7 @@ const EditarProveedor = () => {
               <input
                 type="text"
                 placeholder="Teléfono"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
                 name="telefono"
                 value={proveedor.telefono}
                 onChange={handleChange}
@@ -129,7 +129,7 @@ const EditarProveedor = () => {
               <input
                 type="email"
                 placeholder="Correo electrónico"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
                 name="correo"
                 value={proveedor.correo}
                 onChange={handleChange}
@@ -140,7 +140,7 @@ const EditarProveedor = () => {
               <input
                 type="text"
                 placeholder="Dirección"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
                 name="direccion"
                 value={proveedor.direccion}
                 onChange={handleChange}
@@ -152,10 +152,11 @@ const EditarProveedor = () => {
               <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descripción</label>
               <textarea
                 placeholder="Descripción"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full "
                 name="descripcion"
                 value={proveedor.descripcion}
                 onChange={handleChange}
+                rows={1}
               />
             </div>
             <div className="w-full">
@@ -164,7 +165,8 @@ const EditarProveedor = () => {
                 name="estado"
                 value={proveedor.estado}
                 onChange={handleChange}
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full md:w- [100%]"
+                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+
               >
                 <option value={true}>Activo</option>
                 <option value={false}>Inactivo</option>
@@ -172,17 +174,17 @@ const EditarProveedor = () => {
             </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <button
-              className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              onClick={handleActualizarProveedor}
-            >
-              Actualizar proveedor
-            </button>
-            <Link to="/proveedores" className="w-full md:w-[43%]">
+          <Link to="/proveedores" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
               </button>
             </Link>
+            <button
+              className="w-full md:w-[35%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              onClick={handleActualizarProveedor}
+            >
+              Actualizar proveedor
+            </button>
           </div>
         </div>
       </div>

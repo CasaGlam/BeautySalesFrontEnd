@@ -66,75 +66,71 @@ const RegistrarProveedor = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-black">Registrar proveedor nuevo</h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[60%]">
+        <div className="w-full md:flex flex-col md:w-[90%]">
           <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-8">
               <div className="flex flex-col">
                 <label htmlFor="nombre" className="pb-1 text-black">Nombre</label>
                 <div className="relative">
-                  <FaUser className="absolute top-1/2 transform -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Nombre"
                     name="nombre"
                     value={proveedor.nombre}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
                   />
                 </div>
               </div>
               <div className="flex flex-col">
                 <label htmlFor="telefono" className="pb-1 text-black">Teléfono</label>
                 <div className="relative">
-                  <FaPhone className="absolute top-1/2 transform -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Teléfono"
                     name="telefono"
                     value={proveedor.telefono}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
                   />
                 </div>
               </div>
               <div className="flex flex-col">
                 <label htmlFor="correo" className="pb-1 text-black">Correo electrónico</label>
                 <div className="relative">
-                  <FaEnvelope className="absolute top-1/2 transform -translate-y-1/2 left-2 text-black" />
                   <input
                     type="email"
                     placeholder="Correo electrónico"
                     name="correo"
                     value={proveedor.correo}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
                   />
                 </div>
               </div>
               <div className="flex flex-col ">
                 <label htmlFor="direccion" className="pb-1 text-black">Dirección</label>
                 <div className="relative">
-                  <FaMapMarkerAlt className="absolute top-1/2 transform -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Dirección"
                     name="direccion"
                     value={proveedor.direccion}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
                   />
                 </div>
               </div>
               <div className="flex flex-col col-span-2">
                 <label htmlFor="descripcion" className="pb-1 text-black">Descripción</label>
                 <div className="relative">
-                  <FaInfoCircle className="absolute top-1/2 transform -translate-y-1/2 left-2 text-black" />
+          
                   <textarea
                     placeholder="Descripción"
                     name="descripcion"
                     value={proveedor.descripcion}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[96%] resize-none bg-secondary-900"
+                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
                     rows={1}
                     style={{ minHeight: "50px" }}
                   />
@@ -142,14 +138,14 @@ const RegistrarProveedor = () => {
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <Link to="/proveedores" className="w-full md:w-[100%]">
+            <Link to="/proveedores" className="w-full md:w-[35%]">
                 <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Volver
                 </button>
               </Link>
               <button
                 type="submit"
-                className="w-full md:w-[90%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+                className="w-full md:w-[35%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
               >
                 Crear proveedor
               </button>

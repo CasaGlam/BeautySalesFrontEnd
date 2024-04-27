@@ -93,9 +93,9 @@ const EditarCliente = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Editar cliente</h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[60%]">
-          <div className="w-full flex flex-col gap-6 mb-10">
-            <div className="flex gap-6">
+        <div className="w-full md:flex flex-col md:w-[90%]">
+          <div className="w-full flex flex-col gap-12 mb-10">
+            <div className="flex gap-12">
               <div className="w-full">
                 <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del cliente</label>
                 <input
@@ -119,7 +119,7 @@ const EditarCliente = () => {
                 />
               </div>
             </div>
-            <div className="flex gap-6">
+            <div className="flex gap-12">
               <div className="w-full">
                 <label htmlFor="correo" className="text-texto-100 mb-2 block">Correo electrónico</label>
                 <input
@@ -146,17 +146,17 @@ const EditarCliente = () => {
             </div>
           </div>
           <div className="w-full flex justify-center gap-12 mb-10">
-            <button
-              className="w-full md:w-[43%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              onClick={handleActualizarCliente}
-            >
-              Actualizar cliente
-            </button>
-            <Link to="/clientes" className="w-full md:w-[43%]">
+          <Link to="/clientes" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
               </button>
             </Link>
+            <button
+              className="w-full md:w-[35%] px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
+              onClick={handleActualizarCliente}
+            >
+              Actualizar cliente
+            </button>
           </div>
         </div>
       </div>
