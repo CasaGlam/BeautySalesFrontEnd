@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaDollarSign, FaBoxes } from "react-icons/fa";
+import { FaInfoCircle, FaBoxes } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const RegistrarCategoria = () => {
@@ -46,35 +46,40 @@ const RegistrarCategoria = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-black">Registrar nueva categoría</h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[80%]">
+        <div className="w-full md:flex flex-col md:w-[90%]">
           <form onSubmit={handleSubmit}>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
+              <div className="flex flex-col w-full">
+              <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre de usuario</label>
               <div className="relative w-full">
-                <label htmlFor="nombre" className="text-black mb-2 block">Nombre</label>
+                 <FaBoxes className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
                   placeholder="Nombre"
                   name="nombre"
                   value={categoria.nombre}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
+                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
+                </div>
               </div>
             </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-              <div className="relative w-full">
-                <label htmlFor="descripcion" className="text-black mb-2 block">Descripción</label>
-
+            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
+            <div className="flex flex-col w-full">
+                <label htmlFor="descripcion" className="pb-1 text-texto-100">Descripción</label>
+                <div className="relative w-full">
+                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
                   placeholder="Descripción"
                   name="descripcion"
                   value={categoria.descripcion}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 resize-none bg-secondary-900 w-full"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
                   rows={4}
                   style={{ minHeight: "50px" }}
                 />
+                </div>
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
