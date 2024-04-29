@@ -76,6 +76,7 @@ const RegistrarCliente = () => {
               <div className="flex flex-col">
                 <label htmlFor="nombre" className="text-gray-600 font-semibold mb-2">Nombre</label>
                 <div className="relative">
+                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     id="nombre"
@@ -83,14 +84,14 @@ const RegistrarCliente = () => {
                     name="nombre"
                     value={cliente.nombre}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 bg-secondary-900 w-full"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   />
                 </div>
               </div>
               <div className="flex flex-col">
                 <label htmlFor="telefono" className="text-gray-600 font-semibold mb-2">Teléfono</label>
                 <div className="relative">
-
+                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     id="telefono"
@@ -98,7 +99,7 @@ const RegistrarCliente = () => {
                     name="telefono"
                     value={cliente.telefono}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 bg-secondary-900 w-full"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   />
                 </div>
               </div>
@@ -106,6 +107,7 @@ const RegistrarCliente = () => {
             <div className="flex flex-col mb-6">
               <label htmlFor="correo" className="text-gray-600 font-semibold mb-2">Correo electrónico</label>
               <div className="relative">
+              <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="email"
                   id="correo"
@@ -113,7 +115,7 @@ const RegistrarCliente = () => {
                   name="correo"
                   value={cliente.correo}
                   onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 bg-secondary-900 w-full"
+                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 />
               </div>
             </div>

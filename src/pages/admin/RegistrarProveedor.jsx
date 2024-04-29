@@ -70,67 +70,71 @@ const RegistrarProveedor = () => {
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-8">
               <div className="flex flex-col">
-                <label htmlFor="nombre" className="pb-1 text-black">Nombre</label>
+                <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre</label>
                 <div className="relative">
+                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Nombre"
                     name="nombre"
                     value={proveedor.nombre}
                     onChange={handleChange}
-                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   />
                 </div>
               </div>
               <div className="flex flex-col">
                 <label htmlFor="telefono" className="pb-1 text-black">Teléfono</label>
                 <div className="relative">
+                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Teléfono"
                     name="telefono"
                     value={proveedor.telefono}
                     onChange={handleChange}
-                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   />
                 </div>
               </div>
               <div className="flex flex-col">
                 <label htmlFor="correo" className="pb-1 text-black">Correo electrónico</label>
                 <div className="relative">
+                <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="email"
                     placeholder="Correo electrónico"
                     name="correo"
                     value={proveedor.correo}
                     onChange={handleChange}
-                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   />
                 </div>
               </div>
               <div className="flex flex-col ">
                 <label htmlFor="direccion" className="pb-1 text-black">Dirección</label>
                 <div className="relative">
+                < FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Dirección"
                     name="direccion"
                     value={proveedor.direccion}
                     onChange={handleChange}
-                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   />
                 </div>
               </div>
               <div className="flex flex-col col-span-2">
                 <label htmlFor="descripcion" className="pb-1 text-black">Descripción</label>
                 <div className="relative">
-          
+                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <textarea
                     placeholder="Descripción"
                     name="descripcion"
                     value={proveedor.descripcion}
                     onChange={handleChange}
-                    className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                     rows={1}
                     style={{ minHeight: "50px" }}
                   />

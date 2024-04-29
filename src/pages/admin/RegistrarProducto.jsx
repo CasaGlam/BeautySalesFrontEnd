@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaUser, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { FaProductHunt, FaCartPlus, FaDonate, FaInfoCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const RegistrarProducto = () => {
@@ -83,7 +83,7 @@ const RegistrarProducto = () => {
               <div className="w-full">
                 <label htmlFor="nombre" className="block text-black font-bold mb-1">Nombre</label>
                 <div className="relative w-full">
-                  <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaProductHunt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Nombre"
@@ -114,7 +114,7 @@ const RegistrarProducto = () => {
               <div className="w-full">
                 <label htmlFor="cantidad" className="block text-black font-bold mb-1">Cantidad</label>
                 <div className="relative w-full">
-                  <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaCartPlus className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Cantidad"
@@ -128,7 +128,7 @@ const RegistrarProducto = () => {
               <div>
                 <label htmlFor="precio" className="block text-black font-bold mb-1">Precio</label>
                 <div className="relative">
-                  <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaDonate  className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Precio"
@@ -142,7 +142,7 @@ const RegistrarProducto = () => {
               <div>
                 <label htmlFor="descripcion" className="block text-black font-bold mb-1">Descripción</label>
                 <div className="relative">
-                  <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <textarea
                     placeholder="Descripción"
                     name="descripcion"
