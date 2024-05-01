@@ -100,7 +100,7 @@ const Perfil = () => {
               <p className="text-gray-500 text-sm">{usuario ? usuario.correo : ''}</p>
             </div>
             <div>
-              <button className="w-full md:w-[200px] bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-black hover:text-texto-900 transition-colors duration-500">
+              <button className="w-full md:w-[200px] bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-primary hover:text-texto-900 transition-colors duration-500">
                 Cambiar email
               </button>
             </div>
@@ -112,7 +112,7 @@ const Perfil = () => {
               <p className="text-gray-500 text-sm">*******</p>
             </div>
             <div>
-              <button className="w-full md:w-[200px] bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-black hover:text-texto-900 transition-colors duration-500">
+              <button className="w-full md:w-[200px] bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-primary hover:text-texto-900 transition-colors duration-500">
                 Cambiar contraseña
               </button>
             </div>
