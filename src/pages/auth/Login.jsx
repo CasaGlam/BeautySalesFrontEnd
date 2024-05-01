@@ -52,7 +52,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-[100vw] h-[100vh] flex justify-center items-center">
+    <div className="w-[100vw] h-[100vh] flex justify-center items-center bg-gray-400">
       <div
         className="w-[90vw] h-[90vh] rounded-lg flex justify-center"
         style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}
