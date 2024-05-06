@@ -68,9 +68,12 @@ const Usuarios = () => {
       confirmButtonText: "Sí, eliminar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`https://beautysalesbackend.onrender.com/api/usuarios/${userId}`, {
-          method: "DELETE",
-        })
+        fetch(
+          `https://beautysalesbackend.onrender.com/api/usuarios/${userId}`,
+          {
+            method: "DELETE",
+          }
+        )
           .then((response) => {
             if (!response.ok) {
               throw new Error("Error al eliminar el usuario");
@@ -100,12 +103,14 @@ const Usuarios = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
-        <div>
-          <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de usuarios</h1>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 ml-5 md:ml-0 ">
+        <div className="w-full">
+          <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100 ">
+            Listado de usuarios
+          </h1>
         </div>
-        <div className="flex flex-col gap-4 md:flex-row mr-5">
-          <div>
+        <div className="flex flex-col justify-end gap-4 w-full ml-5 md:ml-0 md:flex-row md:w-[60%]">
+          <div className="md:w-[80%]">
             <input
               className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
               type="search"
@@ -129,7 +134,7 @@ const Usuarios = () => {
           No se encuentran usuarios.
         </div>
       ) : (
-        <div className="p-5 overflow-x-auto rounded-lg">
+        <div className="overflow-x-auto rounded-lg">
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg ">
               <tr className="">
@@ -194,20 +199,23 @@ const Usuarios = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Link to={`/usuarios/editar-usuario/${usuario._id}`}>
-                      <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
-                        <MdEdit />
+                    {usuario.rol !== "SUPER ADMINISTRADOR" && ( // Verificar si no es SUPER ADMINISTRADOR
+                      <Link to={`/usuarios/editar-usuario/${usuario._id}`}>
+                        <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                          <MdEdit />
+                        </button>
+                      </Link>
+                    )}
+                    {usuario.rol !== "SUPER ADMINISTRADOR" && ( // Verificar si no es SUPER ADMINISTRADOR
+                      <button
+                        className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
+                        onClick={() =>
+                          handleDeleteUser(usuario._id, usuario.nombre)
+                        }
+                      >
+                        <FaTrash />
                       </button>
-                    </Link>
-                    <button
-                      className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
-                      onClick={() =>
-                        handleDeleteUser(usuario._id, usuario.nombre)
-                      }
-                    >
-                      {/*Eliminar usuario */}
-                      <FaTrash />
-                    </button>
+                    )}
                   </td>
                 </tr>
               ))}

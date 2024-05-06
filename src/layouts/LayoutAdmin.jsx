@@ -119,10 +119,10 @@ const LayoutAdmin = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 xl:grid-cols-6">
-      <Sidebar permisos={permisos} />
+      <Sidebar permisos={permisos}  />
       <div className="xl:col-span-5">
         <Header title={title} />
-        <div className="h-[90vh] overflow-y-scroll p-8">
+        <div className="h-[90vh] overflow-y-scroll p-8" id="main">
           <Outlet />
         </div>
       </div>

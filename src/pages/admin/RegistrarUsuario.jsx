@@ -63,7 +63,7 @@ const RegistrarUsuario = () => {
       confirmButtonText: "Sí, crear usuario",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("http://localhost:8080/api/usuarios", {
+        fetch("https://beautysalesbackend.onrender.com/api/usuarios", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const RegistrarUsuario = () => {
               "El usuario se ha creado exitosamente.",
               "success"
             ).then(() => {
-              // Redirige a la ruta '/usuarios'
+              
               window.location.href = "/usuarios";
             });
           })

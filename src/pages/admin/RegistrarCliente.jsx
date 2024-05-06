@@ -33,7 +33,7 @@ const RegistrarCliente = () => {
     }
     
     // Solicitud POST para registrar el cliente en la API
-    fetch('http://localhost:8080/api/clientes', {
+    fetch('https://beautysalesbackend.onrender.com/api/clientes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { MdEdit } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { BsFillXSquareFill, BsFillCheckSquareFill  } from "react-icons/bs";
+import { BsFillXSquareFill, BsFillCheckSquareFill } from "react-icons/bs";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -48,27 +48,29 @@ const Roles = () => {
     // Verificar si el rol es el "SUPER ADMINISTRADOR"
     if (roleName === "SUPER ADMINISTRADOR") {
       MySwal.fire(
-        'Error!',
-        'No se puede eliminar al SUPER ADMINISTRADOR.',
-        'error'
+        "Error!",
+        "No se puede eliminar al SUPER ADMINISTRADOR.",
+        "error"
       );
       return; // Evitar que se continúe con la eliminación
     }
-  
+
     // Verificar si hay usuarios asignados a este rol
-    fetch('https://beautysalesbackend.onrender.com/api/usuarios')
-      .then(response => response.json())
-      .then(data => {
-        const usersAssignedToRole = data.usuarios.filter(usuario => usuario.rol === roleName);
+    fetch("https://beautysalesbackend.onrender.com/api/usuarios")
+      .then((response) => response.json())
+      .then((data) => {
+        const usersAssignedToRole = data.usuarios.filter(
+          (usuario) => usuario.rol === roleName
+        );
         if (usersAssignedToRole.length > 0) {
           MySwal.fire(
-            'Error!',
-            'No se puede eliminar el rol porque hay usuarios asignados a él.',
-            'error'
+            "Error!",
+            "No se puede eliminar el rol porque hay usuarios asignados a él.",
+            "error"
           );
           return; // Evitar que se continúe con la eliminación
         }
-  
+
         // Si no hay usuarios asignados al rol, proceder con la eliminación
         MySwal.fire({
           title: "¿Estás seguro?",
@@ -82,9 +84,12 @@ const Roles = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             // Si el usuario confirma la eliminación, enviar la solicitud DELETE
-            fetch(`https://beautysalesbackend.onrender.com/api/roles/${roleId}`, {
-              method: "DELETE",
-            })
+            fetch(
+              `https://beautysalesbackend.onrender.com/api/roles/${roleId}`,
+              {
+                method: "DELETE",
+              }
+            )
               .then((response) => {
                 if (!response.ok) {
                   throw new Error("Error deleting role");
@@ -114,8 +119,8 @@ const Roles = () => {
           }
         });
       })
-      .catch(error => {
-        console.error('Error fetching usuarios:', error);
+      .catch((error) => {
+        console.error("Error fetching usuarios:", error);
         // Mostrar alerta de error
         MySwal.fire({
           icon: "error",
@@ -124,8 +129,6 @@ const Roles = () => {
         });
       });
   };
-  
-  
 
   const allPermissions = [
     "dashboard",
@@ -140,9 +143,11 @@ const Roles = () => {
   ];
 
   const getPermissionStatus = (permission) => {
-    return selectedRole && selectedRole.permisos.includes(permission)
-      ? <BsFillCheckSquareFill  className="text-green-500"/>
-      : <BsFillXSquareFill className="text-red-500"/>;
+    return selectedRole && selectedRole.permisos.includes(permission) ? (
+      <BsFillCheckSquareFill className="text-green-500" />
+    ) : (
+      <BsFillXSquareFill className="text-red-500" />
+    );
   };
 
   const filteredRoles = rolesData.filter((rol) =>
@@ -157,12 +162,14 @@ const Roles = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
-        <div>
-          <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de roles</h1>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 ml-5 md:ml-0 ">
+        <div className="w-full">
+        <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100 ">
+            Listado de roles
+          </h1>
         </div>
-        <div className="flex flex-col gap-4 md:flex-row mr-5">
-          <div>
+        <div className="flex flex-col justify-end gap-4 w-full ml-5 md:ml-0 md:flex-row md:w-[60%]">
+          <div className="md:w-[80%]">
             <input
               className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
               type="search"
@@ -186,8 +193,8 @@ const Roles = () => {
           No se encuentran roles.
         </div>
       ) : (
-        <div className="p-5 overflow-x-auto rounded-lg">
-          <table className="min-w-full divide-y divide-gray-500 rounded-lg ">
+        <div className="overflow-x-auto rounded-lg">
+          <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg ">
               <tr className="">
                 <th
@@ -198,7 +205,7 @@ const Roles = () => {
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
+                  className="px-6 items-center py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
                 >
                   Permisos
                 </th>
@@ -216,7 +223,7 @@ const Roles = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="font-medium text-black">{rol.rol}</div>
                   </td>
-                  <td>
+                  <td className=" py-4 whitespace-nowrap items-center">
                     <button
                       onClick={() => openPermissionsModal(rol)}
                       className="text-black border border-black p-2 rounded-lg  hover:bg-black hover:text-texto-900 transition-colors"
@@ -225,17 +232,21 @@ const Roles = () => {
                     </button>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Link to={`/roles/editar-rol/${rol._id}`}>
-                      <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-texto-900 transition-colors">
-                        <MdEdit />
+                    {rol.rol !== "SUPER ADMINISTRADOR" && ( // Verificar si no es SUPER ADMINISTRADOR
+                      <Link to={`/roles/editar-rol/${rol._id}`}>
+                        <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-texto-900 transition-colors">
+                          <MdEdit />
+                        </button>
+                      </Link>
+                    )}
+                    {rol.rol !== "SUPER ADMINISTRADOR" && ( // Verificar si no es SUPER ADMINISTRADOR
+                      <button
+                        onClick={() => handleDelete(rol._id, rol.rol)}
+                        className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-texto-900 transition-colors"
+                      >
+                        <FaTrash />
                       </button>
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(rol._id, rol.rol)}
-                      className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-texto-900 transition-colors"
-                    >
-                      <FaTrash />
-                    </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -309,10 +320,15 @@ const Roles = () => {
                   </h3>
                   <div className="flex flex-wrap gap-4">
                     {allPermissions.map((permission) => (
-                      <div key={permission} className="w-full sm:w-1/2 text-texto-100 flex items-center">
-                        <strong className="text-gray-500 w-[50%]">{permission}:</strong>{" "}
+                      <div
+                        key={permission}
+                        className="w-full sm:w-1/2 text-texto-100 flex items-center"
+                      >
+                        <strong className="text-gray-500 w-[50%]">
+                          {permission}:
+                        </strong>{" "}
                         <div className="flex ">
-                        {getPermissionStatus(permission)}
+                          {getPermissionStatus(permission)}
                         </div>
                       </div>
                     ))}

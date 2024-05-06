@@ -2,7 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Eliminar el scroll por defecto */
 ::-webkit-scrollbar{
     width: 0px;
+}
+
+#main{
+    scrollbar-color: #b37367 #e7eaf3;
 }
