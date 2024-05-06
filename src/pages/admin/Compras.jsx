@@ -159,17 +159,17 @@ const Compras = () => {
           <div>
             <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de compras</h1>
           </div>
-          <div className="flex gap-4">
-            <div>
+          <div className="flex justify-end gap-4 w-[50%]">
+            <div className='w-[60%]'>
               <input
-                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
+                className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900 "
                 type="search"
                 placeholder="Buscar"
                 value={searchTerm}
                 onChange={handleSearch}
               />
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="flex gap-4">
               <div>
               <Link to="/compras/registrar-compra">
                 <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
