@@ -96,8 +96,8 @@ const Categorias = () => {
           <div>
             <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">Listado de categorías</h1>
           </div>
-          <div className="flex gap-4">
-            <div>
+          <div className="flex gap-4 justify-end w-[60%]">
+            <div className="w-[50%]">
               <input
                 className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
                 type="search"
