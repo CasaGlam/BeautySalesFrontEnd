@@ -61,6 +61,7 @@ const RegistrarUsuario = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, crear usuario",
+      cancelButtonText: "Cancelar"
     }).then((result) => {
       if (result.isConfirmed) {
         fetch("https://beautysalesbackend.onrender.com/api/usuarios", {
