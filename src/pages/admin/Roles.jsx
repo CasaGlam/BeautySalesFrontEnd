@@ -14,7 +14,7 @@ const MySwal = withReactContent(Swal);
 const Roles = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [rolesPerPage] = useState(5);
+  const [rolesPerPage] = useState(10);
   const [selectedRole, setSelectedRole] = useState(null);
   const [rolesData, setRolesData] = useState([]);
 

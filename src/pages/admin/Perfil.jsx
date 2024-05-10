@@ -52,7 +52,7 @@ const Perfil = () => {
       <div className="mb-10 w-full flex items-center justify-center">
         <div className="rounded-full border border-black" style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}>
         <img
-          src="src/assets/img/LogoBeautySales.png"
+          src="src/assets/img/BeautySales.jpg"
           className="w-40 h-40 rounded-full"
         />
         </div>

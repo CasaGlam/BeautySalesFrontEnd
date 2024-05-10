@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-
-// Icons
-import { FaUser, FaLock, FaCheck } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 
 const RegistrarRol = () => {
   const [rol, setRol] = useState("");
@@ -19,63 +16,101 @@ const RegistrarRol = () => {
     }
   };
 
+  const handleRoleNameChange = (e) => {
+    const { value } = e.target;
+    // Validación del nombre de rol
+    if (/^[a-zA-Z0-9áéíóúÁÉÍÓÚ ]*$/.test(value) || value === "") {
+      setRol(value);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validación del nombre de rol
-    if (!rol.trim()) {
+    // Validación de campos en blanco
+    if (!rol.trim() || permisos.length === 0) {
       Swal.fire({
         title: "Error",
-        text: "Debes ingresar un nombre de rol.",
+        text: "Debes completar todos los campos y seleccionar al menos un permiso.",
         icon: "error",
       });
       return;
     }
 
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¿Quieres crear este rol?",
-      icon: "question",
-      showCancelButton: true,
-      cancelButtonText: "Cancelar",
-      confirmButtonText: "Sí",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Lógica para enviar el formulario
-        fetch("https://beautysalesbackend.onrender.com/api/roles", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ rol, permisos }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("No se pudo crear el rol.");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Response:", data);
-            Swal.fire({
-              title: "Éxito",
-              text: "El rol se ha creado correctamente.",
-              icon: "success",
-            }).then(() => {
-              // Redirigir a '/roles' después de mostrar la alerta de éxito
-              window.location.href = "/roles";
-            });
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            Swal.fire({
-              title: "Error",
-              text: error.message,
-              icon: "error",
-            });
+    // Realizar la solicitud GET para obtener todos los roles
+    fetch("https://beautysalesbackend.onrender.com/api/roles")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("No se pudo obtener la lista de roles.");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Verificar si el nombre de rol ya existe en la lista de roles
+        const existingRole = data.roles.find((existingRole) => existingRole.rol === rol);
+        if (existingRole) {
+          Swal.fire({
+            title: "Error",
+            text: "El nombre de rol ya existe. Por favor, elige otro nombre.",
+            icon: "error",
           });
-      }
-    });
+        } else {
+          // El nombre de rol no existe, enviar el formulario
+          Swal.fire({
+            title: "¿Estás seguro?",
+            text: "¿Quieres crear este rol?",
+            icon: "question",
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              fetch("https://beautysalesbackend.onrender.com/api/roles", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ rol, permisos }),
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error("No se pudo crear el rol.");
+                  }
+                  return response.json();
+                })
+                .then((data) => {
+                  console.log("Response:", data);
+                  Swal.fire({
+                    title: "Éxito",
+                    text: "El rol se ha creado correctamente.",
+                    icon: "success",
+                    confirmButtonColor: "#3085d6",
+                  }).then(() => {
+                    window.location.href = "/roles";
+                  });
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                  Swal.fire({
+                    title: "Error",
+                    text: error.message,
+                    icon: "error",
+                  });
+                });
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          title: "Error",
+          text: error.message,
+          icon: "error",
+        });
+      });
   };
 
   return (
@@ -85,18 +120,18 @@ const RegistrarRol = () => {
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="flex flex-col w-full">
-            <label htmlFor="rol" className="pb-1 text-texto-100">Nombre de rol</label>
-            <div className="relative w-ful">
-              <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-              <input
-                type="text"
-                placeholder="Nombre de rol"
-                className="w-full text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
-                value={rol}
-                onChange={(e) => setRol(e.target.value)}
-                id="rol"
-              />
-            </div>
+              <label htmlFor="rol" className="pb-1 text-texto-100">Nombre de rol</label>
+              <div className="relative w-ful">
+                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <input
+                  type="text"
+                  placeholder="Nombre de rol"
+                  className="w-full text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                  value={rol}
+                  onChange={handleRoleNameChange}
+                  id="rol"
+                />
+              </div>
             </div>
           </div>
           <div className="flex justify-center">
@@ -133,7 +168,6 @@ const RegistrarRol = () => {
           </div>
 
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            
             <Link to="/roles" className="w-full md:w-[43%]">
               <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
@@ -141,7 +175,7 @@ const RegistrarRol = () => {
             </Link>
             <button
               className="w-full md:w-[43%]  px-3 py-3 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold"
-              onClick={handleSubmit} // Llama a handleSubmit al hacer clic en el botón
+              onClick={handleSubmit} 
             >
               Crear rol
             </button>

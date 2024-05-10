@@ -5,27 +5,25 @@ import Header from "../components/Header";
 import { obtenerDatosDesdeToken } from "../functions/token";
 import getPermisosDesdeToken from "../functions/PermisosDesdeToken";
 
-
 const LayoutAdmin = () => {
   const location = useLocation();
   const [permisos, setPermisos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Estado para controlar si se está cargando el contenido
 
   useEffect(() => {
-    // Llama a la función para obtener los datos del token
     const tokenData = obtenerDatosDesdeToken();
     
-    // Verifica si se obtuvieron los datos del token
     if (tokenData) {
-      // Extrae el rol del tokenData
       const { rol } = tokenData;
 
-      // Llama a la función para obtener los permisos basados en el rol
       const obtenerPermisos = async () => {
         try {
           const permisos = await getPermisosDesdeToken(rol);
           setPermisos(permisos);
+          setIsLoading(false); // Indicar que la carga ha terminado
         } catch (error) {
           console.error("Error al obtener permisos desde el token:", error);
+          setIsLoading(false); // Manejar error también termina la carga
         }
       };
 
@@ -90,10 +88,10 @@ const LayoutAdmin = () => {
       title= "Clientes";
       break
     case "/clientes/registrar-cliente":
-      title= " Registrar Clientes";
+      title= "Registrar Clientes";
       break 
     case "/clientes/editar-cliente":
-      title= " Editar Clientes";
+      title= "Editar Clientes";
       break  
     case "/usuarios":
       title = "Usuarios";
@@ -105,7 +103,7 @@ const LayoutAdmin = () => {
       title = "Editar usuario";
       break;
       case "/roles":
-      title = "roles";
+      title = "Roles";
       break;
     case "/roles/registrar-rol":
       title = "Registrar rol";
@@ -119,15 +117,25 @@ const LayoutAdmin = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 xl:grid-cols-6">
-      <Sidebar permisos={permisos}  />
-      <div className="xl:col-span-5">
-        <Header title={title} />
-        <div className="h-[90vh] overflow-y-scroll p-8" id="main">
-          <Outlet />
+      {isLoading ? (
+        <div className="flex justify-center items-center h-[100vh] w-[100vw]">
+        <div className="loader w-full flex justify-center items-center">
+          <div className="custom-loader"></div>
         </div>
       </div>
+      ) : (
+        <>
+          <Sidebar permisos={permisos} />
+          <div className="xl:col-span-5">
+            <Header title={title} />
+            <div className="h-[90vh] overflow-y-scroll p-8" id="main">
+              <Outlet />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
-};
+}
 
 export default LayoutAdmin;

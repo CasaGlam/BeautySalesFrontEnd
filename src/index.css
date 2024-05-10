@@ -9,3 +9,13 @@
 #main{
     scrollbar-color: #b37367 #e7eaf3;
 }
+
+.custom-loader {
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    border:16px solid;
+    border-color:#B37367 #0000;
+    animation:s1 1s infinite;
+  }
+  @keyframes s1 {to{transform: rotate(.5turn)}}

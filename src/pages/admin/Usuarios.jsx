@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 const Usuarios = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(5);
+  const [usersPerPage] = useState(10);
   const [usuariosFromApi, setUsuariosFromApi] = useState([]);
 
   useEffect(() => {
@@ -35,7 +35,8 @@ const Usuarios = () => {
   const filteredUsuarios = usuariosFromApi.filter(
     (usuario) =>
       usuario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      usuario.correo.toLowerCase().includes(searchTerm.toLowerCase())
+      usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      usuario.rol.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastUser = currentPage * usersPerPage;
