@@ -32,61 +32,93 @@ const EditarRol = () => {
     }
   };
 
+  const handleRoleNameChange = (e) => {
+    const { value } = e.target;
+    // Validación del nombre de rol
+    if (/^[a-zA-Z0-9áéíóúÁÉÍÓÚ ]*$/.test(value) || value === "") {
+      setRolData({ ...rolData, rol: value });
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
     // Validación del nombre de rol
-    if (!rolData.rol.trim()) {
+    if (!rolData.rol.trim() || rolData.permisos.length === 0) {
       Swal.fire({
         title: "Error",
-        text: "Debes ingresar un nombre de rol.",
+        text: "Debes ingresar un nombre de rol y seleccionar al menos un permiso.",
         icon: "error",
       });
       return;
     }
 
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¿Quieres actualizar este rol?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Sí",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch(`https://beautysalesbackend.onrender.com/api/roles/${objectId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(rolData),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("No se pudo actualizar el rol.");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Response:", data);
-            Swal.fire({
-              title: "Éxito",
-              text: "El rol se ha actualizado correctamente.",
-              icon: "success",
-            }).then(() => {
-              window.location.href = "/roles";
-            });
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            Swal.fire({
-              title: "Error",
-              text: error.message,
-              icon: "error",
-            });
+    // Realizar la solicitud GET para obtener todos los roles
+    fetch("https://beautysalesbackend.onrender.com/api/roles")
+      .then(response => response.json())
+      .then(data => {
+        // Verificar si el nombre de rol ya existe en la lista de roles
+        const existingRole = data.roles.find(existingRole => existingRole.rol === rolData.rol && existingRole._id !== objectId);
+        if (existingRole) {
+          Swal.fire({
+            title: "Error",
+            text: "El nombre de rol ya existe. Por favor, elige otro nombre.",
+            icon: "error",
           });
-      }
-    });
+        } else {
+          // El nombre de rol no existe, enviar el formulario
+          Swal.fire({
+            title: "¿Estás seguro?",
+            text: "¿Quieres actualizar este rol?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Sí",
+            cancelButtonText: "Cancelar",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              fetch(`https://beautysalesbackend.onrender.com/api/roles/${objectId}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(rolData),
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error("No se pudo actualizar el rol.");
+                  }
+                  return response.json();
+                })
+                .then((data) => {
+                  console.log("Response:", data);
+                  Swal.fire({
+                    title: "Éxito",
+                    text: "El rol se ha actualizado correctamente.",
+                    icon: "success",
+                  }).then(() => {
+                    window.location.href = "/roles";
+                  });
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                  Swal.fire({
+                    title: "Error",
+                    text: error.message,
+                    icon: "error",
+                  });
+                });
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire({
+          title: "Error",
+          text: error.message,
+          icon: "error",
+        });
+      });
   };
 
   return (
@@ -95,18 +127,18 @@ const EditarRol = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[60%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-          <div className="flex flex-col w-full">
-            <label htmlFor="rol" className="pb-1 text-texto-100">Nombre de rol</label>
-            <div className="relative w-full">
-              <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-              <input
-                type="text"
-                placeholder="Nombre de rol"
-                className="w-full text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
-                value={rolData.rol}
-                onChange={(e) => setRolData({ ...rolData, rol: e.target.value })}
-              />
-            </div>
+            <div className="flex flex-col w-full">
+              <label htmlFor="rol" className="pb-1 text-texto-100">Nombre de rol</label>
+              <div className="relative w-full">
+                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <input
+                  type="text"
+                  placeholder="Nombre de rol"
+                  className="w-full text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                  value={rolData.rol}
+                  onChange={handleRoleNameChange}
+                />
+              </div>
             </div>
           </div>
           <div className="flex justify-center">
@@ -144,7 +176,6 @@ const EditarRol = () => {
           </div>
 
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            
             <Link to="/roles" className="w-full md:w-[43%]">
               <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver

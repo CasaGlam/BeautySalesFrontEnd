@@ -43,9 +43,32 @@ const EditarUsuario = () => {
   }, [objectId]);
 
   const handleChange = (e) => {
+    let regex;
+    // Expresión regular para permitir letras, números y los caracteres específicos en el correo
+    const emailRegex = /^[a-zA-ZáéíóúÁÉÍÓÚ0-9\s@._-]*$/;
+
+    // Aplicar expresión regular específica según el nombre del campo
+    switch (e.target.name) {
+      case "nombre":
+        regex = /^[a-zA-ZáéíóúÁÉÍÓÚ\s]*$/; // Solo letras y espacios
+        break;
+      case "correo":
+        regex = emailRegex; // Letras, números y algunos caracteres especiales
+        break;
+      default:
+        regex = /^[a-zA-ZáéíóúÁÉÍÓÚ0-9\s]*$/; // Por defecto, solo letras y números
+        break;
+    }
+
+    // Validar el valor del campo con la expresión regular correspondiente
+    if (!regex.test(e.target.value)) {
+      return;
+    }
+
+    // Actualizar el estado del usuario
     setUsuario({
       ...usuario,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.name === "correo" ? e.target.value.toLowerCase() : e.target.value,
     });
   };
 
@@ -53,9 +76,10 @@ const EditarUsuario = () => {
     // Verificar que ningún campo esté vacío
     if (
       usuario.nombre.trim() === "" ||
-      usuario.correo.trim() === "" ||
-      usuario.rol.trim() === "" ||
-      usuario.estado.trim() === ""
+    usuario.correo.trim() === "" ||
+    typeof usuario.rol !== "string" || // Verificar que rol sea una cadena
+    typeof usuario.estado !== "string" || // Verificar que estado sea una cadena
+    usuario.estado.trim() === ""
     ) {
       Swal.fire({
         icon: "error",
@@ -147,7 +171,7 @@ const EditarUsuario = () => {
               <div className="relative w-full">
                 <MdEmail className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
-                  type="email"
+                  type="text"
                   placeholder="Correo electrónico"
                   className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="correo"
