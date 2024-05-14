@@ -102,7 +102,7 @@ class Dashboard extends Component {
         labels: Object.keys(this.state.ventasMensuales),
         datasets: [
           {
-            label: "Ventas Diarias",
+            label: "Gráfico de ventas",
             data: Object.values(this.state.ventasMensuales),
             fill: false,
             borderColor: "rgb(75, 192, 192)",

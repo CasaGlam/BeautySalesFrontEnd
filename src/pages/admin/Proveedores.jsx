@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaEdit as EditIcon, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import Swal from "sweetalert2";
 import { MdEdit } from "react-icons/md";
@@ -29,7 +29,7 @@ const Proveedores = () => {
   const handleSearch = (event) => {
     const value = event.target.value;
     // Validar que el valor ingresado contenga solo letras
-    if (/^[A-Za-z\s]+$/.test(value) || value === "") {
+    if (/^[A-Za-z\s-1234567890.]+$/.test(value) || value === "") {
       setSearchTerm(value);
       setCurrentPage(1); // Resetear a la primera página al buscar
     }
@@ -39,7 +39,7 @@ const Proveedores = () => {
     proveedor.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredProveedores.slice(
@@ -51,27 +51,20 @@ const Proveedores = () => {
 
   const handleDelete = (id) => {
     // Consultar la API de compras para verificar si el proveedor está relacionado con alguna compra
-    fetch(`https://beautysalesbackend.onrender.com/api/compras/proveedor/${id}`)
-      .then((response) => {
-        if (response.ok) {
-          // Si la consulta es exitosa, verificar si hay alguna compra relacionada con el proveedor
-          return response.json();
-        }
-        throw new Error(
-          "Error al consultar las compras relacionadas con el proveedor"
-        );
-      })
+    fetch("https://beautysalesbackend.onrender.com/api/compras")
+      .then((response) => response.json())
       .then((data) => {
-        // Si hay compras relacionadas, mostrar una alerta y evitar la eliminación
-        if (
-          data &&
-          data.comprasRelacionadas &&
-          data.comprasRelacionadas.length > 0
-        ) {
+        // Filtrar las compras para encontrar alguna que tenga el mismo ID de proveedor que estamos intentando eliminar
+        const comprasRelacionadas = data.filter(
+          (compra) => compra.idProveedor === id
+        );
+        if (comprasRelacionadas.length > 0) {
+          // Si hay compras relacionadas, mostrar una alerta y evitar la eliminación
           Swal.fire({
             icon: "error",
             title: "Proveedor relacionado con una compra",
-            text: "Este proveedor no se puede eliminar porque está relacionado con una compra.",
+            text:
+              "Este proveedor no se puede eliminar porque está relacionado con una compra.",
           });
         } else {
           // Si no hay compras relacionadas, proceder con la eliminación del proveedor
@@ -86,7 +79,8 @@ const Proveedores = () => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Hubo un problema al verificar las compras relacionadas con el proveedor. Por favor, inténtalo de nuevo más tarde.",
+          text:
+            "Hubo un problema al verificar las compras relacionadas con el proveedor. Por favor, inténtalo de nuevo más tarde.",
         });
       });
   };
@@ -121,9 +115,16 @@ const Proveedores = () => {
             (proveedor) => proveedor._id !== id
           );
           setProveedores(updatedProveedores);
-          Swal.fire("¡Eliminado!", "El proveedor ha sido eliminado", "success");
+          Swal.fire(
+            "¡Eliminado!",
+            "El proveedor ha sido eliminado",
+            "success"
+          );
         } else {
-          console.error("Error al eliminar el proveedor:", response.statusText);
+          console.error(
+            "Error al eliminar el proveedor:",
+            response.statusText
+          );
           Swal.fire(
             "Error",
             "Hubo un problema al eliminar el proveedor",
@@ -253,14 +254,15 @@ const Proveedores = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Link to={`/proveedores/editar-proveedor/${proveedor._id}`}>
-                    <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                      <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
                         <MdEdit />
                       </button>
                     </Link>
-                    <button                         className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
-
-                      onClick={() => handleDelete(proveedor._id)}>
-                    <FaTrash/>
+                    <button
+                      className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
+                      onClick={() => handleDelete(proveedor._id)}
+                    >
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>

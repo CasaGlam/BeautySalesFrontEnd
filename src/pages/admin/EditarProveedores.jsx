@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
 
+// Icons
+import { FaUser, FaPhone, FaEnvelope, FaMapMarkerAlt, FaInfoCircle } from "react-icons/fa";
+
+
 const EditarProveedor = () => {
   const [proveedor, setProveedor] = useState({
     nombre: "",
@@ -13,13 +17,32 @@ const EditarProveedor = () => {
   });
 
   const { objectId } = useParams();
+  const [proveedoresExistente, setProveedoresExistente] = useState([]);
 
   useEffect(() => {
     const fetchProveedores = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/proveedores/${objectId}`);
+        const response = await fetch('https://beautysalesbackend.onrender.com/api/proveedores');
         if (!response.ok) {
-          throw new Error('Error al obtener los datos del usuario');
+          throw new Error('Error al obtener los proveedores');
+        }
+        const data = await response.json();
+        setProveedoresExistente(data.proveedores);
+      } catch (error) {
+        console.error("Error fetching proveedores:", error);
+      }
+    };
+
+    fetchProveedores();
+
+  }, []);
+
+  useEffect(() => {
+    const fetchProveedor = async () => {
+      try {
+        const response = await fetch(`https://beautysalesbackend.onrender.com/api/proveedores/${objectId}`);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos del proveedor');
         }
         const data = await response.json();
         setProveedor(data.proveedor);
@@ -28,7 +51,7 @@ const EditarProveedor = () => {
       }
     };
 
-    fetchProveedores();
+    fetchProveedor();
 
   }, [objectId]);
 
@@ -57,8 +80,44 @@ const EditarProveedor = () => {
       return;
     }
 
+    // Validar el formato del teléfono
+    const telefonoRegex = /^\d{10}$/;
+    if (!telefonoRegex.test(proveedor.telefono)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Teléfono inválido',
+        text: 'El teléfono debe contener 10 números sin espacios ni caracteres especiales.',
+        confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
+
+    // Validar el formato del correo electrónico
+    const correoRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!correoRegex.test(proveedor.correo)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Correo electrónico inválido',
+        text: 'Por favor, ingresa un correo electrónico válido.',
+        confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
+
+    // Validar si el nombre, teléfono, correo y dirección ya están registrados
+    const proveedorExistente = proveedoresExistente.find(p => p._id !== objectId && (p.nombre === proveedor.nombre || p.telefono === proveedor.telefono || p.correo === proveedor.correo || p.direccion === proveedor.direccion));
+    if (proveedorExistente) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Proveedor ya registrado',
+        text: 'El nombre, teléfono, correo o dirección ya están registrados en la base de datos.',
+        confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
+
     // Realizar la solicitud PUT para actualizar el proveedor
-    fetch(`http://localhost:8080/api/proveedores/${objectId}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/proveedores/${objectId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -99,65 +158,80 @@ const EditarProveedor = () => {
         <div className="w-full md:flex flex-col md:w-[90%]">
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="w-full">
-              <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del proveedor</label>
+              <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre</label>
+              <div className="relative">
+              <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
                 type="text"
-                placeholder="Nombre del proveedor"
+                placeholder="Nombre"
                 name="nombre"
                 value={proveedor.nombre}
                 onChange={handleChange}
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900  w-full"
+                className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 rows={1}
                 style={{ minHeight: "50px" }}
               />
+              </div>
             </div>
             <div className="w-full">
               <label htmlFor="telefono" className="text-texto-100 mb-2 block">Teléfono</label>
+              <div className="relative">
+              <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
                 type="text"
                 placeholder="Teléfono"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 name="telefono"
                 value={proveedor.telefono}
                 onChange={handleChange}
               />
+              </div>
             </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="w-full">
               <label htmlFor="correo" className="text-texto-100 mb-2 block">Correo electrónico</label>
+              <div className="relative">
+              <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
                 type="email"
                 placeholder="Correo electrónico"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 name="correo"
                 value={proveedor.correo}
                 onChange={handleChange}
               />
+              </div>
             </div>
             <div className="w-full">
               <label htmlFor="direccion" className="text-texto-100 mb-2 block">Dirección</label>
+              <div className="relative">
+              < FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
                 type="text"
                 placeholder="Dirección"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full"
+                className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 name="direccion"
                 value={proveedor.direccion}
                 onChange={handleChange}
               />
+              </div>
             </div>
           </div>
           <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
             <div className="w-full">
               <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descripción</label>
+              <div className="relative">
+              <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <textarea
                 placeholder="Descripción"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 w-full "
+                className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                 name="descripcion"
                 value={proveedor.descripcion}
                 onChange={handleChange}
                 rows={1}
               />
+              </div>
             </div>
             <div className="w-full">
               <label htmlFor="estado" className="text-texto-100 mb-2 block">Estado</label>

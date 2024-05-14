@@ -41,7 +41,7 @@ const Clientes = () => {
     cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredClientes.slice(
@@ -53,7 +53,7 @@ const Clientes = () => {
 
   const handleDelete = (id) => {
     // Consultar la API de ventas para verificar si el cliente está relacionado con alguna venta
-    fetch(`https://beautysalesbackend.onrender.com/api/ventas`)
+    fetch(`https://beautysalesbackend.onrender.com/api/ventas?clienteId=${id}`)
       .then((response) => {
         if (response.ok) {
           // Si la consulta es exitosa, verificar si hay alguna venta relacionada con el cliente
@@ -65,11 +65,7 @@ const Clientes = () => {
       })
       .then((data) => {
         // Si hay ventas relacionadas, mostrar una alerta y evitar la eliminación
-        if (
-          data &&
-          data.ventasRelacionadas &&
-          data.ventasRelacionadas.length > 0
-        ) {
+        if (data && data.length > 0) {
           Swal.fire({
             icon: "error",
             title: "Cliente relacionado con una venta",
