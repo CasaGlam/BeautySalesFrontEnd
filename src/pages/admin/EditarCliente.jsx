@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
 
+// Icons
+import { FaUser, FaPhone, FaEnvelope } from "react-icons/fa";
+
 const EditarCliente = () => {
   const [cliente, setCliente] = useState({
     nombre: "",
@@ -15,7 +18,7 @@ const EditarCliente = () => {
   useEffect(() => {
     const fetchCliente = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/clientes/${objectId}`);
+        const response = await fetch(`https://beautysalesbackend.onrender.com/api/clientes/${objectId}`);
         if (!response.ok) {
           throw new Error('Error al obtener los datos del cliente');
         }
@@ -38,24 +41,55 @@ const EditarCliente = () => {
     });
   };
 
-  const handleActualizarCliente = () => {
-    // Verificar que ningún campo esté vacío
+  const handleActualizarCliente = async () => {
+    // Validar campos
     if (
-      cliente.nombre.trim() === "" ||
-      cliente.telefono.trim() === "" ||
-      cliente.correo.trim() === ""
+      !cliente.nombre.match(/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/) ||
+      cliente.telefono.trim().length !== 10 ||
+      !/^\d+$/.test(cliente.telefono) ||
+      !/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(cliente.correo)
     ) {
       Swal.fire({
         icon: 'error',
-        title: 'Campos incompletos',
-        text: 'Por favor, completa todos los campos.',
+        title: 'Error de validación',
+        text: 'Por favor, verifica los campos del formulario.',
+        confirmButtonColor: '#3085d6',
+      });
+      return;
+    }
+
+    // Verificar si el correo o el teléfono ya están registrados
+    try {
+      const response = await fetch(`https://beautysalesbackend.onrender.com/api/clientes`);
+      if (!response.ok) {
+        throw new Error('Error al obtener los datos de los clientes');
+      }
+      const data = await response.json();
+      const clienteExistente = data.clientes.find(
+        c => (c.telefono === cliente.telefono || c.correo === cliente.correo) && c._id !== objectId
+      );
+      if (clienteExistente) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de validación',
+          text: 'El correo o el teléfono ya están registrados.',
+          confirmButtonColor: '#3085d6',
+        });
+        return;
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al verificar cliente existente',
+        text: 'Hubo un problema al verificar si el cliente ya está registrado. Por favor, inténtalo de nuevo más tarde.',
         confirmButtonColor: '#3085d6',
       });
       return;
     }
 
     // Realizar la solicitud PUT para actualizar el cliente
-    fetch(`http://localhost:8080/api/clientes/${objectId}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/clientes/${objectId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -97,39 +131,48 @@ const EditarCliente = () => {
           <div className="w-full flex flex-col gap-12 mb-10">
             <div className="flex gap-12">
               <div className="w-full">
-                <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del cliente</label>
+                <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre</label>
+                <div className="relative">
+                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="text"
                   placeholder="Nombre del cliente"
-                  className="text-black px-2 py-3 rounded-lg bg-secondary-900 w-full"
+                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="nombre"
                   value={cliente.nombre}
                   onChange={handleChange}
                 />
+                </div>
               </div>
               <div className="w-full">
                 <label htmlFor="telefono" className="text-texto-100 mb-2 block">Teléfono</label>
+                <div className="relative">
+                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="tel"
                   placeholder="Teléfono"
-                  className="text-black px-2 py-3 rounded-lg bg-secondary-900 w-full"
+                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="telefono"
                   value={cliente.telefono}
                   onChange={handleChange}
                 />
+                </div>
               </div>
             </div>
             <div className="flex gap-12">
               <div className="w-full">
                 <label htmlFor="correo" className="text-texto-100 mb-2 block">Correo electrónico</label>
+                <div className="relative">
+                <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="email"
                   placeholder="Correo electrónico"
-                  className="text-black px-2 py-3 rounded-lg bg-secondary-900 w-full"
+                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
                   name="correo"
                   value={cliente.correo}
                   onChange={handleChange}
                 />
+                </div>
               </div>
               <div className="w-full">
                 <label htmlFor="estado" className="text-texto-100 mb-2 block">Estado</label>
@@ -146,7 +189,7 @@ const EditarCliente = () => {
             </div>
           </div>
           <div className="w-full flex justify-center gap-12 mb-10">
-          <Link to="/clientes" className="w-full md:w-[35%]">
+            <Link to="/clientes" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
               </button>
@@ -162,7 +205,6 @@ const EditarCliente = () => {
       </div>
     </div>
   );
-  
 };
 
 export default EditarCliente;

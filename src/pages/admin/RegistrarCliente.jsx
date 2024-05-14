@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUser, FaPhone, FaEnvelope } from "react-icons/fa";
 import Swal from "sweetalert2";
@@ -11,6 +11,7 @@ const RegistrarCliente = () => {
   };
 
   const [cliente, setCliente] = useState(clienteInicial);
+  const [clientesRegistrados, setClientesRegistrados] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,51 +21,92 @@ const RegistrarCliente = () => {
     });
   };
 
+  // Obtener todos los clientes registrados
+  const obtenerClientesRegistrados = async () => {
+    try {
+      const response = await fetch('https://beautysalesbackend.onrender.com/api/clientes');
+      const data = await response.json();
+      setClientesRegistrados(data.clientes);
+    } catch (error) {
+      console.error('Error al obtener los clientes registrados:', error);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!cliente.nombre || !cliente.telefono || !cliente.correo) {
-      Swal.fire("Error", "Por favor, complete todos los campos", "error");
-      return;
+      return Swal.fire("Error", "Por favor, complete todos los campos", "error");
+    }
+
+    if (!/^[\wáéíóúÁÉÍÓÚ\s]+$/.test(cliente.nombre)) {
+      return Swal.fire("Error", "El nombre solo puede contener letras y tildes", "error");
     }
 
     if (!/^(\d{10})$/.test(cliente.telefono)) {
-      Swal.fire("Error", "El teléfono debe tener 10 dígitos", "error");
+      return Swal.fire("Error", "El teléfono debe tener 10 dígitos", "error");
+    }
+
+    if (!/^[\w.-]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/.test(cliente.correo)) {
+      return Swal.fire("Error", "El correo electrónico no es válido", "error");
+    }
+
+    // Convertir el correo electrónico a minúsculas
+    cliente.correo = cliente.correo.toLowerCase();
+
+    // Verificar si el correo y el teléfono ya existen
+    if (clienteExistente(cliente)) {
       return;
     }
-    
-    // Solicitud POST para registrar el cliente en la API
-    fetch('https://beautysalesbackend.onrender.com/api/clientes', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(cliente)
-    })
-    .then(response => {
+
+    // Si el correo y el teléfono no existen, enviar el formulario
+    enviarFormulario(cliente);
+  };
+
+  // Verificar si el correo o el teléfono ya existen en los clientes registrados
+  const clienteExistente = (cliente) => {
+    if (clientesRegistrados.some(c => c.telefono === cliente.telefono)) {
+      Swal.fire("Error", "El teléfono ya está registrado", "error");
+      return true;
+    }
+
+    if (clientesRegistrados.some(c => c.correo === cliente.correo)) {
+      Swal.fire("Error", "El correo electrónico ya está registrado", "error");
+      return true;
+    }
+
+    return false;
+  };
+
+  const enviarFormulario = async (cliente) => {
+    try {
+      // Solicitud POST para registrar el cliente en la API
+      const response = await fetch('https://beautysalesbackend.onrender.com/api/clientes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cliente)
+      });
+
       if (response.ok) {
         Swal.fire("¡Cliente registrado!", "", "success");
         setTimeout(() => {
           window.location.href = "/clientes";
         }, 2000);
-        // Puedes agregar aquí el código para redirigir a la página de clientes después del registro
       } else {
         console.error('Error al registrar el cliente:', response.statusText);
-        Swal.fire(
-          'Error',
-          'Hubo un problema al registrar el cliente',
-          'error'
-        );
+        Swal.fire('Error', 'Hubo un problema al registrar el cliente', 'error');
       }
-    })
-    .catch(error => {
+    } catch (error) {
       console.error('Error al registrar el cliente:', error);
-      Swal.fire(
-        'Error',
-        'Hubo un problema al registrar el cliente',
-        'error'
-      );
-    });
+      Swal.fire('Error', 'Hubo un problema al registrar el cliente', 'error');
+    }
   };
+
+  // Obtener los clientes registrados al cargar el componente
+  useEffect(() => {
+    obtenerClientesRegistrados();
+  }, []);
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
@@ -76,7 +118,7 @@ const RegistrarCliente = () => {
               <div className="flex flex-col">
                 <label htmlFor="nombre" className="text-gray-600 font-semibold mb-2">Nombre</label>
                 <div className="relative">
-                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     id="nombre"
@@ -91,7 +133,7 @@ const RegistrarCliente = () => {
               <div className="flex flex-col">
                 <label htmlFor="telefono" className="text-gray-600 font-semibold mb-2">Teléfono</label>
                 <div className="relative">
-                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     id="telefono"
@@ -107,7 +149,7 @@ const RegistrarCliente = () => {
             <div className="flex flex-col mb-6">
               <label htmlFor="correo" className="text-gray-600 font-semibold mb-2">Correo electrónico</label>
               <div className="relative">
-              <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
                   type="email"
                   id="correo"

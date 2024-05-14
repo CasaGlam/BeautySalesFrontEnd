@@ -23,42 +23,80 @@ const RegistrarProveedor = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
   
-    // Validar que todos los campos estén llenos
+    // Validar que todos los campos estén llenos y que el teléfono tenga 10 dígitos
     if (
       proveedor.nombre &&
-      proveedor.telefono &&
+      proveedor.telefono.length === 10 &&
+      proveedor.telefono.match(/^[0-9]+$/) &&
       proveedor.correo &&
+      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(proveedor.correo) &&
       proveedor.direccion &&
       proveedor.descripcion
     ) {
-      // Enviar solicitud POST para registrar el proveedor
-      fetch("http://localhost:8080/api/proveedores", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(proveedor),
-      })
-        .then((response) => {
-          if (response.ok) {
-            Swal.fire("¡Proveedor creado!", "", "success");
-            setTimeout(() => {
-              window.location.href = "/proveedores";
-            }, 2000);
+      // Verificar si el proveedor ya existe en la base de datos
+      fetch("https://beautysalesbackend.onrender.com/api/proveedores")
+        .then((response) => response.json())
+        .then((data) => {
+          // Verificar si la respuesta contiene la propiedad 'proveedores'
+          if (data && data.proveedores && Array.isArray(data.proveedores)) {
+            // Verificar si el nombre, correo, teléfono y dirección ya están registrados
+            const proveedorExistente = data.proveedores.find(
+              (p) =>
+                p.nombre.toLowerCase() === proveedor.nombre.toLowerCase() ||
+                p.correo.toLowerCase() === proveedor.correo.toLowerCase() ||
+                p.telefono === proveedor.telefono ||
+                p.direccion.toLowerCase() === proveedor.direccion.toLowerCase()
+            );
+            if (proveedorExistente) {
+              // Mostrar una alerta si algún campo ya está registrado
+              Swal.fire(
+                "¡Error!",
+                "El nombre, correo, teléfono o dirección ya están registrados.",
+                "error"
+              );
+            } else {
+              // Si el proveedor no existe, enviar la solicitud POST para registrar el proveedor
+              fetch("https://beautysalesbackend.onrender.com/api/proveedores", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(proveedor),
+              })
+                .then((response) => {
+                  if (response.ok) {
+                    Swal.fire("¡Proveedor creado!", "", "success");
+                    setTimeout(() => {
+                      window.location.href = "/proveedores";
+                    }, 2000);
+                  } else {
+                    throw new Error("Error al crear proveedor");
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error al registrar proveedor:", error);
+                  Swal.fire(
+                    "¡Error al crear proveedor!",
+                    "",
+                    "error"
+                  );
+                });
+            }
           } else {
-            throw new Error("Error al crear proveedor");
+            throw new Error("La respuesta no contiene la propiedad 'proveedores'");
           }
         })
         .catch((error) => {
-          console.error("Error al registrar proveedor:", error);
+          console.error("Error al verificar proveedor existente:", error);
           Swal.fire(
-            "¡Error al crear proveedor!",
-            "",
+            "¡Error!",
+            "Hubo un problema al verificar si el proveedor ya está registrado. Por favor, inténtalo de nuevo más tarde.",
             "error"
           );
         });
     } else {
-      Swal.fire("¡Debes llenar todos los campos!", "", "error");
+      // Mostrar una alerta si algún campo está vacío o no cumple con el formato esperado
+      Swal.fire("¡Error!", "Debes llenar todos los campos correctamente.", "error");
     }
   };
   
@@ -88,7 +126,7 @@ const RegistrarProveedor = () => {
                 <div className="relative">
                 <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
-                    type="text"
+                    type="tel"
                     placeholder="Teléfono"
                     name="telefono"
                     value={proveedor.telefono}
@@ -153,8 +191,6 @@ const RegistrarProveedor = () => {
               >
                 Crear proveedor
               </button>
-           
-  
             </div>
           </form>
         </div>
