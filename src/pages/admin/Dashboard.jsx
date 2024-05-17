@@ -31,7 +31,7 @@ class Dashboard extends Component {
 
   fetchComprasTotal = async () => {
     try {
-      const response = await fetch('https://beautysalesbackend.onrender.com/api/compras');
+      const response = await fetch('http://localhost:8080/api/compras');
       const data = await response.json();
       const totalCompras = data.reduce((total, compra) => total + compra.total, 0);
       this.setState({ totalCompras });
@@ -42,7 +42,7 @@ class Dashboard extends Component {
 
   fetchVentasTotal = async () => {
     try {
-      const response = await fetch('https://beautysalesbackend.onrender.com/api/ventas');
+      const response = await fetch('http://localhost:8080/api/ventas');
       const data = await response.json();
       const totalVentas = data.reduce((total, venta) => total + (venta.detallesVenta.reduce((subtotal, detalle) => subtotal + detalle.total, 0)), 0);
       this.setState({ totalVentas });
@@ -53,7 +53,7 @@ class Dashboard extends Component {
 
   fetchVentasMensuales = async () => {
     try {
-      const response = await fetch('https://beautysalesbackend.onrender.com/api/ventas');
+      const response = await fetch('http://localhost:8080/api/ventas');
       const data = await response.json();
       const ventasMensuales = this.groupSalesByMonth(data);
       this.setState({ ventasMensuales }, () => {

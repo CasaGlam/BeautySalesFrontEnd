@@ -23,7 +23,7 @@ const Roles = () => {
   }, []);
 
   const fetchRoles = () => {
-    fetch("https://beautysalesbackend.onrender.com/api/roles")
+    fetch("http://localhost:8080/api/roles")
       .then((response) => response.json())
       .then((data) => {
         setRolesData(data.roles);
@@ -56,7 +56,7 @@ const Roles = () => {
     }
 
     // Verificar si hay usuarios asignados a este rol
-    fetch("https://beautysalesbackend.onrender.com/api/usuarios")
+    fetch("http://localhost:8080/api/usuarios")
       .then((response) => response.json())
       .then((data) => {
         const usersAssignedToRole = data.usuarios.filter(
@@ -85,7 +85,7 @@ const Roles = () => {
           if (result.isConfirmed) {
             // Si el usuario confirma la eliminación, enviar la solicitud DELETE
             fetch(
-              `https://beautysalesbackend.onrender.com/api/roles/${roleId}`,
+              `http://localhost:8080/api/roles/${roleId}`,
               {
                 method: "DELETE",
               }
