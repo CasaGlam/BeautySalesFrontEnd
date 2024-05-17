@@ -20,7 +20,7 @@ const EditarUsuario = () => {
     const fetchUsuario = async () => {
       try {
         const response = await fetch(
-          `https://beautysalesbackend.onrender.com/api/usuarios/${objectId}`
+          `http://localhost:8080/api/usuarios/${objectId}`
         );
         if (!response.ok) {
           throw new Error("Error al obtener los datos del usuario");
@@ -34,7 +34,7 @@ const EditarUsuario = () => {
 
     fetchUsuario();
 
-    fetch("https://beautysalesbackend.onrender.com/api/roles")
+    fetch("http://localhost:8080/api/roles")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data.roles);
@@ -109,7 +109,7 @@ const EditarUsuario = () => {
       estado: usuario.estado === "activo" ? true : false,
     };
 
-    fetch(`https://beautysalesbackend.onrender.com/api/usuarios/${objectId}`, {
+    fetch(`http://localhost:8080/api/usuarios/${objectId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

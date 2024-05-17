@@ -24,7 +24,7 @@ const RegistrarCliente = () => {
   // Obtener todos los clientes registrados
   const obtenerClientesRegistrados = async () => {
     try {
-      const response = await fetch('https://beautysalesbackend.onrender.com/api/clientes');
+      const response = await fetch('http://localhost:8080/api/clientes');
       const data = await response.json();
       setClientesRegistrados(data.clientes);
     } catch (error) {
@@ -80,7 +80,7 @@ const RegistrarCliente = () => {
   const enviarFormulario = async (cliente) => {
     try {
       // Solicitud POST para registrar el cliente en la API
-      const response = await fetch('https://beautysalesbackend.onrender.com/api/clientes', {
+      const response = await fetch('http://localhost:8080/api/clientes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

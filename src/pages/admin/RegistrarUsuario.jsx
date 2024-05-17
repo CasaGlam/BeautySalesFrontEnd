@@ -17,7 +17,7 @@ const RegistrarUsuario = () => {
   });
 
   useEffect(() => {
-    fetch("https://beautysalesbackend.onrender.com/api/roles")
+    fetch("http://localhost:8080/api/roles")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data.roles);
@@ -100,7 +100,7 @@ const RegistrarUsuario = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("https://beautysalesbackend.onrender.com/api/usuarios", {
+        fetch("http://localhost:8080/api/usuarios", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

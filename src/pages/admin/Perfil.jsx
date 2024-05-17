@@ -23,7 +23,7 @@ const Perfil = () => {
     const fetchEmpresa = async () =>{
       try{
         const response = await fetch(
-          `https://beautysalesbackend.onrender.com/api/empresa/6628edfd2d05b66ef04ef368`
+          `http://localhost:8080/api/empresa/6628edfd2d05b66ef04ef368`
         );
         if(!response.ok){
           throw new Error("Error al obtener los datos del usuario");
