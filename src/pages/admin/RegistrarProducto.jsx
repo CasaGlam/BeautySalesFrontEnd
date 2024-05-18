@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaProductHunt, FaCartPlus, FaDonate, FaInfoCircle } from "react-icons/fa";
+import { FaProductHunt, FaDonate, FaInfoCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const RegistrarProducto = () => {
   const [producto, setProducto] = useState({
     nombre: "",
     precio: "",
-    cantidad: "",
     descripcion: "",
-    idCategoria: "" // Cambiamos el nombre del campo a idCategoria
+    idCategoria: ""
   });
 
-  const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías obtenidas
+  const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/categorias")
-      .then((response) => response.json())
-      .then((data) => {
-        setCategorias(data.categorias);
-      })
-      .catch((error) => console.error("Error fetching categorias:", error));
+    const fetchCategorias = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/categorias");
+        const data = await response.json();
+        const categoriasFiltradas = data.categorias.filter(categoria => categoria.estado);
+        setCategorias(categoriasFiltradas);
+      } catch (error) {
+        console.error("Error fetching categorias:", error);
+      }
+    };
+
+    fetchCategorias();
   }, []);
 
   const handleChange = (e) => {
@@ -33,41 +38,54 @@ const RegistrarProducto = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validar que todos los campos estén llenos
-    if (
-      producto.nombre &&
-      producto.precio &&
-      producto.cantidad &&
-      producto.descripcion &&
-      producto.idCategoria // Aseguramos que haya una categoría seleccionada
-    ) {
-      try {
-        const response = await fetch("http://localhost:8080/api/productos", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(producto),
-        });
+    
+    // Validar que el nombre solo contenga letras y no esté vacío
+    const nombreValido = /^[A-Za-z\s]+$/.test(producto.nombre.trim());
+    if (!nombreValido) {
+      Swal.fire("¡Error!", "El nombre solo puede contener letras y espacios.", "error");
+      return;
+    }
+    
+    // Validar que el precio sea un número y no esté vacío
+    const precioValido = /^\d+(\.\d+)?$/.test(producto.precio.trim());
+    if (!precioValido) {
+      Swal.fire("¡Error!", "El precio solo puede contener números.", "error");
+      return;
+    }
 
-        if (response.ok) {
-          // Mostrar alerta de producto creado
-          Swal.fire("¡Producto creado!", "", "success");
-          // Redirigir a la página de productos después de 2 segundos
-          setTimeout(() => {
-            window.location.href = "/productos";
-          }, 2000);
-        } else {
-          const errorMessage = await response.text();
-          throw new Error(`Error al crear el producto: ${errorMessage}`);
-        }
-      } catch (error) {
-        console.error("Error al enviar los datos del producto:", error);
-        Swal.fire("¡Error!", error.message, "error");
+    // Validar que la descripción no esté vacía
+    if (!producto.descripcion.trim()) {
+      Swal.fire("¡Error!", "La descripción no puede estar vacía.", "error");
+      return;
+    }
+    
+    // Validar que se haya seleccionado una categoría
+    if (!producto.idCategoria) {
+      Swal.fire("¡Error!", "Debes seleccionar una categoría.", "error");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/productos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(producto)
+      });
+
+      if (response.ok) {
+        Swal.fire("¡Producto creado!", "", "success");
+        setTimeout(() => {
+          window.location.href = "/productos";
+        }, 2000);
+      } else {
+        const errorMessage = await response.text();
+        throw new Error(`Error al crear el producto: ${errorMessage}`);
       }
-    } else {
-      // Mostrar alerta de campos vacíos
-      Swal.fire("¡Debes llenar todos los campos y seleccionar una categoría!", "", "error");
+    } catch (error) {
+      console.error("Error al enviar los datos del producto:", error);
+      Swal.fire("¡Error!", error.message, "error");
     }
   };
 
@@ -97,7 +115,7 @@ const RegistrarProducto = () => {
               <div className="w-full">
                 <label htmlFor="idCategoria" className="block text-black font-bold mb-1">Categoría</label>
                 <select
-                  name="idCategoria" // Cambiamos el name del campo a idCategoria
+                  name="idCategoria"
                   value={producto.idCategoria}
                   onChange={handleChange}
                   className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 md:w-full"
@@ -110,25 +128,10 @@ const RegistrarProducto = () => {
                   ))}
                 </select>
               </div>
-              
-              <div className="w-full">
-                <label htmlFor="cantidad" className="block text-black font-bold mb-1">Cantidad</label>
-                <div className="relative w-full">
-                  <FaCartPlus className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                  <input
-                    type="text"
-                    placeholder="Cantidad"
-                    name="cantidad"
-                    value={producto.cantidad}
-                    onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
-                  />
-                </div>
-              </div>
               <div>
                 <label htmlFor="precio" className="block text-black font-bold mb-1">Precio</label>
                 <div className="relative">
-                  <FaDonate  className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaDonate className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Precio"
@@ -156,7 +159,7 @@ const RegistrarProducto = () => {
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 my-4">
-            <Link to="/productos" className="w-full md:w-[35%]">
+              <Link to="/productos" className="w-full md:w-[35%]">
                 <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Volver
                 </button>
@@ -167,7 +170,6 @@ const RegistrarProducto = () => {
               >
                 Crear producto
               </button>
-              
             </div>
           </form>
         </div>
