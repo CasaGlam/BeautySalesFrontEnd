@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch,  FaTrash, FaPlus, FaMinus } from "react-icons/fa";
-
 import Swal from 'sweetalert2';
 
 const RegistrarVenta = () => {
@@ -145,62 +144,74 @@ const RegistrarVenta = () => {
 
     const venta = {
       numeroVenta: numeroVenta,
-      fecha: fecha,
+      fecha: new Date().toISOString().slice(0, 10),
       idCliente: clienteSeleccionado,
       detallesVenta: productosEncontrados,
       total: total, 
       descripcionEstado: "Porqué cambias de estado?" 
     };
 
-    fetch('http://localhost:8080/api/ventas', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(venta)
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Error al guardar la venta');
-      })
-      .then(data => {
-        console.log('Venta guardada correctamente:', data);
-
-        for (let producto of productosEncontrados) {
-          fetch(`http://localhost:8080/api/productos/${producto.idProducto}`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ cantidadVendida: producto.cantidad })
+    Swal.fire({
+      title: '¿Está seguro de realizar la venta?',
+      text: `El total de la venta será: $${total}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, realizar venta',
+      cancelButtonText: 'No, cancelar',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch('http://localhost:8080/api/ventas', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(venta)
+        })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Error al guardar la venta');
           })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Error al actualizar la cantidad de productos');
-              }
-            })
-            .catch(error => console.error('Error al actualizar la cantidad de productos:', error));
-        }
+          .then(data => {
+            console.log('Venta guardada correctamente:', data);
 
-        Swal.fire(
-          'Venta Guardada',
-          'La venta ha sido guardada correctamente.',
-          'success'
-        ).then(() => {
-          setProductosEncontrados([]);
-          setTotalVenta(0); 
-        });
-      })
-      .catch(error => {
-        console.error('Error al guardar la venta:', error);
-        Swal.fire(
-          'Error',
-          'Hubo un problema al guardar la venta.',
-          'error'
-        );
-      });
+            for (let producto of productosEncontrados) {
+              fetch(`http://localhost:8080/api/productos/${producto.idProducto}`, {
+                method: 'PATCH',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ cantidadVendida: producto.cantidad })
+              })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Error al actualizar la cantidad de productos');
+                  }
+                })
+                .catch(error => console.error('Error al actualizar la cantidad de productos:', error));
+            }
+
+            Swal.fire(
+              'Venta Guardada',
+              'La venta ha sido guardada correctamente.',
+              'success'
+            ).then(() => {
+              setProductosEncontrados([]);
+              setTotalVenta(0); 
+            });
+          })
+          .catch(error => {
+            console.error('Error al guardar la venta:', error);
+            Swal.fire(
+              'Error',
+              'Hubo un problema al guardar la venta.',
+              'error'
+            );
+          });
+      }
+    });
   };
 
   const cancelarVenta = () => {

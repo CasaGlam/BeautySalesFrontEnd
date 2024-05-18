@@ -186,8 +186,8 @@ const Compras = () => {
             </div>
           </div>
         </div>
-        <div className='p-5 overflow-x-auto rounded-lg'>
-          <table className="min-w-full divide-y divide-gray-500 rounded-lg">
+        <div className='overflow-x-auto rounded-lg'>
+        <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
               <tr className=''>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider">
