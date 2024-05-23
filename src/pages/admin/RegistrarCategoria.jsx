@@ -19,6 +19,7 @@ const RegistrarCategoria = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
       const response = await fetch("http://localhost:8080/api/categorias", {
         method: "POST",
@@ -34,7 +35,12 @@ const RegistrarCategoria = () => {
           window.location.href = "/categorias";
         }, 2000);
       } else {
-        Swal.fire("¡Ocurrió un error al crear la categoría!", "", "error");
+        const responseData = await response.json();
+        if (responseData && responseData.message) {
+          Swal.fire("Error al crear la categoría", responseData.message, "error");
+        } else {
+          Swal.fire("¡Ocurrió un error al crear la categoría!", "", "error");
+        }
       }
     } catch (error) {
       console.error("Error al crear la categoría:", error);
@@ -50,7 +56,7 @@ const RegistrarCategoria = () => {
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
               <div className="flex flex-col w-full">
-              <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre de usuario</label>
+              <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre de Categoria</label>
               <div className="relative w-full">
                  <FaBoxes className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                 <input
