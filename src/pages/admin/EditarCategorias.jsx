@@ -37,11 +37,9 @@ const EditarCategoria = () => {
   };
 
   const handleActualizarCategoria = () => {
-    // Verificar que ningún campo esté vacío
+    // Verificar que al menos un campo tenga un valor
     if (
-      categoria.nombre.trim() === "" ||
-      categoria.descripcion.trim() === "" ||
-      categoria.estado.trim() === ""
+      Object.values(categoria).some(value => typeof value === 'string' && value.trim() === "")
     ) {
       Swal.fire({
         icon: 'error',
@@ -113,8 +111,8 @@ const EditarCategoria = () => {
                   onChange={handleChange}
                   className="text-black px-4 py-3 rounded-lg w-full bg-secondary-900"
                 >
-                  <option value={true}>Activo</option>
-                  <option value={false}>Inactivo</option>
+                  <option value="true">Activo</option>
+                  <option value="false">Inactivo</option>
                 </select>
               </div>
             </div>
@@ -127,11 +125,12 @@ const EditarCategoria = () => {
                 className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[101%] resize-none bg-secondary-900"
                 rows={1}
                 style={{ minHeight: "50px" }}
+                onChange={handleChange}
               />
             </div>
           </div>
           <div className="w-full flex justify-center gap-12 mb-10">
-          <Link to="/categorias" className="w-full md:w-[35%]">
+            <Link to="/categorias" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
               </button>
@@ -142,7 +141,6 @@ const EditarCategoria = () => {
             >
               Actualizar categoría
             </button>
-            
           </div>
         </div>
       </div>

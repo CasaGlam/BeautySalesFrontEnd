@@ -292,7 +292,7 @@ const RegistrarVenta = () => {
         <div className="w-full">
           <div className="mb-4">
             <label className="block text-texto-100 text-sm font-bold mb-2">Buscar Producto</label>
-            <div className="flex items-center border-b border-b-2 border-gray-200 py-2">
+            <div className="flex items-center border-b-2 border-gray-200 py-2">
               <input
                 type="text"
                 placeholder="Buscar producto"

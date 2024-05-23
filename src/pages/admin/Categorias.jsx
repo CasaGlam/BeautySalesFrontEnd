@@ -68,6 +68,14 @@ const Categorias = () => {
               'La categoría ha sido eliminada',
               'success'
             );
+          } else if (response.status === 400) { // 400 significa conflicto (categoría asociada a un producto)
+            response.json().then(data => {
+              Swal.fire(
+                'Error',
+                data.message,
+                'error'
+              );
+            });
           } else {
             console.error('Error al eliminar la categoría:', response.statusText);
             Swal.fire(
