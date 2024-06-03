@@ -7,7 +7,7 @@ const EditarProducto = () => {
     nombre: "",
     descripcion: "",
     idCategoria: "",
-    estado: false // Estado inicial como un booleano
+    estado: false
   });
   const [categorias, setCategorias] = useState([]);
   const { objectId } = useParams();
@@ -25,13 +25,16 @@ const EditarProducto = () => {
         const dataProducto = await responseProducto.json();
         const dataCategorias = await responseCategorias.json();
         
-        setProducto(dataProducto.producto);
+        console.log("Datos del producto:", dataProducto); // Agregar log aquí
+        console.log("Datos de categorías:", dataCategorias); // Agregar log aquí
+        
+        setProducto(dataProducto); // Establecer datos del producto
         setCategorias(dataCategorias.categorias.filter(categoria => categoria.estado)); // Filtrar solo las categorías activas
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchProducto();
   
   }, [objectId]);
@@ -130,7 +133,8 @@ const EditarProducto = () => {
           </div>
           <div className="w-full flex flex-col md:flex-row gap-12 mb-10">
           <div className="w-full">
-              <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descripción</label>
+              <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descri
+              pción</label>
               <textarea
                 placeholder="Descripción"
                 name="descripcion"
@@ -149,6 +153,7 @@ const EditarProducto = () => {
                 onChange={handleChange}
                 className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
               >
+                <option value="">Seleccionar estado</option>
                 <option value={true}>Activo</option>
                 <option value={false}>Inactivo</option>
               </select>
@@ -172,4 +177,5 @@ const EditarProducto = () => {
     </div>
   );
 };
+
 export default EditarProducto;

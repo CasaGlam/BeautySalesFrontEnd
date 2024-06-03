@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { MdEdit } from "react-icons/md";
@@ -13,13 +13,11 @@ const Productos = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    // Obtener productos
     fetch('http://localhost:8080/api/productos')
       .then(response => response.json())
       .then(data => {
         if (data && data.productos && Array.isArray(data.productos)) {
           setProductos(data.productos);
-          // Obtener categorías
           fetch('http://localhost:8080/api/categorias')
             .then(response => response.json())
             .then(data => {
@@ -43,10 +41,9 @@ const Productos = () => {
 
   const handleSearch = (event) => {
     const value = event.target.value;
-    // Validar que el valor ingresado contenga solo letras
     if (/^[A-Za-z\s]+$/.test(value) || value === '') {
       setSearchTerm(value);
-      setCurrentPage(1); // Resetear a la primera página al buscar
+      setCurrentPage(1);
     }
   };
 
@@ -61,8 +58,67 @@ const Productos = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleDelete = (id) => {
-    // Tu lógica de eliminación aquí
-    console.log("Eliminar producto con ID:", id);
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esto",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`http://localhost:8080/api/productos/${id}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.compraAsociada || data.ventaAsociada) {
+              Swal.fire(
+                'Error',
+                'El producto está asociado a una compra o una venta y no puede ser eliminado.',
+                'error'
+              );
+            } else {
+              fetch(`http://localhost:8080/api/productos/${id}`, {
+                method: 'DELETE',
+              })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    setProductos(productos.filter(producto => producto._id !== id));
+                    Swal.fire(
+                      'Eliminado',
+                      'El producto ha sido eliminado.',
+                      'success'
+                    );
+                  } else {
+                    Swal.fire(
+                      'Error',
+                      data.message || 'Hubo un problema al eliminar el producto.',
+                      'error'
+                    );
+                  }
+                })
+                .catch(error => {
+                  console.error('Error eliminando producto:', error);
+                  Swal.fire(
+                    'Error',
+                    'Hubo un problema al eliminar el producto.',
+                    'error'
+                  );
+                });
+            }
+          })
+          .catch(error => {
+            console.error('Error obteniendo producto:', error);
+            Swal.fire(
+              'Error',
+              'Hubo un problema al obtener el producto.',
+              'error'
+            );
+          });
+      }
+    });
   };
 
   return (
@@ -120,23 +176,24 @@ const Productos = () => {
             </thead>
             <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
             {currentItems.map((producto) => (
-               <tr key={producto._id}>
-               <td className="px-6 py-4 whitespace-nowrap text-black">{producto.nombre}</td>
-               <td className="px-6 py-4 whitespace-nowrap text-black">{producto.precio}</td>
-               <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
-               <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
-               <td className="px-6 py-4 whitespace-nowrap">
-                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                   {producto.estado ? 'Activo' : 'Inactivo'}
-                 </span>
-               </td>
-               <td className="px-6 py-4 whitespace-nowrap text-black">{categorias[producto.idCategoria] || 'Categoría no encontrada'}</td>
-               <td className="px-6 py-4 whitespace-nowrap flex">
-               <Link to={`/productos/editar-producto/${producto._id}`}>
-                   <MdEdit className="text-black hover:text-primary-700 transition-colors cursor-pointer ml-2" />
-                 </Link>
-                 <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
-               </td>
+              
+              <tr key={producto._id}>
+                <td className="px-6 py-4 whitespace-nowrap text-black">{producto.nombre}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-black">{producto.precio}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-black">{producto.cantidad}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-black">{producto.descripcion}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${producto.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {producto.estado ? 'Activo' : 'Inactivo'}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-black">{categorias[producto.idCategoria] || 'Categoría no encontrada'}</td>
+                <td className="px-6 py-4 whitespace-nowrap flex">
+                  <Link to={`/productos/editar-producto/${producto._id}`}>
+                    <MdEdit className="text-black hover:text-primary-700 transition-colors cursor-pointer ml-2" />
+                  </Link>
+                  <FaTrash className="text-black hover:text-red-700 transition-colors cursor-pointer" onClick={() => handleDelete(producto._id)} />
+                </td>
               </tr>
             ))}
             </tbody>
