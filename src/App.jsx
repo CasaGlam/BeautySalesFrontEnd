@@ -9,6 +9,7 @@ import LayoutAdmin from "./layouts/LayoutAdmin";
 // Pages auth
 import Login from "./pages/auth/Login";
 import RecuperarContrasena from "./pages/auth/RecuperarContrasena";
+import CambiarContrasena from "./pages/auth/CambiarContrasena";
 
 // Pages admin
 import Dashboard from "./pages/admin/Dashboard";
@@ -71,6 +72,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
+        <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
         <Route path="/" element={<LayoutAdmin />}>
           {permisos.includes("dashboard") && <Route index element={<Dashboard />} />}
           <Route path="/perfil" element={<Perfil />} />
