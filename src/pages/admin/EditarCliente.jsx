@@ -66,13 +66,13 @@ const EditarCliente = () => {
       }
       const data = await response.json();
       const clienteExistente = data.clientes.find(
-        c => (c.telefono === cliente.telefono || c.correo === cliente.correo) && c._id !== objectId
+        c => (c.telefono === cliente.telefono || c.correo === cliente.correo) || c.nombre === cliente.nombre && c._id !== objectId
       );
       if (clienteExistente) {
         Swal.fire({
           icon: 'error',
           title: 'Error de validación',
-          text: 'El correo o el teléfono ya están registrados.',
+          text: 'El nombre, correo o el teléfono ya están registrados.',
           confirmButtonColor: '#3085d6',
         });
         return;

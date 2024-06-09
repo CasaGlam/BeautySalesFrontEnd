@@ -55,19 +55,16 @@ const Login = () => {
     <div className="w-[100vw] h-[100vh] flex justify-center items-center bg-gray-400">
       <div
         className="w-[90vw] h-[90vh] rounded-lg flex justify-center"
-        style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}
+        style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')"}}
+        
       >
         <div
-          className="w-[40%]  h-[100%] border-r border-black"
-          style={{
-            backgroundImage: "url('src/assets/img/LogoBeautySales.png')",
-            backgroundRepeat: "no-repeat",
-          }}
+          className="w-[40%]  h-[100%] border-r border-black "
           id="Prueba"
-        ></div>
+        >
+          <img src="src/assets/img/BeautySales.png" alt="" className="w-full h-full"/>
+        </div>
         <div className="text-black  w-[60%] flex flex-col justify-center items-center backdrop-blur-sm rounded-lg">
-          <h1 className="text-5xl font-bold mb-10">Bienvenido</h1>
-          <hr className=" border-black h-px w-[95%]" />
           <div className="flex justify-center items-center">
           <h2 className="text-4xl font-bold mb-10 mt-10 pl-12 md:pl-0">Iniciar sesión</h2>
           </div>

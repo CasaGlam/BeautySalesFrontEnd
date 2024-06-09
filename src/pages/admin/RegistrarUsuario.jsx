@@ -59,36 +59,54 @@ const RegistrarUsuario = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Validar que ningún campo esté vacío
-    if (
-      !usuario.nombre ||
-      !usuario.correo ||
-      !usuario.password ||
-      !usuario.confirmPassword ||
-      !usuario.rol
-    ) {
-      return Swal.fire(
-        "Advertencia!",
-        "Por favor completa todos los campos.",
-        "warning"
+  const checkIfUserExists = async (nombre, correo) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/usuarios");
+      if (!response.ok) {
+        throw new Error("Error al obtener los usuarios");
+      }
+      const data = await response.json();
+      const usuarioExistente = data.usuarios.find(
+        (usuario) => usuario.nombre === nombre || usuario.correo === correo
       );
+      return usuarioExistente;
+    } catch (error) {
+      console.error("Error:", error);
+      return null;
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validar que ningún campo esté vacío
+    if (!usuario.nombre || !usuario.correo || !usuario.password || !usuario.confirmPassword || !usuario.rol) {
+      return Swal.fire("Advertencia!", "Por favor completa todos los campos.", "warning");
+    }
+
     // Validar que las contraseñas coincidan
     if (usuario.password !== usuario.confirmPassword) {
       return Swal.fire("Error!", "Las contraseñas no coinciden.", "error");
     }
+
     // Validar que la contraseña tenga al menos 6 caracteres, una mayúscula, una minúscula y un número
     const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/;
     if (!passwordRegex.test(usuario.password)) {
-      return Swal.fire(
-        "Error!",
-        "La contraseña debe tener al menos 6 caracteres, una mayúscula, una minúscula y un número.",
-        "error"
-      );
+      return Swal.fire("Error!", "La contraseña debe tener al menos 6 caracteres, una mayúscula, una minúscula y un número.", "error");
     }
 
+    // Comprobar si el nombre o el correo ya están registrados
+    const usuarioExistente = await checkIfUserExists(usuario.nombre, usuario.correo);
+    if (usuarioExistente) {
+      if (usuarioExistente.nombre === usuario.nombre) {
+        return Swal.fire("Error!", "El nombre de usuario ya está registrado.", "error");
+      }
+      if (usuarioExistente.correo === usuario.correo) {
+        return Swal.fire("Error!", "El correo electrónico ya está registrado.", "error");
+      }
+    }
+
+    // Confirmación de creación de usuario
     Swal.fire({
       title: "¿Estás seguro?",
       text: "¿Deseas crear este usuario?",
@@ -114,20 +132,12 @@ const RegistrarUsuario = () => {
             return response.json();
           })
           .then((data) => {
-            Swal.fire(
-              "Éxito!",
-              "El usuario se ha creado exitosamente.",
-              "success"
-            ).then(() => {
+            Swal.fire("Éxito!", "El usuario se ha creado exitosamente.", "success").then(() => {
               window.location.href = "/usuarios";
             });
           })
           .catch((error) => {
-            Swal.fire(
-              "Error!",
-              error.message || "Hubo un error al crear el usuario.",
-              "error"
-            );
+            Swal.fire("Error!", error.message || "Hubo un error al crear el usuario.", "error");
           });
       }
     });
@@ -135,17 +145,13 @@ const RegistrarUsuario = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">
-        Registrar usuario nuevo
-      </h1>
+      <h1 className="text-2xl font-bold mb-10 pt-4 text-texto-100">Registrar usuario nuevo</h1>
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[90%]">
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
               <div className="flex flex-col w-full">
-                <label htmlFor="nombre" className="pb-1 text-texto-100">
-                  Nombre de usuario
-                </label>
+                <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre de usuario</label>
                 <div className="relative w-full">
                   <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
@@ -160,9 +166,7 @@ const RegistrarUsuario = () => {
                 </div>
               </div>
               <div className="flex flex-col w-full">
-                <label htmlFor="correo" className="pb-1 text-texto-100">
-                  Correo electrónico
-                </label>
+                <label htmlFor="correo" className="pb-1 text-texto-100">Correo electrónico</label>
                 <div className="relative">
                   <MdEmail className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
@@ -179,9 +183,7 @@ const RegistrarUsuario = () => {
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="flex flex-col w-full">
-                <label htmlFor="password" className="pb-1 text-texto-100">
-                  Contraseña
-                </label>
+                <label htmlFor="password" className="pb-1 text-texto-100">Contraseña</label>
                 <div className="relative">
                   <FaLock className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
@@ -196,12 +198,7 @@ const RegistrarUsuario = () => {
                 </div>
               </div>
               <div className="flex flex-col w-full">
-                <label
-                  htmlFor="confirmPassword"
-                  className="pb-1 text-texto-100"
-                >
-                  Confirmar contraseña
-                </label>
+                <label htmlFor="confirmPassword" className="pb-1 text-texto-100">Confirmar contraseña</label>
                 <div className="relative">
                   <FaLock className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
@@ -218,9 +215,7 @@ const RegistrarUsuario = () => {
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
               <div className="flex flex-col md:w-[47%]">
-                <label htmlFor="rol" className="pb-1 text-texto-100">
-                  Rol
-                </label>
+                <label htmlFor="rol" className="pb-1 text-texto-100">Rol</label>
                 <div className="relative">
                   <select
                     name="rol"
@@ -231,9 +226,7 @@ const RegistrarUsuario = () => {
                   >
                     <option value="">Seleccione un rol</option>
                     {roles.map((rol) => (
-                      <option key={rol._id} value={rol.rol}>
-                        {rol.rol}
-                      </option>
+                      <option key={rol._id} value={rol.rol}>{rol.rol}</option>
                     ))}
                   </select>
                 </div>

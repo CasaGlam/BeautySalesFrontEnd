@@ -230,10 +230,7 @@ const Clientes = () => {
                       </button>
                     </Link>
                     <button className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors" onClick={() => handleDelete(cliente._id)}>
-                    <FaTrash
-                      
-                      
-                      />
+                    <FaTrash/>
                     </button>
                     
                   </td>

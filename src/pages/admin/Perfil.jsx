@@ -52,7 +52,7 @@ const Perfil = () => {
       <div className="mb-10 w-full flex items-center justify-center">
         <div className="rounded-full border border-black" style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}>
         <img
-          src="src/assets/img/BeautySales.jpg"
+          src="src/assets/img/BeautySales.png"
           className="w-40 h-40 rounded-full"
         />
         </div>
@@ -115,127 +115,6 @@ const Perfil = () => {
               <button className="w-full md:w-[200px] bg-gray-400 text-texto-100 py-3 px-4 rounded-lg hover:bg-primary hover:text-texto-900 transition-colors duration-500">
                 Cambiar contraseña
               </button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div className="flex justify-end">
-        <button className="mb-10 bg-primary text-texto-900 font-bold py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors">Guardar</button>
-      </div>
-      <hr className="mb-10 border-gray-500"/>
-      <h3 className="text-xl text-texto-100 pb-10">Información de la empresa</h3>
-      <div className="mb-10 bg-secondary-900 p-8 rounded-xl">
-        <form>
-          <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
-            <div className="w-full md:w-1/4">
-              <p className='text-texto-100'>Nombre de la empresa</p>
-            </div>
-            <div className="flex-1 flex items-center">
-              <div className="w-full">
-                <input
-                  type="text"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
-                  placeholder="Nombre"
-                  value={empresa.nombre}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
-            <div className="w-full md:w-1/4">
-              <p className='text-texto-100'>Descripción</p>
-            </div>
-            <div className="flex-1 flex items-center">
-              <div className="w-full">
-                <textarea
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 resize-none text-texto-100"
-                  rows={4}
-                  placeholder="Descripción de la empresa"
-                  value={empresa.descripcion}
-                  onChange={handleChange}
-                ></textarea>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
-            <div className="w-full md:w-1/4">
-              <p className='text-texto-100'>Email de la empresa</p>
-            </div>
-            <div className="flex-1 flex items-center">
-              <div className="w-full">
-                <input
-                  type="email"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
-                  placeholder="Correo electrónico"
-                  value={empresa.email}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
-            <div className="w-full md:w-1/4">
-              <p className='text-texto-100'>Dirección</p>
-            </div>
-            <div className="flex-1 flex items-center">
-              <div className="w-full">
-                <input
-                  type="text"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
-                  placeholder="Dirección de la empresa"
-                  value={empresa.direccion}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
-            <div className="w-full md:w-1/4">
-              <p className='text-texto-100'>Teléfono</p>
-            </div>
-            <div className="flex-1 flex items-center">
-              <div className="w-full">
-                <input
-                  type="number"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
-                  placeholder="Número de teléfono"
-                  value={empresa.telefono}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-center gap-y-2 mb-8">
-            <div className="w-full md:w-1/4">
-              <p className='text-texto-100'>Celular</p>
-            </div>
-            <div className="flex-1 flex items-center">
-              <div className="w-full">
-                <input
-                  type="number"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
-                  placeholder="Número de celular"
-                  value={empresa.celular}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-center gap-y-2">
-            <div className="w-full md:w-1/4">
-              <p className='text-texto-100'>Página web</p>
-            </div>
-            <div className="flex-1 flex items-center">
-              <div className="w-full">
-                <input
-                  type="url"
-                  className="w-full py-2 px-4 outline-none rounded-lg bg-secondary-100 text-texto-100"
-                  placeholder="URL de la web"
-                  value={empresa.web}
-                  onChange={handleChange}
-                />
-              </div>
             </div>
           </div>
         </form>
