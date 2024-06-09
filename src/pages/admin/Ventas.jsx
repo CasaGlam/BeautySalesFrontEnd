@@ -19,6 +19,7 @@ const Ventas = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [estadoFiltrado, setEstadoFiltrado] = useState("");
 
   useEffect(() => {
     fetch('http://localhost:8080/api/ventas')
@@ -114,9 +115,11 @@ const Ventas = () => {
   };
 
   const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
+    const { value } = event.target;
+    setSearchTerm(value);
     setCurrentPage(1);
   };
+  
 
   const getClienteName = (idCliente) => {
     const cliente = clientes.find(cliente => cliente._id === idCliente);
@@ -146,8 +149,10 @@ const Ventas = () => {
   };
 
   const filteredVentas = ventas.filter((venta) =>
-    venta.numeroVenta.toString().includes(searchTerm.toLowerCase())
+    venta.numeroVenta.toString().includes(searchTerm.toLowerCase()) &&
+    (estadoFiltrado === "" || (venta.estado ? "Activa" : "Inactiva") === estadoFiltrado)
   );
+  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -181,10 +186,18 @@ const Ventas = () => {
               </Link>
               </div>
               <div className='w-full'>
-                <select name="" id="" className='w-full px-4 py-2 rounded-lg border border-black text-texto-100'>
-                  <option value="">Activas</option>
-                  <option value="">Inactivas</option>
-                </select>
+              <select
+  name="estadoFiltrado"
+  id="estadoFiltrado"
+  className="w-full px-4 py-2 rounded-lg border border-black text-texto-100"
+  value={estadoFiltrado}
+  onChange={(e) => setEstadoFiltrado(e.target.value)}
+>
+  <option value="">Todos</option>
+  <option value="Activa">Activas</option>
+  <option value="Inactiva">Inactivas</option>
+</select>
+
               </div>
             </div>
           </div>

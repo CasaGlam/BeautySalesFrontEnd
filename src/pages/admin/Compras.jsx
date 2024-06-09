@@ -19,6 +19,8 @@ const Compras = () => {
   const [descripcionEstadoCompra, setDescripcionEstadoCompra] = useState('');
   const [compraSeleccionada, setCompraSeleccionada] = useState(null);
   const itemsPerPage = 10;
+  const [filtroEstado, setFiltroEstado] = useState(''); // Estado inicial vacío
+
 
   useEffect(() => {
     fetchCompras();
@@ -26,6 +28,8 @@ const Compras = () => {
     fetchProductos();
   }, []);
 
+
+  
   const fetchCompras = () => {
     fetch('http://localhost:8080/api/compras')
       .then(response => response.json())
@@ -135,10 +139,16 @@ const Compras = () => {
     }
   };
 
-  const filteredCompras = compras.filter((compra) =>
-    compra.numeroCompra.toString().includes(searchTerm)
-  );
-
+  const filteredCompras = compras.filter((compra) => {
+    if (filtroEstado === 'activas') {
+      return compra.estado;
+    } else if (filtroEstado === 'inactivas') {
+      return !compra.estado;
+    } else {
+      return true; // Si no hay filtro seleccionado, mostrar todas las compras
+    }
+  });
+  
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCompras.slice(indexOfFirstItem, indexOfLastItem);
@@ -178,10 +188,16 @@ const Compras = () => {
               </Link>
               </div>
               <div className='w-full'>
-                <select name="" id="" className='w-full px-4 py-2 rounded-lg border border-black text-texto-100'>
-                  <option value="">Activas</option>
-                  <option value="">Inactivas</option>
-                </select>
+               <select
+  value={filtroEstado}
+  onChange={(event) => setFiltroEstado(event.target.value)}
+  className='w-full px-4 py-2 rounded-lg border border-black text-texto-100'
+>
+  <option value="">Todos</option>
+  <option value="activas">Activas</option>
+  <option value="inactivas">Inactivas</option>
+</select>
+
               </div>
             </div>
           </div>

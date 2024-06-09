@@ -9,6 +9,7 @@ const Categorias = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [categorias, setCategorias] = useState([]);
+  const [estadoFiltrado, setEstadoFiltrado] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/categorias')
@@ -24,22 +25,21 @@ const Categorias = () => {
   }, []);
 
   const handleSearch = (event) => {
-    const value = event.target.value;
-    // Validar que el valor ingresado contenga solo letras
-    if (/^[A-Za-z\s]+$/.test(value) || value === '') {
-      setSearchTerm(value);
-      setCurrentPage(1); // Resetear a la primera página al buscar
-    }
+    setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reiniciar a la primera página al buscar
   };
-
+  
   const filteredCategorias = categorias.filter((categoria) =>
-    categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (estadoFiltrado === '' || (categoria.estado ? 'Activo' : 'Inactivo') === estadoFiltrado)
   );
+  
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCategorias.slice(indexOfFirstItem, indexOfLastItem);
+  
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -121,6 +121,18 @@ const Categorias = () => {
                 </button>
               </Link>
             </div>
+            <select
+  name="estadoFiltrado"
+  id="estadoFiltrado"
+  className="w-full px-4 py-2 rounded-lg border border-black text-texto-100"
+  value={estadoFiltrado}
+  onChange={(e) => setEstadoFiltrado(e.target.value)}
+>
+  <option value="">Todos</option>
+  <option value="Activo">Activos</option>
+  <option value="Inactivo">Inactivos</option>
+</select>
+
           </div>
         </div>
         <div className='p-5 overflow-x-auto rounded-lg mx-[47px]'>

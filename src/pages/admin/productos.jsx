@@ -10,7 +10,8 @@ const Productos = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState({});
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
+  const [estadoFiltrado, setEstadoFiltrado] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/productos')
@@ -40,17 +41,16 @@ const Productos = () => {
   }, []);
 
   const handleSearch = (event) => {
-    const value = event.target.value;
-    if (/^[A-Za-z\s]+$/.test(value) || value === '') {
-      setSearchTerm(value);
-      setCurrentPage(1);
-    }
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
   };
+  
 
   const filteredProductos = productos.filter((producto) =>
-    producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    producto.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (estadoFiltrado === '' || (producto.estado ? 'Activo' : 'Inactivo') === estadoFiltrado)
   );
-
+  
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredProductos.slice(indexOfFirstItem, indexOfLastItem);
@@ -145,6 +145,22 @@ const Productos = () => {
                 </button>
               </Link>
             </div>
+            <div className='w-full'>
+             <select
+  name="estadoFiltrado"
+  id="estadoFiltrado"
+  className="w-full px-4 py-2 rounded-lg border border-black text-texto-100"
+  value={estadoFiltrado}
+  onChange={(e) => setEstadoFiltrado(e.target.value)}
+>
+  <option value="">Todos</option>
+  <option value="Activo">Activos</option>
+  <option value="Inactivo">Inactivos</option>
+</select>
+
+
+
+              </div>
           </div>
         </div>
         <div className='p-5 overflow-x-auto rounded-lg mx-[47px]'>

@@ -34,17 +34,20 @@ const EditarProducto = () => {
         console.error("Error fetching data:", error);
       }
     };
-
-    fetchProducto();
   
+    fetchProducto();
   }, [objectId]);
+  
 
   const handleChange = (e) => {
-    setProducto({
-      ...producto,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setProducto(prevProducto => ({
+      ...prevProducto,
+      [name]: value
+    }));
   };
+  
+  
 
   const handleActualizarProducto = () => {
     // Verificar que ningún campo esté vacío
