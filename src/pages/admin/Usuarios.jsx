@@ -10,6 +10,7 @@ const Usuarios = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
   const [usuariosFromApi, setUsuariosFromApi] = useState([]);
+  const [filter, setFilter] = useState("activo"); // Estado seleccionado (activo o inactivo)
 
   useEffect(() => {
     fetch("http://localhost:8080/api/usuarios")
@@ -32,11 +33,17 @@ const Usuarios = () => {
     setCurrentPage(1);
   };
 
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+    setCurrentPage(1);
+  };
+
   const filteredUsuarios = usuariosFromApi.filter(
     (usuario) =>
-      usuario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      usuario.rol.toLowerCase().includes(searchTerm.toLowerCase())
+      (usuario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        usuario.rol.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (filter === "activo" ? usuario.estado : !usuario.estado)
   );
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -69,12 +76,9 @@ const Usuarios = () => {
       confirmButtonText: "Sí, eliminar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(
-          `http://localhost:8080/api/usuarios/${userId}`,
-          {
-            method: "DELETE",
-          }
-        )
+        fetch(`http://localhost:8080/api/usuarios/${userId}`, {
+          method: "DELETE",
+        })
           .then((response) => {
             if (!response.ok) {
               throw new Error("Error al eliminar el usuario");
@@ -130,6 +134,18 @@ const Usuarios = () => {
         </div>
       </div>
 
+      <div className="flex items-center gap-4 mb-6 ml-5 md:ml-0">
+        <span className="text-texto-100">Filtrar por estado:</span>
+        <select
+          value={filter}
+          onChange={handleFilterChange}
+          className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
+        >
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
+
       {filteredUsuarios.length === 0 ? (
         <div className="text-xl text-center text-gray-500">
           No se encuentran usuarios.
@@ -166,101 +182,102 @@ const Usuarios = () => {
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
-                >
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
-              {/* Renderizar usuarios actuales */}
-              {currentUsers.map((usuario, index) => (
-                <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-black">
-                      {usuario.nombre}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-black">
-                      {usuario.correo}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-black">{usuario.rol}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        usuario.estado
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {usuario.estado ? "Activo" : "Inactivo"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {usuario.rol !== "SUPER ADMINISTRADOR" && ( // Verificar si no es SUPER ADMINISTRADOR
-                      <Link to={`/usuarios/editar-usuario/${usuario._id}`}>
-                        <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
-                          <MdEdit />
-                        </button>
-                      </Link>
-                    )}
-                    {usuario.rol !== "SUPER ADMINISTRADOR" && ( // Verificar si no es SUPER ADMINISTRADOR
-                      <button
-                        className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
-                        onClick={() =>
-                          handleDeleteUser(usuario._id, usuario.nombre)
-                        }
-                      >
-                        <FaTrash />
-                      </button>
-                    )}
-                  </td>
+                  >
+                    Acciones
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
-        >
-          <IoIosArrowBack />
-        </button>
-        {Array.from(
-          { length: Math.ceil(filteredUsuarios.length / usersPerPage) },
-          (_, i) => (
-            <button
-              key={i}
-              onClick={() => paginate(i + 1)}
-              className={`${
-                currentPage === i + 1
-                  ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
-                  : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-              }`}
-            >
-              {i + 1}
-            </button>
-          )
+              </thead>
+              <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
+                {/* Renderizar usuarios actuales */}
+                {currentUsers.map((usuario, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium text-black">
+                        {usuario.nombre}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium text-black">
+                        {usuario.correo}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium text-black">{usuario.rol}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          usuario.estado
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {usuario.estado ? "Activo" : "Inactivo"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {usuario.rol !== "SUPER ADMINISTRADOR" && ( // Verificar si no es SUPER ADMINISTRADOR
+                        <Link to={`/usuarios/editar-usuario/${usuario._id}`}>
+                          <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                            <MdEdit />
+                          </button>
+                        </Link>
+                      )}
+                      {usuario.rol !== "SUPER ADMINISTRADOR" && ( // Verificar si no es SUPER ADMINISTRADOR
+                        <button
+                          className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
+                          onClick={() =>
+                            handleDeleteUser(usuario._id, usuario.nombre)
+                          }
+                        >
+                          <FaTrash />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={
-            currentPage === Math.ceil(filteredUsuarios.length / usersPerPage)
-          }
-          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
-        >
-          <IoIosArrowForward />
-        </button>
+  
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
+          >
+            <IoIosArrowBack />
+          </button>
+          {Array.from(
+            { length: Math.ceil(filteredUsuarios.length / usersPerPage) },
+            (_, i) => (
+              <button
+                key={i}
+                onClick={() => paginate(i + 1)}
+                className={`${
+                  currentPage === i + 1
+                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                {i + 1}
+              </button>
+            )
+          )}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={
+              currentPage === Math.ceil(filteredUsuarios.length / usersPerPage)
+            }
+            className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-primary hover:text-white transition-colors"
+          >
+            <IoIosArrowForward />
+          </button>
+        </div>
       </div>
-    </div>
-  );
-};
-
-export default Usuarios;
+    );
+  };
+  
+  export default Usuarios;
+  
