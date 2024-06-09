@@ -195,6 +195,7 @@ const Proveedores = () => {
         >
           <option value="activo">Activo</option>
           <option value="inactivo">Inactivo</option>
+          
         </select>
       </div>
         {filteredProveedores.length === 0 ? (
