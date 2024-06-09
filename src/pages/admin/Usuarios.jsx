@@ -143,7 +143,6 @@ const Usuarios = () => {
         >
           <option value="activo">Activo</option>
           <option value="inactivo">Inactivo</option>
-          
         </select>
       </div>
 

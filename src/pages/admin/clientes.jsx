@@ -183,8 +183,7 @@ const Clientes = () => {
           className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
         >
           <option value="activo">Activo</option>
-          <option value="inactivo">Inactivo</option>
-          
+          <option value="inactivo">Inactivo</option>  
         </select>
       </div>
       <div className="overflow-x-auto rounded-lg">
