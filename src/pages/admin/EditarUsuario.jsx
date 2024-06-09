@@ -72,14 +72,31 @@ const EditarUsuario = () => {
     });
   };
 
-  const handleActualizarUsuario = () => {
+  const checkIfUserExists = async (nombre, correo) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/usuarios");
+      if (!response.ok) {
+        throw new Error("Error al obtener los usuarios");
+      }
+      const data = await response.json();
+      const usuarioExistente = data.usuarios.find(
+        (usuario) => (usuario.nombre === nombre || usuario.correo === correo) && usuario._id !== objectId
+      );
+      return usuarioExistente;
+    } catch (error) {
+      console.error("Error:", error);
+      return null;
+    }
+  };
+
+  const handleActualizarUsuario = async () => {
     // Verificar que ningún campo esté vacío
     if (
       usuario.nombre.trim() === "" ||
-    usuario.correo.trim() === "" ||
-    typeof usuario.rol !== "string" || // Verificar que rol sea una cadena
-    typeof usuario.estado !== "string" || // Verificar que estado sea una cadena
-    usuario.estado.trim() === ""
+      usuario.correo.trim() === "" ||
+      typeof usuario.rol !== "string" || // Verificar que rol sea una cadena
+      typeof usuario.estado !== "string" || // Verificar que estado sea una cadena
+      usuario.estado.trim() === ""
     ) {
       Swal.fire({
         icon: "error",
@@ -100,6 +117,17 @@ const EditarUsuario = () => {
         confirmButtonColor: "#3085d6",
       });
       return;
+    }
+
+    // Comprobar si el nombre o el correo ya están registrados
+    const usuarioExistente = await checkIfUserExists(usuario.nombre, usuario.correo);
+    if (usuarioExistente) {
+      if (usuarioExistente.nombre === usuario.nombre) {
+        return Swal.fire("Error!", "El nombre de usuario ya está registrado.", "error");
+      }
+      if (usuarioExistente.correo === usuario.correo) {
+        return Swal.fire("Error!", "El correo electrónico ya está registrado.", "error");
+      }
     }
 
     const datosActualizados = {

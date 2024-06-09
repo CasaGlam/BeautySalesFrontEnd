@@ -64,6 +64,12 @@ const RegistrarCliente = () => {
 
   // Verificar si el correo o el teléfono ya existen en los clientes registrados
   const clienteExistente = (cliente) => {
+
+    if (clientesRegistrados.some(c => c.nombre === cliente.nombre)) {
+      Swal.fire("Error", "El nombre ya esta registrado", "error");
+      return true;
+    }
+
     if (clientesRegistrados.some(c => c.telefono === cliente.telefono)) {
       Swal.fire("Error", "El teléfono ya está registrado", "error");
       return true;
@@ -73,6 +79,7 @@ const RegistrarCliente = () => {
       Swal.fire("Error", "El correo electrónico ya está registrado", "error");
       return true;
     }
+    
 
     return false;
   };

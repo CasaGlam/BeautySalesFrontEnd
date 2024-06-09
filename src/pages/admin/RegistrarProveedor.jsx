@@ -22,84 +22,100 @@ const RegistrarProveedor = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     // Validar que todos los campos estén llenos y que el teléfono tenga 10 dígitos
-    if (
-      proveedor.nombre &&
-      proveedor.telefono.length === 10 &&
-      proveedor.telefono.match(/^[0-9]+$/) &&
-      proveedor.correo &&
-      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(proveedor.correo) &&
-      proveedor.direccion &&
-      proveedor.descripcion
-    ) {
-      // Verificar si el proveedor ya existe en la base de datos
-      fetch("http://localhost:8080/api/proveedores")
-        .then((response) => response.json())
-        .then((data) => {
-          // Verificar si la respuesta contiene la propiedad 'proveedores'
-          if (data && data.proveedores && Array.isArray(data.proveedores)) {
-            // Verificar si el nombre, correo, teléfono y dirección ya están registrados
-            const proveedorExistente = data.proveedores.find(
-              (p) =>
-                p.nombre.toLowerCase() === proveedor.nombre.toLowerCase() ||
-                p.correo.toLowerCase() === proveedor.correo.toLowerCase() ||
-                p.telefono === proveedor.telefono ||
-                p.direccion.toLowerCase() === proveedor.direccion.toLowerCase()
-            );
-            if (proveedorExistente) {
-              // Mostrar una alerta si algún campo ya está registrado
-              Swal.fire(
-                "¡Error!",
-                "El nombre, correo, teléfono o dirección ya están registrados.",
-                "error"
-              );
-            } else {
-              // Si el proveedor no existe, enviar la solicitud POST para registrar el proveedor
-              fetch("http://localhost:8080/api/proveedores", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(proveedor),
-              })
-                .then((response) => {
-                  if (response.ok) {
-                    Swal.fire("¡Proveedor creado!", "", "success");
-                    setTimeout(() => {
-                      window.location.href = "/proveedores";
-                    }, 2000);
-                  } else {
-                    throw new Error("Error al crear proveedor");
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error al registrar proveedor:", error);
-                  Swal.fire(
-                    "¡Error al crear proveedor!",
-                    "",
-                    "error"
-                  );
-                });
-            }
-          } else {
-            throw new Error("La respuesta no contiene la propiedad 'proveedores'");
-          }
-        })
-        .catch((error) => {
-          console.error("Error al verificar proveedor existente:", error);
-          Swal.fire(
-            "¡Error!",
-            "Hubo un problema al verificar si el proveedor ya está registrado. Por favor, inténtalo de nuevo más tarde.",
-            "error"
-          );
-        });
-    } else {
-      // Mostrar una alerta si algún campo está vacío o no cumple con el formato esperado
-      Swal.fire("¡Error!", "Debes llenar todos los campos correctamente.", "error");
+    if (!proveedor.nombre.trim()) {
+      Swal.fire("¡Error!", "El campo 'Nombre' no puede estar vacío.", "error");
+      return;
     }
+    if (!proveedor.telefono.trim()) {
+      Swal.fire("¡Error!", "El campo 'Teléfono' no puede estar vacío.", "error");
+      return;
+    }
+    if (proveedor.telefono.length !== 10 || !/^[0-9]+$/.test(proveedor.telefono)) {
+      Swal.fire("¡Error!", "El teléfono debe tener 10 dígitos numéricos.", "error");
+      return;
+    }
+    if (!proveedor.correo.trim()) {
+      Swal.fire("¡Error!", "El campo 'Correo electrónico' no puede estar vacío.", "error");
+      return;
+    }
+    if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(proveedor.correo)) {
+      Swal.fire("¡Error!", "El correo electrónico no tiene un formato válido.", "error");
+      return;
+    }
+    if (!proveedor.direccion.trim()) {
+      Swal.fire("¡Error!", "El campo 'Dirección' no puede estar vacío.", "error");
+      return;
+    }
+    if (!proveedor.descripcion.trim()) {
+      Swal.fire("¡Error!", "El campo 'Descripción' no puede estar vacío.", "error");
+      return;
+    }
+
+    // Verificar si el proveedor ya existe en la base de datos
+    fetch("http://localhost:8080/api/proveedores")
+      .then((response) => response.json())
+      .then((data) => {
+        // Verificar si la respuesta contiene la propiedad 'proveedores'
+        if (data && data.proveedores && Array.isArray(data.proveedores)) {
+          // Verificar si el nombre, correo, teléfono y dirección ya están registrados
+          const proveedorExistente = data.proveedores.find(
+            (p) =>
+              p.nombre.toLowerCase() === proveedor.nombre.toLowerCase() ||
+              p.correo.toLowerCase() === proveedor.correo.toLowerCase() ||
+              p.telefono === proveedor.telefono ||
+              p.direccion.toLowerCase() === proveedor.direccion.toLowerCase()
+          );
+          if (proveedorExistente) {
+            // Mostrar una alerta si algún campo ya está registrado
+            Swal.fire(
+              "¡Error!",
+              "El nombre, correo, teléfono o dirección ya están registrados.",
+              "error"
+            );
+          } else {
+            // Si el proveedor no existe, enviar la solicitud POST para registrar el proveedor
+            fetch("http://localhost:8080/api/proveedores", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(proveedor),
+            })
+              .then((response) => {
+                if (response.ok) {
+                  Swal.fire("¡Proveedor creado!", "", "success");
+                  setTimeout(() => {
+                    window.location.href = "/proveedores";
+                  }, 2000);
+                } else {
+                  throw new Error("Error al crear proveedor");
+                }
+              })
+              .catch((error) => {
+                console.error("Error al registrar proveedor:", error);
+                Swal.fire(
+                  "¡Error al crear proveedor!",
+                  "",
+                  "error"
+                );
+              });
+          }
+        } else {
+          throw new Error("La respuesta no contiene la propiedad 'proveedores'");
+        }
+      })
+      .catch((error) => {
+        console.error("Error al verificar proveedor existente:", error);
+        Swal.fire(
+          "¡Error!",
+          "Hubo un problema al verificar si el proveedor ya está registrado. Por favor, inténtalo de nuevo más tarde.",
+          "error"
+        );
+      });
   };
-  
+
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-black">Registrar proveedor nuevo</h1>
@@ -110,7 +126,7 @@ const RegistrarProveedor = () => {
               <div className="flex flex-col">
                 <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre</label>
                 <div className="relative">
-                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Nombre"
@@ -124,7 +140,7 @@ const RegistrarProveedor = () => {
               <div className="flex flex-col">
                 <label htmlFor="telefono" className="pb-1 text-black">Teléfono</label>
                 <div className="relative">
-                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="tel"
                     placeholder="Teléfono"
@@ -138,7 +154,7 @@ const RegistrarProveedor = () => {
               <div className="flex flex-col">
                 <label htmlFor="correo" className="pb-1 text-black">Correo electrónico</label>
                 <div className="relative">
-                <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="email"
                     placeholder="Correo electrónico"
@@ -152,7 +168,7 @@ const RegistrarProveedor = () => {
               <div className="flex flex-col ">
                 <label htmlFor="direccion" className="pb-1 text-black">Dirección</label>
                 <div className="relative">
-                < FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Dirección"
@@ -166,7 +182,7 @@ const RegistrarProveedor = () => {
               <div className="flex flex-col col-span-2">
                 <label htmlFor="descripcion" className="pb-1 text-black">Descripción</label>
                 <div className="relative">
-                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <textarea
                     placeholder="Descripción"
                     name="descripcion"
@@ -180,7 +196,7 @@ const RegistrarProveedor = () => {
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <Link to="/proveedores" className="w-full md:w-[35%]">
+              <Link to="/proveedores" className="w-full md:w-[35%]">
                 <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Volver
                 </button>
