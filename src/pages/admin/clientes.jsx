@@ -8,6 +8,7 @@ import { MdEdit } from "react-icons/md";
 const Clientes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("activo"); // Agregamos el estado del filtro
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,14 +38,25 @@ const Clientes = () => {
     }
   };
 
+  // Agregamos una función para manejar el cambio de estado del filtro
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+    setCurrentPage(1); // Reiniciar a la primera página al cambiar el filtro
+  };
+
   const filteredClientes = clientes.filter((cliente) =>
     cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Filtramos también por el estado del cliente
+  const filteredAndFilteredClientes = filteredClientes.filter((cliente) =>
+    filter === "activo" ? cliente.estado : !cliente.estado
   );
 
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredClientes.slice(
+  const currentItems = filteredAndFilteredClientes.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
@@ -153,6 +165,7 @@ const Clientes = () => {
               onChange={handleSearch}
             />
           </div>
+          
           <div className="">
             <Link to="/clientes/registrar-cliente">
               <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
@@ -162,10 +175,22 @@ const Clientes = () => {
           </div>
         </div>
       </div>
+      <div className="flex items-center gap-4 mb-6 ml-5 md:ml-0">
+        <span className="text-texto-100">Filtrar por estado:</span>
+        <select
+          value={filter}
+          onChange={handleFilterChange}
+          className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
+        >
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>  
+          
+        </select>
+      </div>
       <div className="overflow-x-auto rounded-lg">
         {currentItems.length > 0 ? (
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
-          <thead className="bg-secondary-900 rounded-lg">
+            <thead className="bg-secondary-900 rounded-lg">
               <tr className="">
                 <th
                   scope="col"
@@ -225,14 +250,16 @@ const Clientes = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap flex">
                     <Link to={`/clientes/editar-cliente/${cliente._id}`}>
-                    <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
-                      <MdEdit/>
+                      <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                        <MdEdit />
                       </button>
                     </Link>
-                    <button className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors" onClick={() => handleDelete(cliente._id)}>
-                    <FaTrash/>
+                    <button
+                      className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
+                      onClick={() => handleDelete(cliente._id)}
+                    >
+                      <FaTrash />
                     </button>
-                    
                   </td>
                 </tr>
               ))}
@@ -258,7 +285,7 @@ const Clientes = () => {
             <IoIosArrowBack />
           </button>
           {Array.from(
-            { length: Math.ceil(filteredClientes.length / itemsPerPage) },
+            { length: Math.ceil(filteredAndFilteredClientes.length / itemsPerPage) },
             (_, i) => (
               <button
                 key={i}
@@ -276,7 +303,7 @@ const Clientes = () => {
           <button
             onClick={() => paginate(currentPage + 1)}
             disabled={
-              currentPage === Math.ceil(filteredClientes.length / itemsPerPage)
+              currentPage === Math.ceil(filteredAndFilteredClientes.length / itemsPerPage)
             }
             className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
           >
@@ -289,3 +316,4 @@ const Clientes = () => {
 };
 
 export default Clientes;
+
