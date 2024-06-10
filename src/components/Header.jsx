@@ -38,15 +38,15 @@ const Header = ({ title }) => {
             menuClassName="bg-secondary-100 p-4"
           >
             <MenuItem className="rounded-lg transition-colors text-gray-300 hover:bg-secondary-900">
-              <Link to="/perfil" className="flex items-center gap-x-4 ">
-  
                 <div className="flex flex-col text-sm">
                   <span className="text-sm text-texto-100 font-bold">{usuario.nombre}</span>
+                  <span className="text-[10px] text-gray-500 font-bold">
+                    {usuario.rol}
+                  </span>
                   <span className="text-[10px] text-gray-500 font-bold">
                     {usuario.correo}
                   </span>
                 </div>
-              </Link>
             </MenuItem>
             <hr className="my-4 border-gray-500" />
             <MenuItem className="rounded-lg transition-colors text-gray-300 hover:bg-secondary-900">
