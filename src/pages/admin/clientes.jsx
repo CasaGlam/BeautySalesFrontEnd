@@ -184,6 +184,7 @@ const Clientes = () => {
         >
           <option value="activo">Activo</option>
           <option value="inactivo">Inactivo</option>  
+          
         </select>
       </div>
       <div className="overflow-x-auto rounded-lg">
