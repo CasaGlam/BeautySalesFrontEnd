@@ -23,9 +23,13 @@ const Sidebar = ({ permisos }) => {
         } transition-all`}
       >
         <div>
-          <h1 className="text-center text-2xl font-bold text-primary mb-10">
+          
+          <div className="flex flex-col justify-center items-center mb-10">
+          <img src="src/assets/img/BeautySales.png" alt="Logo" className="w-20 rounded-full border border-black"/>
+          <h1 className="text-center text-2xl font-bold text-primary">
             Beauty sales
           </h1>
+          </div>
           <ul>
             {permisos.includes("dashboard") && (
               <li>

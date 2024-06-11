@@ -8,6 +8,7 @@ import { MdEdit } from "react-icons/md";
 const Proveedores = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("todos"); // Estado para el filtro de activo/inactivo/todos
   const [proveedores, setProveedores] = useState([]);
 
   useEffect(() => {
@@ -35,9 +36,24 @@ const Proveedores = () => {
     }
   };
 
-  const filteredProveedores = proveedores.filter((proveedor) =>
-    proveedor.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+    setCurrentPage(1); // Resetear a la primera página al cambiar el filtro
+  };
+
+  const filteredProveedores = proveedores.filter((proveedor) => {
+    // Filtrar por nombre
+    const nombreIncludes = proveedor.nombre
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    // Filtrar por estado
+    if (filter === "todos") {
+      return nombreIncludes;
+    } else {
+      return proveedor.estado === (filter === "activo");
+    }
+  });
 
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -167,153 +183,167 @@ const Proveedores = () => {
               </button>
             </Link>
           </div>
+         
+          </div>
         </div>
-      </div>
-      {filteredProveedores.length === 0 ? (
-        <div className="text-xl text-center text-gray-500">
-          No se encuentran proveedores.
-        </div>
-      ) : (
-        <div className="overflow-x-auto rounded-lg">
-          <table className="min-w-full divide-y divide-gray-500 rounded-lg">
-            <thead className="bg-secondary-900 rounded-lg">
-              <tr className="">
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
-                >
-                  Nombre
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
-                >
-                  Teléfono
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
-                >
-                  Correo
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
-                >
-                  Dirección
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
-                >
-                  Descripción
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
-                >
-                  Estado
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
-                >
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
-              {currentItems.map((proveedor, index) => (
-                <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">
-                    {proveedor.nombre}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">
-                    {proveedor.telefono}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">
-                    {proveedor.correo}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">
-                    {proveedor.direccion}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-black">
-                    {proveedor.descripcion}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        proveedor.estado
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                      disabled
-                    >
-                      {proveedor.estado ? "Activo" : "Inactivo"}
-                    </button>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Link to={`/proveedores/editar-proveedor/${proveedor._id}`}>
-                      <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
-                        <MdEdit />
-                      </button>
-                    </Link>
-                    <button
-                      className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
-                      onClick={() => handleDelete(proveedor._id)}
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      {/* Paginación */}
-      <div className="flex justify-center my-4">
-        <nav
-          className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-          aria-label="Pagination"
+        <div className="flex items-center gap-4 mb-6 ml-5 md:ml-0">
+        <span className="text-texto-100">Filtrar por estado:</span>
+        <select
+          value={filter}
+          onChange={handleFilterChange}
+          className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
         >
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-          >
-            <IoIosArrowBack />
-          </button>
-          {Array.from(
-            { length: Math.ceil(filteredProveedores.length / itemsPerPage) },
-            (_, i) => (
-              <button
-                key={i}
-                onClick={() => paginate(i + 1)}
-                className={`${
-                  currentPage === i + 1
-                    ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
-                    : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                {i + 1}
-              </button>
-            )
-          )}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage ===
-              Math.ceil(filteredProveedores.length / itemsPerPage)
-            }
-            className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-          >
-            <IoIosArrowForward />
-          </button>
-        </nav>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+          
+        </select>
       </div>
-    </div>
-  );
-};
-
-export default Proveedores;
+        {filteredProveedores.length === 0 ? (
+          <div className="text-xl text-center text-gray-500">
+            No se encuentran proveedores.
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-lg">
+            <table className="min-w-full divide-y divide-gray-500 rounded-lg">
+              <thead className="bg-secondary-900 rounded-lg">
+                <tr className="">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
+                  >
+                    Nombre
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
+                  >
+                    Teléfono
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
+                  >
+                    Correo
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
+                  >
+                    Dirección
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
+                  >
+                    Descripción
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
+                  >
+                    Estado
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
+                  >
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-gray-300 divide-y divide-black rounded-lg">
+                {currentItems.map((proveedor, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap text-black">
+                      {proveedor.nombre}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-black">
+                      {proveedor.telefono}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-black">
+                      {proveedor.correo}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-black">
+                      {proveedor.direccion}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-black">
+                      {proveedor.descripcion}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          proveedor.estado
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                        disabled
+                      >
+                        {proveedor.estado ? "Activo" : "Inactivo"}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Link to={`/proveedores/editar-proveedor/${proveedor._id}`}>
+                        <button className="text-black border-none p-1 rounded-lg mr-2 hover:bg-black hover:text-white transition-colors">
+                          <MdEdit />
+                        </button>
+                      </Link>
+                      <button
+                        className="text-black border-none p-1 rounded-lg hover:bg-black hover:text-white transition-colors"
+                        onClick={() => handleDelete(proveedor._id)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {/* Paginación */}
+        <div className="flex justify-center my-4">
+          <nav
+            className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+            aria-label="Pagination"
+          >
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <IoIosArrowBack />
+            </button>
+            {Array.from(
+              { length: Math.ceil(filteredProveedores.length / itemsPerPage) },
+              (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => paginate(i + 1)}
+                  className={`${
+                    currentPage === i + 1
+                      ? "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white hover:bg-opacity-[80%]"
+                      : "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={
+                currentPage ===
+                Math.ceil(filteredProveedores.length / itemsPerPage)
+              }
+              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+            >
+              <IoIosArrowForward />
+            </button>
+          </nav>
+        </div>
+      </div>
+    );
+  };
+  
+  export default Proveedores;
+  

@@ -13,7 +13,6 @@ import CambiarContrasena from "./pages/auth/CambiarContrasena";
 
 // Pages admin
 import Dashboard from "./pages/admin/Dashboard";
-import Perfil from "./pages/admin/Perfil";
 import Productos from "./pages/admin/productos";
 import RegistrarProducto from "./pages/admin/RegistrarProducto";
 import EditarProducto from "./pages/admin/EditarProductos";
@@ -75,7 +74,6 @@ function App() {
         <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
         <Route path="/" element={<LayoutAdmin />}>
           {permisos.includes("dashboard") && <Route index element={<Dashboard />} />}
-          <Route path="/perfil" element={<Perfil />} />
           {permisos.includes("productos") && (
             <>
               <Route path="/productos" element={<Productos />} />
