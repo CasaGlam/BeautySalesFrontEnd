@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { FaSearch,  FaTrash, FaPlus, FaMinus } from "react-icons/fa";
+import { FaSearch, FaTrash, FaPlus, FaMinus } from "react-icons/fa";
 import Swal from 'sweetalert2';
 
 const RegistrarVenta = () => {
-  
+
   const [clientes, setClientes] = useState([]);
   const [productosEncontrados, setProductosEncontrados] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -140,6 +140,24 @@ const RegistrarVenta = () => {
   };
 
   const guardarVentaApi = () => {
+    if (!numeroVenta || !clienteSeleccionado) {
+      Swal.fire(
+        'Campos incompletos',
+        'Debe ingresar el número de venta y seleccionar un cliente.',
+        'warning'
+      );
+      return;
+    }
+
+    if (productosEncontrados.length === 0) {
+      Swal.fire(
+        'Sin productos',
+        'Debe agregar al menos un producto a la venta.',
+        'warning'
+      );
+      return;
+    }
+
     const total = productosEncontrados.reduce((acc, producto) => acc + producto.total, 0);
 
     const venta = {
@@ -193,7 +211,8 @@ const RegistrarVenta = () => {
                 .catch(error => console.error('Error al actualizar la cantidad de productos:', error));
             }
 
-            Swal.fire(
+            Swal.fire
+            (
               'Venta Guardada',
               'La venta ha sido guardada correctamente.',
               'success'
@@ -361,7 +380,8 @@ const RegistrarVenta = () => {
                     </div>
                   </div>
                   <FaTrash className="text-[#FF0000] cursor-pointer" onClick={() => eliminarProducto(producto)} />
-                </li>
+               
+                  </li>
               ))}
             </ul>
           </div>
