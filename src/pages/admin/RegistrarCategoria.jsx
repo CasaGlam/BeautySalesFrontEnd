@@ -19,6 +19,11 @@ const RegistrarCategoria = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!categoria.nombre || !categoria.descripcion) {
+      Swal.fire("¡Campos incompletos!", "Por favor, complete todos los campos.", "warning");
+      return;
+    }
     
     try {
       const response = await fetch("http://localhost:8080/api/categorias", {
@@ -56,40 +61,40 @@ const RegistrarCategoria = () => {
           <form onSubmit={handleSubmit}>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
               <div className="flex flex-col w-full">
-              <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre de Categoria</label>
-              <div className="relative w-full">
-                 <FaBoxes className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="Nombre"
-                  name="nombre"
-                  value={categoria.nombre}
-                  onChange={handleChange}
-                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
-                />
+                <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre de Categoria</label>
+                <div className="relative w-full">
+                  <FaBoxes className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <input
+                    type="text"
+                    placeholder="Nombre"
+                    name="nombre"
+                    value={categoria.nombre}
+                    onChange={handleChange}
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                  />
                 </div>
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
-            <div className="flex flex-col w-full">
+              <div className="flex flex-col w-full">
                 <label htmlFor="descripcion" className="pb-1 text-texto-100">Descripción</label>
                 <div className="relative w-full">
-                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="Descripción"
-                  name="descripcion"
-                  value={categoria.descripcion}
-                  onChange={handleChange}
-                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
-                  rows={4}
-                  style={{ minHeight: "50px" }}
-                />
+                  <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <input
+                    type="text"
+                    placeholder="Descripción"
+                    name="descripcion"
+                    value={categoria.descripcion}
+                    onChange={handleChange}
+                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
+                    rows={4}
+                    style={{ minHeight: "50px" }}
+                  />
                 </div>
               </div>
             </div>
             <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
-            <Link to="/categorias" className="w-full md:w-[35%]">
+              <Link to="/categorias" className="w-full md:w-[35%]">
                 <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Volver
                 </button>
@@ -100,7 +105,6 @@ const RegistrarCategoria = () => {
               >
                 Crear categoría
               </button>
-            
             </div>
           </form>
         </div>
