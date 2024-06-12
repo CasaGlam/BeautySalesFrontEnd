@@ -134,7 +134,7 @@ const EditarCliente = () => {
       <div className="flex justify-center">
         <div className="w-full md:flex flex-col md:w-[90%]">
           <div className="w-full flex flex-col gap-12 mb-10">
-            <div className="flex gap-12">
+            <div className="flex flex-col md:flex-row gap-12">
               <div className="w-full">
                 <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre</label>
                 <div className="relative">
@@ -164,7 +164,7 @@ const EditarCliente = () => {
                 </div>
               </div>
             </div>
-            <div className="flex gap-12">
+            <div className="flex flex-col md:flex-row gap-12">
               <div className="w-full">
                 <label htmlFor="correo" className="text-texto-100 mb-2 block">Correo electrónico</label>
                 <div className="relative">
@@ -193,7 +193,7 @@ const EditarCliente = () => {
               </div>
             </div>
           </div>
-          <div className="w-full flex justify-center gap-12 mb-10">
+          <div className="flex flex-col-reverse md:flex-row justify-center gap-12 mb-10">
             <Link to="/clientes" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver

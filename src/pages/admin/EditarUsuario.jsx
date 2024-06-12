@@ -250,7 +250,7 @@ const EditarUsuario = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row justify-center gap-12 mb-10">
+          <div className="flex flex-col-reverse md:flex-row justify-center gap-12 mb-10">
             <Link to="/usuarios" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver

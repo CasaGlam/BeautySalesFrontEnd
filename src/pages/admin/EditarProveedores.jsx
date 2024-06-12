@@ -225,7 +225,7 @@ const EditarProveedor = () => {
               <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <textarea
                 placeholder="Descripción"
-                className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 resize-none"
                 name="descripcion"
                 value={proveedor.descripcion}
                 onChange={handleChange}
@@ -247,7 +247,7 @@ const EditarProveedor = () => {
               </select>
             </div>
           </div>
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+          <div className="w-full flex flex-col-reverse md:flex-row justify-center gap-12 mb-10">
           <Link to="/proveedores" className="w-full md:w-[35%]">
               <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver
