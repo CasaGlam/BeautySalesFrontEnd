@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaProductHunt, FaDonate, FaInfoCircle } from "react-icons/fa";
 import Swal from "sweetalert2";
+
+// Icons
+import { MdCategory } from "react-icons/md";
+import { TbCoinFilled } from "react-icons/tb";
+import { BsBagFill } from "react-icons/bs";
+import { FaProductHunt, FaDonate, FaInfoCircle } from "react-icons/fa";
+
 
 const RegistrarProducto = () => {
   const [producto, setProducto] = useState({
@@ -103,7 +109,7 @@ const RegistrarProducto = () => {
               <div className="w-full">
                 <label htmlFor="nombre" className="block text-black font-bold mb-1">Nombre</label>
                 <div className="relative w-full">
-                  <FaProductHunt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <BsBagFill className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Nombre"
@@ -116,7 +122,9 @@ const RegistrarProducto = () => {
               </div>
               <div className="w-full">
                 <label htmlFor="idCategoria" className="block text-black font-bold mb-1">Categoría</label>
-                <select
+               <div className="relative w-full">
+               <MdCategory  className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+               <select
                   name="idCategoria"
                   value={producto.idCategoria}
                   onChange={handleChange}
@@ -129,11 +137,12 @@ const RegistrarProducto = () => {
                     </option>
                   ))}
                 </select>
+               </div>
               </div>
               <div>
                 <label htmlFor="precio" className="block text-black font-bold mb-1">Precio</label>
                 <div className="relative">
-                  <FaDonate className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <TbCoinFilled  className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Precio"
@@ -153,7 +162,7 @@ const RegistrarProducto = () => {
                     name="descripcion"
                     value={producto.descripcion}
                     onChange={handleChange}
-                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[211%] resize-none bg-secondary-900 w-full"
+                    className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full resize-none"
                     rows={1}
                     style={{ minHeight: "50px" }}
                   />

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaInfoCircle, FaBoxes } from "react-icons/fa";
 import Swal from "sweetalert2";
+
+import { MdCategory } from "react-icons/md";
+import { FaInfoCircle, FaBoxes } from "react-icons/fa";
 
 const RegistrarCategoria = () => {
   const [categoria, setCategoria] = useState({
@@ -63,7 +65,7 @@ const RegistrarCategoria = () => {
               <div className="flex flex-col w-full">
                 <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre de Categoria</label>
                 <div className="relative w-full">
-                  <FaBoxes className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <MdCategory  className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
                     placeholder="Nombre"
