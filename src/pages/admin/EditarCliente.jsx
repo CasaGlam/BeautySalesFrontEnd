@@ -28,11 +28,11 @@ const EditarCliente = () => {
         console.error("Error fetching cliente:", error);
       }
     };
-  
+
     fetchCliente();
-  
+
   }, [objectId]);
-  
+
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setCliente({
@@ -65,9 +65,15 @@ const EditarCliente = () => {
         throw new Error('Error al obtener los datos de los clientes');
       }
       const data = await response.json();
-      const clienteExistente = data.clientes.find(
-        c => (c.telefono === cliente.telefono || c.correo === cliente.correo) || c.nombre === cliente.nombre && c._id !== objectId
+      
+      // Filtrar los clientes excluyendo al que se está editando
+      const clientesFiltrados = data.clientes.filter(c => c._id !== objectId);
+
+      // Verificar duplicados solo en los clientes filtrados
+      const clienteExistente = clientesFiltrados.find(
+        c => (c.telefono === cliente.telefono || c.correo === cliente.correo) || c.nombre === cliente.nombre
       );
+
       if (clienteExistente) {
         Swal.fire({
           icon: 'error',
@@ -106,7 +112,6 @@ const EditarCliente = () => {
         }).then(() => {
           // Redireccionar al usuario a la ruta /clientes
           window.location.href = '/clientes';
-          // Realizar otras acciones necesarias en caso de éxito
         });
       } else {
         throw new Error("Error al actualizar cliente");
@@ -133,29 +138,29 @@ const EditarCliente = () => {
               <div className="w-full">
                 <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre</label>
                 <div className="relative">
-                <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="text"
-                  placeholder="Nombre del cliente"
-                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
-                  name="nombre"
-                  value={cliente.nombre}
-                  onChange={handleChange}
-                />
+                  <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <input
+                    type="text"
+                    placeholder="Nombre del cliente"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    name="nombre"
+                    value={cliente.nombre}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
               <div className="w-full">
                 <label htmlFor="telefono" className="text-texto-100 mb-2 block">Teléfono</label>
                 <div className="relative">
-                <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="tel"
-                  placeholder="Teléfono"
-                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
-                  name="telefono"
-                  value={cliente.telefono}
-                  onChange={handleChange}
-                />
+                  <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <input
+                    type="tel"
+                    placeholder="Teléfono"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    name="telefono"
+                    value={cliente.telefono}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
             </div>
@@ -163,15 +168,15 @@ const EditarCliente = () => {
               <div className="w-full">
                 <label htmlFor="correo" className="text-texto-100 mb-2 block">Correo electrónico</label>
                 <div className="relative">
-                <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-                <input
-                  type="email"
-                  placeholder="Correo electrónico"
-                  className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
-                  name="correo"
-                  value={cliente.correo}
-                  onChange={handleChange}
-                />
+                  <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                  <input
+                    type="email"
+                    placeholder="Correo electrónico"
+                    className="text-black w-full px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900"
+                    name="correo"
+                    value={cliente.correo}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
               <div className="w-full">

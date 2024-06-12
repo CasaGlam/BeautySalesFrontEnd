@@ -8,7 +8,9 @@ const RegistrarProducto = () => {
     nombre: "",
     precio: "",
     descripcion: "",
-    idCategoria: ""
+    idCategoria: "",
+    canvendida: 0, // Inicializamos canvendida en 0
+    cantidad: 0 // Inicializamos cantidad en 0
   });
 
   const [categorias, setCategorias] = useState([]);
