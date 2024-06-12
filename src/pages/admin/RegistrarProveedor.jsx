@@ -120,12 +120,12 @@ const RegistrarProveedor = () => {
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <h1 className="text-2xl font-bold mb-10 pt-4 text-black">Registrar proveedor nuevo</h1>
       <div className="flex justify-center">
-        <div className="w-full md:flex flex-col md:w-[90%]">
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-8">
-              <div className="flex flex-col">
-                <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre</label>
-                <div className="relative">
+      <div className="w-full md:flex flex-col md:w-[90%]">
+      <form onSubmit={handleSubmit}>
+          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
+          <div className="flex flex-col w-full">
+          <label htmlFor="nombre" className="pb-1 text-texto-100">Nombre</label>
+                <div className="relative w-full">
                   <FaUser className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
@@ -137,9 +137,9 @@ const RegistrarProveedor = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full">
                 <label htmlFor="telefono" className="pb-1 text-black">Teléfono</label>
-                <div className="relative">
+                <div className="relative w-full">
                   <FaPhone className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="tel"
@@ -151,9 +151,11 @@ const RegistrarProveedor = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col">
+              </div>
+              <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
+              <div className="flex flex-col w-full">
                 <label htmlFor="correo" className="pb-1 text-black">Correo electrónico</label>
-                <div className="relative">
+                <div className="relative w-full">
                   <FaEnvelope className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="email"
@@ -165,9 +167,9 @@ const RegistrarProveedor = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col ">
+              <div className="flex flex-col w-full">
                 <label htmlFor="direccion" className="pb-1 text-black">Dirección</label>
-                <div className="relative">
+                <div className="relative w-full">
                   <FaMapMarkerAlt className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <input
                     type="text"
@@ -179,9 +181,12 @@ const RegistrarProveedor = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col col-span-2">
+              </div>
+              <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10 ">
+
+              <div className="flex flex-col w-full">
                 <label htmlFor="descripcion" className="pb-1 text-black">Descripción</label>
-                <div className="relative">
+                <div className="relative w-full">
                   <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
                   <textarea
                     placeholder="Descripción"
@@ -194,8 +199,8 @@ const RegistrarProveedor = () => {
                   />
                 </div>
               </div>
-            </div>
-            <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+              </div>
+            <div className="w-full flex flex-col-reverse md:flex-row justify-center gap-12 mb-10">
               <Link to="/proveedores" className="w-full md:w-[35%]">
                 <button className="w-full px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                   Volver

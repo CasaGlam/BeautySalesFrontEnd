@@ -175,7 +175,7 @@ const EditarRol = () => {
             ))}
           </div>
 
-          <div className="w-full flex flex-col md:flex-row justify-center gap-12 mb-10">
+          <div className="w-full flex flex-col-reverse md:flex-row justify-center gap-12 mb-10">
             <Link to="/roles" className="w-full md:w-[43%]">
               <button className="w-full  px-3 py-3 rounded-lg bg-gray-600 text-white hover:bg-opacity-[80%] transition-colors font-bold">
                 Volver

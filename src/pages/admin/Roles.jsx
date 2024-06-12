@@ -161,14 +161,14 @@ const Roles = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 ml-5 md:ml-0 ">
+    <div className="bg-secondary-100 py-4 px-8 rounded-lg ">
+      <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-6 mb-10  md:ml-0 ">
         <div className="w-full">
         <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100 ">
             Listado de roles
           </h1>
         </div>
-        <div className="flex flex-col justify-end gap-4 w-full ml-5 md:ml-0 md:flex-row md:w-[60%]">
+        <div className="flex flex-col w-full justify-end gap-4  md:ml-0 md:flex-row md:w-[60%]">
           <div className="md:w-[80%]">
             <input
               className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
