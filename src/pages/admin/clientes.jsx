@@ -8,7 +8,7 @@ import { MdEdit } from "react-icons/md";
 const Clientes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("activo"); // Agregamos el estado del filtro
+  const [filter, setFilter] = useState("activo");
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,10 +20,7 @@ const Clientes = () => {
           setClientes(data.clientes);
           setLoading(false);
         } else {
-          console.error(
-            "Datos de clientes no encontrados en la respuesta:",
-            data
-          );
+          console.error("Datos de clientes no encontrados en la respuesta:", data);
         }
       })
       .catch((error) => console.error("Error fetching clientes:", error));
@@ -31,24 +28,21 @@ const Clientes = () => {
 
   const handleSearch = (event) => {
     const value = event.target.value;
-    // Validar que el valor ingresado contenga solo letras
     if (/^[A-Za-z\s]+$/.test(value) || value === "") {
       setSearchTerm(value);
-      setCurrentPage(1); // Resetear a la primera página al buscar
+      setCurrentPage(1);
     }
   };
 
-  // Agregamos una función para manejar el cambio de estado del filtro
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
-    setCurrentPage(1); // Reiniciar a la primera página al cambiar el filtro
+    setCurrentPage(1);
   };
 
   const filteredClientes = clientes.filter((cliente) =>
     cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Filtramos también por el estado del cliente
   const filteredAndFilteredClientes = filteredClientes.filter((cliente) =>
     filter === "activo" ? cliente.estado : !cliente.estado
   );
@@ -56,43 +50,33 @@ const Clientes = () => {
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredAndFilteredClientes.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredAndFilteredClientes.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleDelete = (id) => {
-    // Consultar la API de ventas para verificar si el cliente está relacionado con alguna venta
-    fetch(`http://localhost:8080/api/ventas?clienteId=${id}`)
+  const handleDelete = (clienteId) => {
+    fetch(`http://localhost:8080/api/ventas`)
       .then((response) => {
         if (response.ok) {
-          // Si la consulta es exitosa, verificar si hay alguna venta relacionada con el cliente
           return response.json();
         }
-        throw new Error(
-          "Error al consultar las ventas relacionadas con el cliente"
-        );
+        throw new Error("Error al consultar las ventas");
       })
-      .then((data) => {
-        // Si hay ventas relacionadas, mostrar una alerta y evitar la eliminación
-        if (data && data.length > 0) {
+      .then((ventas) => {
+        const clienteAsociadoVenta = ventas.some((venta) => venta.idCliente === clienteId);
+  
+        if (clienteAsociadoVenta) {
           Swal.fire({
             icon: "error",
             title: "Cliente relacionado con una venta",
             text: "Este cliente no se puede eliminar porque está relacionado con una venta.",
           });
         } else {
-          // Si no hay ventas relacionadas, proceder con la eliminación del cliente
-          confirmDelete(id);
+          confirmDelete(clienteId);
         }
       })
       .catch((error) => {
-        console.error(
-          "Error al verificar las ventas relacionadas con el cliente:",
-          error
-        );
+        console.error("Error al verificar las ventas relacionadas con el cliente:", error);
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -101,8 +85,7 @@ const Clientes = () => {
       });
   };
 
-  const confirmDelete = (id) => {
-    // Mostrar la confirmación de eliminación solo si no hay ventas relacionadas con el cliente
+  const confirmDelete = (clienteId) => {
     Swal.fire({
       title: "¿Estás seguro?",
       text: "No podrás deshacer esta acción",
@@ -114,31 +97,23 @@ const Clientes = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Si se confirma la eliminación, realizar la solicitud de eliminación del cliente
-        deleteCliente(id);
+        deleteCliente(clienteId);
       }
     });
   };
 
-  const deleteCliente = (id) => {
-    fetch(`http://localhost:8080/api/clientes/${id}`, {
+  const deleteCliente = (clienteId) => {
+    fetch(`http://localhost:8080/api/clientes/${clienteId}`, {
       method: "DELETE",
     })
       .then((response) => {
         if (response.ok) {
-          // Si la eliminación es exitosa, actualizar la lista de clientes
-          const updatedClientes = clientes.filter(
-            (cliente) => cliente._id !== id
-          );
+          const updatedClientes = clientes.filter((cliente) => cliente._id !== clienteId);
           setClientes(updatedClientes);
           Swal.fire("¡Eliminado!", "El cliente ha sido eliminado", "success");
         } else {
           console.error("Error al eliminar el cliente:", response.statusText);
-          Swal.fire(
-            "Error",
-            "Hubo un problema al eliminar el cliente",
-            "error"
-          );
+          Swal.fire("Error", "Hubo un problema al eliminar el cliente", "error");
         }
       })
       .catch((error) => {
@@ -149,9 +124,9 @@ const Clientes = () => {
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 ml-5 md:ml-0 ">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 ml-5 md:ml-0">
         <div className="w-full">
-          <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100 ">
+          <h1 className="text-2xl font-bold mb-4 pt-4 text-texto-100">
             Listado de clientes
           </h1>
         </div>
@@ -165,7 +140,7 @@ const Clientes = () => {
               onChange={handleSearch}
             />
           </div>
-          
+
           <div className="">
             <Link to="/clientes/registrar-cliente">
               <button className="w-full px-4 py-2 rounded-lg bg-primary text-white hover:bg-opacity-[80%] transition-colors font-bold">
@@ -183,15 +158,14 @@ const Clientes = () => {
           className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
         >
           <option value="activo">Activo</option>
-          <option value="inactivo">Inactivo</option>  
-          
+          <option value="inactivo">Inactivo</option>
         </select>
       </div>
       <div className="overflow-x-auto rounded-lg">
         {currentItems.length > 0 ? (
           <table className="min-w-full divide-y divide-gray-500 rounded-lg">
             <thead className="bg-secondary-900 rounded-lg">
-              <tr className="">
+              <tr>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-texto-100 uppercase tracking-wider"
@@ -316,4 +290,3 @@ const Clientes = () => {
 };
 
 export default Clientes;
-
