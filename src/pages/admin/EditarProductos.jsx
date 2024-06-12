@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
 
+// Icons
+import { MdCategory } from "react-icons/md";
+import { TbCoinFilled } from "react-icons/tb";
+import { BsBagFill } from "react-icons/bs";
+import { FaProductHunt, FaDonate, FaInfoCircle } from "react-icons/fa";
+
 const EditarProducto = () => {
   const [producto, setProducto] = useState({
     nombre: "",
@@ -109,44 +115,53 @@ const EditarProducto = () => {
           <div className="w-full flex flex-col md:flex-row gap-12 mb-10">
             <div className="w-full">
               <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del producto</label>
+              <div className="relative w-full">
+              <BsBagFill className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <input
                 type="text"
                 placeholder="Nombre del producto"
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
+                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
                 name="nombre"
                 value={producto.nombre}
                 onChange={handleChange}
               />
+              </div>
+              
             </div>
             
             <div className="w-full">
               <label htmlFor="idCategoria" className="text-texto-100 mb-2 block">Categoría</label>
+              <div className="relative w-full">
+               <MdCategory  className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <select
                 name="idCategoria"
                 value={producto.idCategoria}
                 onChange={handleChange}
-                className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
-              >
+                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 md:w-full"
+                >
                 <option value="">Seleccionar categoría</option>
                 {categorias.map((categoria) => (
                   <option key={categoria._id} value={categoria._id}>{categoria.nombre}</option>
                 ))}
               </select>
+              </div>
             </div>
           </div>
           <div className="w-full flex flex-col md:flex-row gap-12 mb-10">
           <div className="w-full">
-              <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descri
-              pción</label>
+              <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descripción</label>
+              <div className="relative">
+                  <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
               <textarea
                 placeholder="Descripción"
                 name="descripcion"
                 value={producto.descripcion}
                 onChange={handleChange}
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 md:w-[101%] resize-none bg-secondary-900"
+                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full resize-none"
                 rows={1}
                 style={{ minHeight: "10px" }}
               />
+            </div>
             </div>
             <div className="w-full">
               <label htmlFor="estado" className="text-texto-100 mb-2 block">Estado</label>
