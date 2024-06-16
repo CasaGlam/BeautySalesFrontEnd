@@ -141,8 +141,9 @@ const Categorias = () => {
           value={estadoFiltrado}
           onChange={(e) => setEstadoFiltrado(e.target.value)}
         >
-          <option value="Activo">Activo</option>
-          <option value="Inactivo">Inactivo</option>
+          <option value="Activo">Activas</option>
+          <option value="Inactivo">Inactivas</option>
+          <option value="">Todas</option>
         </select>
       </div>
       {filteredCategorias.length === 0 ? (

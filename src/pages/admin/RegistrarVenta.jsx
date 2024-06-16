@@ -9,7 +9,6 @@ const RegistrarVenta = () => {
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState('');
-  const [numeroVenta, setNumeroVenta] = useState('');
   const [fecha, setFecha] = useState('');
   const [totalVenta, setTotalVenta] = useState(0); 
   const [showModal, setShowModal] = useState(false); 
@@ -25,13 +24,15 @@ const RegistrarVenta = () => {
       .then(response => response.json())
       .then(data => {
         if (Array.isArray(data.clientes)) {
-          setClientes(data.clientes);
+          const clientesActivos = data.clientes.filter(cliente => cliente.estado === true);
+          setClientes(clientesActivos);
         } else {
           console.error('La respuesta de la API de clientes no es un array:', data);
         }
       })
       .catch(error => console.error('Error al obtener clientes:', error));
   }, []);
+  
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
@@ -138,17 +139,16 @@ const RegistrarVenta = () => {
     const nuevosProductos = productosEncontrados.filter(item => item.nombre !== producto.nombre);
     setProductosEncontrados(nuevosProductos);
   };
-
   const guardarVentaApi = () => {
-    if (!numeroVenta || !clienteSeleccionado) {
+    if ( !clienteSeleccionado) {
       Swal.fire(
         'Campos incompletos',
-        'Debe ingresar el número de venta y seleccionar un cliente.',
+        ' debe seleccionar un cliente.',
         'warning'
       );
       return;
     }
-
+  
     if (productosEncontrados.length === 0) {
       Swal.fire(
         'Sin productos',
@@ -157,81 +157,121 @@ const RegistrarVenta = () => {
       );
       return;
     }
-
-    const total = productosEncontrados.reduce((acc, producto) => acc + producto.total, 0);
-
-    const venta = {
-      numeroVenta: numeroVenta,
-      fecha: new Date().toISOString().slice(0, 10),
-      idCliente: clienteSeleccionado,
-      detallesVenta: productosEncontrados,
-      total: total, 
-      descripcionEstado: "Porqué cambias de estado?" 
-    };
-
-    Swal.fire({
-      title: '¿Está seguro de realizar la venta?',
-      text: `El total de la venta será: $${total}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, realizar venta',
-      cancelButtonText: 'No, cancelar',
-      reverseButtons: true
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch('http://localhost:8080/api/ventas', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(venta)
-        })
-          .then(response => {
-            if (response.ok) {
-              return response.json();
-            }
-            throw new Error('Error al guardar la venta');
-          })
-          .then(data => {
-            console.log('Venta guardada correctamente:', data);
-
-            for (let producto of productosEncontrados) {
-              fetch(`http://localhost:8080/api/productos/${producto.idProducto}`, {
-                method: 'PATCH',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ cantidadVendida: producto.cantidad })
-              })
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error('Error al actualizar la cantidad de productos');
-                  }
-                })
-                .catch(error => console.error('Error al actualizar la cantidad de productos:', error));
-            }
-
-            Swal.fire
-            (
-              'Venta Guardada',
-              'La venta ha sido guardada correctamente.',
-              'success'
-            ).then(() => {
-              setProductosEncontrados([]);
-              setTotalVenta(0); 
-            });
-          })
-          .catch(error => {
-            console.error('Error al guardar la venta:', error);
+  
+    // Verificar disponibilidad de stock
+    const verificarStock = async () => {
+      try {
+        for (let producto of productosEncontrados) {
+          const response = await fetch(`http://localhost:8080/api/productos/${producto.idProducto}`);
+          if (!response.ok) {
+            throw new Error('Error al obtener el producto');
+          }
+          const data = await response.json();
+          const stockDisponible = data.producto.cantidad;
+  
+          if (producto.cantidad > stockDisponible) {
+            // Mostrar alerta de falta de stock
             Swal.fire(
-              'Error',
-              'Hubo un problema al guardar la venta.',
+              'No hay stock disponible',
+              `No hay suficiente stock para el producto: ${producto.nombre}`,
               'error'
             );
-          });
+            return false; // Terminar la función ya que no hay stock suficiente
+          }
+        }
+        return true; // Si hay suficiente stock para todos los productos
+      } catch (error) {
+        console.error('Error al verificar stock:', error);
+        Swal.fire(
+          'Error',
+          'Hubo un problema al verificar el stock.',
+          'error'
+        );
+        return false;
+      }
+    };
+  
+    // Llamar a la función para verificar el stock
+    verificarStock().then(stockSuficiente => {
+      if (stockSuficiente) {
+        const total = productosEncontrados.reduce((acc, producto) => acc + producto.total, 0);
+  
+        const venta = {
+          
+          fecha: new Date().toISOString().slice(0, 10),
+          idCliente: clienteSeleccionado,
+          detallesVenta: productosEncontrados,
+          total: total,
+          descripcionEstado: "Porqué cambias de estado?"
+        };
+  
+        Swal.fire({
+          title: '¿Está seguro de realizar la venta?',
+          text: `El total de la venta será: $${total}`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, realizar venta',
+          cancelButtonText: 'No, cancelar',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Aquí realizar la solicitud para guardar la venta
+            fetch('http://localhost:8080/api/ventas', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(venta)
+            })
+              .then(response => {
+                if (response.ok) {
+                  return response.json();
+                }
+                throw new Error('Error al guardar la venta');
+              })
+              .then(data => {
+                console.log('Venta guardada correctamente:', data);
+  
+                // Actualizar la cantidad vendida de cada producto en el stock
+                for (let producto of productosEncontrados) {
+                  fetch(`http://localhost:8080/api/productos/${producto.idProducto}`, {
+                    method: 'PATCH',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ cantidadVendida: producto.cantidad })
+                  })
+                    .then(response => {
+                      if (!response.ok) {
+                        throw new Error('Error al actualizar la cantidad de productos');
+                      }
+                    })
+                    .catch(error => console.error('Error al actualizar la cantidad de productos:', error));
+                }
+  
+                Swal.fire(
+                  'Venta Guardada',
+                  'La venta ha sido guardada correctamente.',
+                  'success'
+                ).then(() => {
+                  setProductosEncontrados([]);
+                  setTotalVenta(0);
+                });
+              })
+              .catch(error => {
+                console.error('Error al guardar la venta:', error);
+                Swal.fire(
+                  'Error',
+                  'Hubo un problema al guardar la venta.',
+                  'error'
+                );
+              });
+          }
+        });
       }
     });
   };
+  
 
   const cancelarVenta = () => {
     Swal.fire({
@@ -281,25 +321,20 @@ const RegistrarVenta = () => {
             value={fecha}
             readOnly
           />
-          <input
-            type="text"
-            placeholder="Número de venta"
-            className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-texto-100 mr-2"
-            value={numeroVenta}
-            onChange={(e) => setNumeroVenta(e.target.value)}
-          />
+         
           </div>
           <div>
           <select
-            value={clienteSeleccionado}
-            onChange={(e) => setClienteSeleccionado(e.target.value)}
-            className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-texto-100 mr-2"
-          >
-            <option value="" className=''>Cliente</option>
-            {clientes.map(cliente => (
-              <option key={cliente._id} value={cliente._id}>{cliente.nombre}</option>
-            ))}
-          </select>
+  value={clienteSeleccionado}
+  onChange={(e) => setClienteSeleccionado(e.target.value)}
+  className="border border-gray-300 rounded-md w-32 px-3 py-2 mt-1 mb-2 bg-gray-200 text-texto-100 mr-2"
+>
+  <option value="" className=''>Cliente</option>
+  {clientes.map(cliente => (
+    <option key={cliente._id} value={cliente._id}>{cliente.nombre}</option>
+  ))}
+</select>
+
           <button onClick={handleShowModal} className="px-3 py-2 bg-gray-800 text-texto-900 rounded-full hover:bg-gray-700 focus:outline-none">
             <FaPlus />
           </button>

@@ -3,7 +3,6 @@ import Swal from 'sweetalert2';
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 
 const Compras = () => {
-  const [numeroCompra, setNumeroCompra] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [fecha, setFecha] = useState('');
   const [totalCompra, setTotalCompra] = useState(0);
@@ -15,28 +14,34 @@ const Compras = () => {
   const [proveedores, setProveedores] = useState([]);
   const [fechaRegistro, setFechaRegistro] = useState('');
   const [descripcionEstado, setDescripcionEstado] = useState('Porque cambias el estado?');
-
+ 
+  
   useEffect(() => {
     const currentDate = new Date().toISOString().split('T')[0];
     setFecha(currentDate);
     setFechaRegistro(currentDate);
-
+  
     fetch('http://localhost:8080/api/productos')
       .then(response => response.json())
       .then(data => {
         setProductos(data.productos);
       })
       .catch(error => console.error('Error fetching productos:', error));
-
+  
     fetch('http://localhost:8080/api/proveedores')
       .then(response => response.json())
       .then(data => {
-        setProveedores(data.proveedores);
-        setProveedor(data.proveedores[0].nombre);
-        setProveedorId(data.proveedores[0]._id);
+        const proveedoresActivos = data.proveedores.filter(proveedor => proveedor.estado === true);
+        setProveedores(proveedoresActivos);
+        if (proveedoresActivos.length > 0) {
+          setProveedor(proveedoresActivos[0].nombre);
+          setProveedorId(proveedoresActivos[0]._id);
+        }
       })
       .catch(error => console.error('Error fetching proveedores:', error));
   }, []);
+  
+  
 
   useEffect(() => {
     const currentDate = new Date().toISOString().split('T')[0];
@@ -91,14 +96,14 @@ const Compras = () => {
   const calcularTotalCompra = (productosSeleccionados) => {
     let total = 0;
     productosSeleccionados.forEach(producto => {
-      total += producto.precio * producto.cantidad;
+      total += producto.precioCompra * producto.cantidad;
     });
     setTotalCompra(total);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!numeroCompra || !descripcion || !fecha || !proveedorId || productosSeleccionados.length === 0) {
+    if (!descripcion || !fecha || !proveedorId || productosSeleccionados.length === 0) {
       Swal.fire(
         'Campos incompletos',
         'Por favor, complete todos los campos obligatorios.',
@@ -126,7 +131,6 @@ const Compras = () => {
         }));
 
         const compra = {
-          numeroCompra,
           descripcion,
           fecha,
           estado: true,
@@ -135,7 +139,7 @@ const Compras = () => {
           detallesCompra,
           descripcionEstado
         };
-//uwu
+
         try {
           const response = await fetch('http://localhost:8080/api/compras', {
             method: 'POST',
@@ -177,6 +181,7 @@ const Compras = () => {
       }
     });
   };
+
 
   const handleCancel = () => {
     Swal.fire({
@@ -284,7 +289,7 @@ const Compras = () => {
                     </button>
                   </div>
                   <span className="font-medium truncate text-texto-100 w-[20%]">{producto.nombre}</span>
-                  <span className="font-medium truncate text-texto-100 w-[20%]">{producto.precio}</span>
+                
                   <FaTrash
                     className="cursor-pointer text-red-500 hover:text-red-700"
                     onClick={() => eliminarProductoSeleccionado(producto._id)}
@@ -371,17 +376,7 @@ const Compras = () => {
           )}
           <form onSubmit={handleSubmit}>
             <div className="flex justify-around">
-            <div className="mb-4 w-full flex flex-col justify-center items-center">
-              <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="numeroCompra">Número de Compra</label>
-              <input
-                id="numeroCompra"
-                className="appearance-none bg-gray-200 border rounded w-[70%]   py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                placeholder="Número de compra"
-                value={numeroCompra}
-                onChange={(e) => setNumeroCompra(e.target.value)}
-              />
-            </div>
+           
             <div className="mb-4 w-full flex flex-col justify-center items-center">
               <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
               <input
@@ -396,22 +391,24 @@ const Compras = () => {
             </div>
             <div className='flex justify-around'>
             <div className="mb-4 w-full flex flex-col justify-center items-center">
-              <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
-              <select
-                id="proveedor"
-                className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                value={proveedorId}
-                onChange={(e) => {
-                  const selectedProveedor = proveedores.find(proveedor => proveedor._id === e.target.value);
-                  setProveedor(selectedProveedor.nombre);
-                  setProveedorId(selectedProveedor._id);
-                }}
-              >
-                {proveedores.map((proveedor, index) => (
-                  <option key={index} value={proveedor._id}>{proveedor.nombre}</option>
-                ))}
-              </select>
-            </div >
+  <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="proveedor">Proveedor</label>
+  <select
+    id="proveedor"
+    className="appearance-none bg-gray-200 border rounded w-[70%] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    value={proveedorId}
+    onChange={(e) => {
+      const selectedProveedor = proveedores.find(proveedor => proveedor._id === e.target.value);
+      setProveedor(selectedProveedor.nombre);
+      setProveedorId(selectedProveedor._id);
+    }}
+  >
+    {proveedores.map((proveedor, index) => (
+      <option key={index} value={proveedor._id}>{proveedor.nombre}</option>
+    ))}
+  </select>
+</div>
+
+
             <div className="mb-4 w-full flex flex-col justify-center items-center">
               <label className="block text-texto-100 text-sm font-bold mb-2">Total de la compra</label>
               <span className="bg-gray-200 border w-[70%] border-gray-300 rounded-md px-4 py-2 text-black font-semibold">{totalCompra}</span>

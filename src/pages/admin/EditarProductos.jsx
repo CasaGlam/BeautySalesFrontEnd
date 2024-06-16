@@ -13,8 +13,9 @@ const EditarProducto = () => {
     nombre: "",
     descripcion: "",
     idCategoria: "",
-    estado: false
+    estado: null  // Puedes inicializarlo como null si es opcional
   });
+  
   const [categorias, setCategorias] = useState([]);
   const { objectId } = useParams();
 
@@ -31,11 +32,18 @@ const EditarProducto = () => {
         const dataProducto = await responseProducto.json();
         const dataCategorias = await responseCategorias.json();
         
-        console.log("Datos del producto:", dataProducto); // Agregar log aquí
-        console.log("Datos de categorías:", dataCategorias); // Agregar log aquí
+        console.log("Datos del producto:", dataProducto);
+        console.log("Datos de categorías:", dataCategorias);
         
-        setProducto(dataProducto); // Establecer datos del producto
-        setCategorias(dataCategorias.categorias.filter(categoria => categoria.estado)); // Filtrar solo las categorías activas
+        // Actualizar estado del producto con los datos recibidos
+        setProducto({
+          nombre: dataProducto.nombre,
+          descripcion: dataProducto.descripcion,
+          idCategoria: dataProducto.idCategoria,
+          estado: dataProducto.estado  // Asegúrate de manejar correctamente el tipo de dato
+        });
+        
+        setCategorias(dataCategorias.categorias.filter(categoria => categoria.estado));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -43,6 +51,9 @@ const EditarProducto = () => {
   
     fetchProducto();
   }, [objectId]);
+  
+  
+  
   
 
   const handleChange = (e) => {
@@ -54,6 +65,7 @@ const EditarProducto = () => {
   };
   
   
+  
 
   const handleActualizarProducto = () => {
     // Verificar que ningún campo esté vacío
@@ -61,7 +73,7 @@ const EditarProducto = () => {
       producto.nombre.trim() === "" ||
       producto.descripcion.trim() === "" ||
       producto.idCategoria.trim() === "" ||
-      producto.estado === ""
+      producto.estado === null  // Ajusta según el tipo de dato esperado
     ) {
       Swal.fire({
         icon: 'error',
@@ -71,7 +83,7 @@ const EditarProducto = () => {
       });
       return;
     }
-
+  
     // Realizar la solicitud PUT para actualizar el producto
     fetch(`http://localhost:8080/api/productos/${objectId}`, {
       method: "PUT",
@@ -82,19 +94,23 @@ const EditarProducto = () => {
     })
     .then(response => {
       if (response.ok) {
-        Swal.fire({
-          icon: 'success',
-          title: '¡Producto actualizado!',
-          showConfirmButton: false,
-          timer: 1500
-        }).then(() => {
-          // Redireccionar al usuario a la ruta /productos
-          window.location.href = '/productos';
-          // Realizar otras acciones necesarias en caso de éxito
-        });
+        return response.json(); // Devuelve el JSON de respuesta para manejarlo más abajo
       } else {
         throw new Error("Error al actualizar producto");
       }
+    })
+    .then(data => {
+      // Manejar la respuesta JSON
+      Swal.fire({
+        icon: 'success',
+        title: '¡Producto actualizado!',
+        showConfirmButton: false,
+        timer: 1500
+      }).then(() => {
+        // Redireccionar al usuario a la ruta /productos
+        window.location.href = '/productos';
+        // Realizar otras acciones necesarias en caso de éxito
+      });
     })
     .catch(error => {
       console.error("Error:", error);
@@ -106,6 +122,7 @@ const EditarProducto = () => {
       });
     });
   };
+  
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
@@ -116,52 +133,50 @@ const EditarProducto = () => {
             <div className="w-full">
               <label htmlFor="nombre" className="text-texto-100 mb-2 block">Nombre del producto</label>
               <div className="relative w-full">
-              <BsBagFill className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-              <input
-                type="text"
-                placeholder="Nombre del producto"
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
-                name="nombre"
-                value={producto.nombre}
-                onChange={handleChange}
-              />
+                <BsBagFill className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <input
+                  type="text"
+                  placeholder="Nombre del producto"
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full"
+                  name="nombre"
+                  value={producto.nombre}
+                  onChange={handleChange}
+                />
               </div>
-              
             </div>
-            
             <div className="w-full">
               <label htmlFor="idCategoria" className="text-texto-100 mb-2 block">Categoría</label>
               <div className="relative w-full">
-               <MdCategory  className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-              <select
-                name="idCategoria"
-                value={producto.idCategoria}
-                onChange={handleChange}
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 md:w-full"
+                <MdCategory className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <select
+                  name="idCategoria"
+                  value={producto.idCategoria}
+                  onChange={handleChange}
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 md:w-full"
                 >
-                <option value="">Seleccionar categoría</option>
-                {categorias.map((categoria) => (
-                  <option key={categoria._id} value={categoria._id}>{categoria.nombre}</option>
-                ))}
-              </select>
+                  <option value="">Seleccionar categoría</option>
+                  {categorias.map((categoria) => (
+                    <option key={categoria._id} value={categoria._id}>{categoria.nombre}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
           <div className="w-full flex flex-col md:flex-row gap-12 mb-10">
-          <div className="w-full">
+            <div className="w-full">
               <label htmlFor="descripcion" className="text-texto-100 mb-2 block">Descripción</label>
               <div className="relative">
-                  <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
-              <textarea
-                placeholder="Descripción"
-                name="descripcion"
-                value={producto.descripcion}
-                onChange={handleChange}
-                className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full resize-none"
-                rows={1}
-                style={{ minHeight: "10px" }}
-              />
-            </div>
+                <FaInfoCircle className="absolute top-1/2 -translate-y-1/2 left-2 text-black" />
+                <textarea
+                  placeholder="Descripción"
+                  name="descripcion"
+                  value={producto.descripcion}
+                  onChange={handleChange}
+                  className="text-black px-2 py-3 rounded-lg pl-8 pr-8 md:pl-8 md:pr-12 bg-secondary-900 w-full resize-none"
+                  rows={1}
+                  style={{ minHeight: "10px" }}
+                />
+              </div>
             </div>
             <div className="w-full">
               <label htmlFor="estado" className="text-texto-100 mb-2 block">Estado</label>
@@ -172,8 +187,8 @@ const EditarProducto = () => {
                 className="text-black px-4 py-3 rounded-lg bg-secondary-900 md:w-[101%]"
               >
                 <option value="">Seleccionar estado</option>
-                <option value={true}>Activo</option>
-                <option value={false}>Inactivo</option>
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
               </select>
             </div>
           </div>
@@ -194,6 +209,8 @@ const EditarProducto = () => {
       </div>
     </div>
   );
+  
+  
 };
 
 export default EditarProducto;

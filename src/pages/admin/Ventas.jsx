@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { FaSearch, FaAngleDown, FaAngleUp, FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 
 // Icons
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
@@ -73,6 +76,41 @@ const Ventas = () => {
     setDescripcion(venta.descripcionEstado || "");
     setMostrarModal(true);
   };
+  const handleDescargarReporte = () => {
+    // Preparar los datos para el archivo Excel
+    const ventasData = filteredVentas.map(venta => ({
+      'Número de Venta': venta.numeroVenta,
+      'Fecha': new Date(venta.fecha).toLocaleDateString(),
+      'Estado': venta.estado ? 'Activa' : 'Inactiva',
+      'Cliente': getClienteName(venta.idCliente),
+      'Total': getTotalVentaTabla(venta)
+    }));
+  
+    // Calcular el total de todos los totales
+    const totalGeneral = ventasData.reduce((total, venta) => total + venta['Total'], 0);
+  
+    // Añadir una fila para el total general al final de los datos
+    ventasData.push({
+      'Número de Venta': '',
+      'Fecha': '',
+      'Estado': '',
+      'Cliente': 'Total General:',
+      'Total': totalGeneral
+    });
+  
+    const worksheet = XLSX.utils.json_to_sheet(ventasData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Ventas');
+  
+    // Generar el archivo Excel y descargar
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const excelBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+    saveAs(excelBlob, 'reporte_ventas.xlsx');
+  };
+  
+  
+
+
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
@@ -215,18 +253,23 @@ const Ventas = () => {
           value={estadoFiltrado}
           onChange={(e) => setEstadoFiltrado(e.target.value)}
         >
-          <option value="Activa">Activo</option>
-          <option value="Inactiva">Inactivo</option>
+          <option value="Activa">Activas</option>
+          <option value="Inactiva">Inactivas</option>
+          <option value="">Todas</option>
         </select>
       </div>
       <div>
-        <button className="bg-green-400 px-4 py-2 rounded-xl flex gap-2 justify-center items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
-<path fill="#169154" d="M29,6H15.744C14.781,6,14,6.781,14,7.744v7.259h15V6z"></path><path fill="#18482a" d="M14,33.054v7.202C14,41.219,14.781,42,15.743,42H29v-8.946H14z"></path><path fill="#0c8045" d="M14 15.003H29V24.005000000000003H14z"></path><path fill="#17472a" d="M14 24.005H29V33.055H14z"></path><g><path fill="#29c27f" d="M42.256,6H29v9.003h15V7.744C44,6.781,43.219,6,42.256,6z"></path><path fill="#27663f" d="M29,33.054V42h13.257C43.219,42,44,41.219,44,40.257v-7.202H29z"></path><path fill="#19ac65" d="M29 15.003H44V24.005000000000003H29z"></path><path fill="#129652" d="M29 24.005H44V33.055H29z"></path></g><path fill="#0c7238" d="M22.319,34H5.681C4.753,34,4,33.247,4,32.319V15.681C4,14.753,4.753,14,5.681,14h16.638 C23.247,14,24,14.753,24,15.681v16.638C24,33.247,23.247,34,22.319,34z"></path><path fill="#fff" d="M9.807 19L12.193 19 14.129 22.754 16.175 19 18.404 19 15.333 24 18.474 29 16.123 29 14.013 25.07 11.912 29 9.526 29 12.719 23.982z"></path>
+  <button
+    onClick={handleDescargarReporte}
+    className="bg-green-400 px-4 py-2 rounded-xl flex gap-2 justify-center items-center"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="35" height="35" viewBox="0 0 48 48">
+<rect width="16" height="9" x="28" y="15" fill="#21a366"></rect><path fill="#185c37" d="M44,24H12v16c0,1.105,0.895,2,2,2h28c1.105,0,2-0.895,2-2V24z"></path><rect width="16" height="9" x="28" y="24" fill="#107c42"></rect><rect width="16" height="9" x="12" y="15" fill="#3fa071"></rect><path fill="#33c481" d="M42,6H28v9h16V8C44,6.895,43.105,6,42,6z"></path><path fill="#21a366" d="M14,6h14v9H12V8C12,6.895,12.895,6,14,6z"></path><path d="M22.319,13H12v24h10.319C24.352,37,26,35.352,26,33.319V16.681C26,14.648,24.352,13,22.319,13z" opacity=".05"></path><path d="M22.213,36H12V13.333h10.213c1.724,0,3.121,1.397,3.121,3.121v16.425	C25.333,34.603,23.936,36,22.213,36z" opacity=".07"></path><path d="M22.106,35H12V13.667h10.106c1.414,0,2.56,1.146,2.56,2.56V32.44C24.667,33.854,23.52,35,22.106,35z" opacity=".09"></path><linearGradient id="flEJnwg7q~uKUdkX0KCyBa_UECmBSgBOvPT_gr1" x1="4.725" x2="23.055" y1="14.725" y2="33.055" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#18884f"></stop><stop offset="1" stop-color="#0b6731"></stop></linearGradient><path fill="url(#flEJnwg7q~uKUdkX0KCyBa_UECmBSgBOvPT_gr1)" d="M22,34H6c-1.105,0-2-0.895-2-2V16c0-1.105,0.895-2,2-2h16c1.105,0,2,0.895,2,2v16	C24,33.105,23.105,34,22,34z"></path><path fill="#fff" d="M9.807,19h2.386l1.936,3.754L16.175,19h2.229l-3.071,5l3.141,5h-2.351l-2.11-3.93L11.912,29H9.526	l3.193-5.018L9.807,19z"></path>
 </svg>
-          <span className="text-white font-bold">Descargar reporte</span>
-        </button>
-      </div>
+    <span className="text-white font-bold">Descargar reporte</span>
+  </button>
+</div>
+
       </div>
 
       {filteredVentas.length === 0 ? (
@@ -447,6 +490,7 @@ const Ventas = () => {
                   >
                     <option value="true">Activa</option>
                     <option value="false">Inactiva</option>
+                    
                   </select>
                 </div>
                 <div className="p-6">
