@@ -204,14 +204,21 @@ const Ventas = () => {
 
   const filteredVentas = ventas.filter((venta) => {
     const totalVenta = getTotalVentaTabla(venta).toString().toLowerCase();
+    const estadoFiltradoMatches =
+      estadoFiltrado === "" || // Si el filtro está vacío, coincidimos con todas las ventas
+      (estadoFiltrado === "Activa" && venta.estado) || // Coincidimos con ventas activas
+      (estadoFiltrado === "Inactiva" && !venta.estado); // Coincidimos con ventas inactivas
+  
     return (
-      venta.numeroVenta.toString().toLowerCase().includes(searchTerm) ||
-      new Date(venta.fecha).toLocaleDateString().toLowerCase().includes(searchTerm) ||
-      (venta.estado ? "activa" : "inactiva").toLowerCase().includes(searchTerm) ||
-      getClienteName(venta.idCliente).toLowerCase().includes(searchTerm) ||
-      totalVenta.includes(searchTerm)  // Aquí se filtra por el campo total
+      estadoFiltradoMatches && // Añadimos esta condición al filtrado
+      (venta.numeroVenta.toString().toLowerCase().includes(searchTerm) ||
+        new Date(venta.fecha).toLocaleDateString().toLowerCase().includes(searchTerm) ||
+        (venta.estado ? "activa" : "inactiva").toLowerCase().includes(searchTerm) ||
+        getClienteName(venta.idCliente).toLowerCase().includes(searchTerm) ||
+        totalVenta.includes(searchTerm)) // Aquí se filtra por el campo total
     );
   });
+  
   
   
 
@@ -254,16 +261,17 @@ const Ventas = () => {
       <div className="flex items-center gap-4 mb-6 ml-5 md:ml-0">
         <span className="text-texto-100">Filtrar por estado:</span>
         <select
-          name="estadoFiltrado"
-          id="estadoFiltrado"
-          className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
-          value={estadoFiltrado}
-          onChange={(e) => setEstadoFiltrado(e.target.value)}
-        >
-          <option value="Activa">Activas</option>
-          <option value="Inactiva">Inactivas</option>
-          <option value="">Todas</option>
-        </select>
+  name="estadoFiltrado"
+  id="estadoFiltrado"
+  className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
+  value={estadoFiltrado}
+  onChange={(e) => setEstadoFiltrado(e.target.value)}
+>
+  <option value="">Todas</option>
+  <option value="Activa">Activas</option>
+  <option value="Inactiva">Inactivas</option>
+</select>
+
       </div>
       <div>
   <button

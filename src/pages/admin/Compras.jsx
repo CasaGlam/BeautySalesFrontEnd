@@ -199,22 +199,27 @@ const Compras = () => {
   };
 
   const filteredCompras = compras.filter((compra) => {
-    if (
+    // Filtrar por estado
+    const estadoMatch =
+      filtroEstado === "" ||
+      (filtroEstado === "activas" && compra.estado) ||
+      (filtroEstado === "inactivas" && !compra.estado);
+  
+    // Filtrar por término de búsqueda
+    const searchTermMatch =
       compra.numeroCompra.toString().includes(searchTerm) ||
       compra.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
       new Date(compra.fechaRegistro).toISOString().slice(0, 10).includes(searchTerm) ||
       new Date(compra.fecha).toISOString().slice(0, 10).includes(searchTerm) ||
-      (compra.estado ? 'Activa' : 'Inactiva').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (compra.estado ? "Activa" : "Inactiva").toLowerCase().includes(searchTerm.toLowerCase()) ||
       getProveedorName(compra.idProveedor).toLowerCase().includes(searchTerm.toLowerCase()) ||
       compra.detallesCompra.some((detalle) =>
         getProductoName(detalle.idProducto).toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+      );
+  
+    return estadoMatch && searchTermMatch;
   });
+  
   
   
 
