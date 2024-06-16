@@ -78,6 +78,9 @@ const Compras = () => {
       .catch((error) => console.error("Error fetching productos:", error));
   };
 
+
+
+  
   const toggleModal = () => {
     setMostrarModal(!mostrarModal);
   };
@@ -86,6 +89,8 @@ const Compras = () => {
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Resetear a la primera página al buscar
   };
+  
+  
 
   const handleEstadoChange = (event) => {
     setNuevoEstadoCompra(event.target.value);
@@ -194,14 +199,24 @@ const Compras = () => {
   };
 
   const filteredCompras = compras.filter((compra) => {
-    if (filtroEstado === "activas") {
-      return compra.estado;
-    } else if (filtroEstado === "inactivas") {
-      return !compra.estado;
+    if (
+      compra.numeroCompra.toString().includes(searchTerm) ||
+      compra.descripcion.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      new Date(compra.fechaRegistro).toISOString().slice(0, 10).includes(searchTerm) ||
+      new Date(compra.fecha).toISOString().slice(0, 10).includes(searchTerm) ||
+      (compra.estado ? 'Activa' : 'Inactiva').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getProveedorName(compra.idProveedor).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      compra.detallesCompra.some((detalle) =>
+        getProductoName(detalle.idProducto).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    ) {
+      return true;
     } else {
-      return true; // Si no hay filtro seleccionado, mostrar todas las compras
+      return false;
     }
   });
+  
+  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -227,12 +242,13 @@ const Compras = () => {
         <div className="flex flex-col justify-end gap-4 w-full ml-5 md:ml-0 md:flex-row md:w-[60%]">
         <div className="md:w-[80%]">
         <input
-              className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900 "
-              type="search"
-              placeholder="Buscar"
-              value={searchTerm}
-              onChange={handleSearch}
-            />
+  className="w-full px-2 py-2 rounded-lg pl-4 placeholder-black text-black bg-secondary-900"
+  type="search"
+  placeholder="Buscar"
+  value={searchTerm}
+  onChange={handleSearch}
+/>
+
           </div>
           <div className="flex gap-4">
             <div>

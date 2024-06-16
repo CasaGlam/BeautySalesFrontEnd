@@ -89,12 +89,14 @@ const RegistrarVenta = () => {
   const buscarProducto = (e) => {
     const value = e.target.value;
     setInputValue(value);
-
+  
     fetch('http://localhost:8080/api/productos')
       .then(response => response.json())
       .then(data => {
-        const productos = data.productos.map(producto => producto.nombre);
-        const filteredSuggestions = productos.filter(
+        const productosActivos = data.productos.filter(producto => producto.estado === true);
+        const nombresProductosActivos = productosActivos.map(producto => producto.nombre);
+  
+        const filteredSuggestions = nombresProductosActivos.filter(
           producto =>
             producto.toLowerCase().indexOf(value.toLowerCase()) > -1
         );
@@ -102,6 +104,7 @@ const RegistrarVenta = () => {
       })
       .catch(error => console.error('Error al obtener productos:', error));
   };
+  
 
   const agregarProducto = (producto, cantidad) => {
     const productoExistente = productosEncontrados.find(item => item.nombre === producto);
@@ -308,6 +311,7 @@ const RegistrarVenta = () => {
     const total = productosEncontrados.reduce((acc, producto) => acc + producto.total, 0);
     setTotalVenta(total);
   }, [productosEncontrados]);
+  
 
   return (
     <div className="bg-secondary-100 w-full rounded-lg">
@@ -384,19 +388,22 @@ const RegistrarVenta = () => {
                         <FaMinus className='text-texto-900'/>
                       </button>
                       <input
-                        type="number"
-                        className="bg-gray-200 border border-gray-300 rounded-md w-16 px-3 py-1 text-black mx-2"
-                        value={producto.cantidad}
-                        onChange={(e) => {
-                          const newCantidad = parseInt(e.target.value);
-                          setProductosEncontrados(prevProductos => prevProductos.map((p, i) => {
-                            if (i === index) {
-                              return { ...p, cantidad: newCantidad };
-                            }
-                            return p;
-                          }));
-                        }}
-                      />
+  type="number"
+  className="bg-gray-200 border border-gray-300 rounded-md w-16 px-3 py-1 text-black mx-2"
+  value={producto.cantidad}
+  onChange={(e) => {
+    const newCantidad = parseInt(e.target.value);
+    const newTotal = newCantidad * producto.precio;
+    const nuevosProductos = productosEncontrados.map((p, i) => {
+      if (i === index) {
+        return { ...p, cantidad: newCantidad, total: newTotal };
+      }
+      return p;
+    });
+    setProductosEncontrados(nuevosProductos);
+  }}
+/>
+
                       <button
                         className="bg-primary text-texto-100 rounded-md p-1 text-xs  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         onClick={() => {

@@ -164,9 +164,10 @@ const Ventas = () => {
 
   const handleSearch = (event) => {
     const { value } = event.target;
-    setSearchTerm(value);
+    setSearchTerm(value.toLowerCase());
     setCurrentPage(1);
   };
+  
 
   const getClienteName = (idCliente) => {
     const cliente = clientes.find((cliente) => cliente._id === idCliente);
@@ -201,12 +202,18 @@ const Ventas = () => {
     );
   };
 
-  const filteredVentas = ventas.filter(
-    (venta) =>
-      venta.numeroVenta.toString().includes(searchTerm.toLowerCase()) &&
-      (estadoFiltrado === "" ||
-        (venta.estado ? "Activa" : "Inactiva") === estadoFiltrado)
-  );
+  const filteredVentas = ventas.filter((venta) => {
+    const totalVenta = getTotalVentaTabla(venta).toString().toLowerCase();
+    return (
+      venta.numeroVenta.toString().toLowerCase().includes(searchTerm) ||
+      new Date(venta.fecha).toLocaleDateString().toLowerCase().includes(searchTerm) ||
+      (venta.estado ? "activa" : "inactiva").toLowerCase().includes(searchTerm) ||
+      getClienteName(venta.idCliente).toLowerCase().includes(searchTerm) ||
+      totalVenta.includes(searchTerm)  // Aquí se filtra por el campo total
+    );
+  });
+  
+  
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

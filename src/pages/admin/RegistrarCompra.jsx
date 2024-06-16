@@ -24,7 +24,8 @@ const Compras = () => {
     fetch('http://localhost:8080/api/productos')
       .then(response => response.json())
       .then(data => {
-        setProductos(data.productos);
+        const productosActivos = data.productos.filter(producto => producto.estado === true);
+        setProductos(productosActivos);
       })
       .catch(error => console.error('Error fetching productos:', error));
   
@@ -269,14 +270,16 @@ const Compras = () => {
                       <FaMinus />
                     </button>
                     <input
-                      type="number"
-                      className="bg-gray-200 border border-gray-300 rounded-md w-16 px-2 py-1 text-black mx-2"
-                      value={producto.cantidad}
-                      onChange={(e) => {
-                        const newCantidad = parseInt(e.target.value);
-                        agregarProducto(producto._id, newCantidad - producto.cantidad);
-                      }}
-                    />
+  type="number"
+  className="bg-gray-200 border border-gray-300 rounded-md w-16 px-2 py-1 text-black mx-2"
+  value={producto.cantidad === 0 ? '' : producto.cantidad} // Si cantidad es 0, muestra cadena vacía para permitir entrada
+  onChange={(e) => {
+    const newCantidad = e.target.value === '' ? 0 : parseInt(e.target.value); // Si el valor es cadena vacía, establecer en 0
+    agregarProducto(producto._id, newCantidad - producto.cantidad);
+  }}
+/>
+
+
                     <button
                       className="bg-primary text-texto-900 rounded-md p-1 text-xs  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                       onClick={() => {
@@ -358,18 +361,19 @@ const Compras = () => {
               <label className="block text-texto-100 text-sm font-bold mb-2">Productos</label>
               <div className="overflow-y-scroll max-h-40">
                 <ul className="border border-gray-200 rounded-md divide-y divide-gray-200 ">
-                  {productosFiltrados.map((producto, index) => (
-                    <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
-                      <span className="font-medium truncate text-texto-100">{producto.nombre}</span>
-                      <button
-                        className="bg-primary text-texto-900 rounded-md p-2 text-xs focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                        onClick={() => agregarProducto(producto._id)}
-                        type="button"
-                      >
-                        <FaPlus/>
-                      </button>
-                    </li>
-                  ))}
+                {productosFiltrados.map((producto, index) => (
+  <li key={index} className="px-4 py-4 flex items-center justify-between text-sm">
+    <span className="font-medium truncate text-texto-100">{producto.nombre}</span>
+    <button
+      className="bg-primary text-texto-900 rounded-md p-2 text-xs focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+      onClick={() => agregarProducto(producto._id)}
+      type="button"
+    >
+      <FaPlus/>
+    </button>
+  </li>
+))}
+
                 </ul>
               </div>
             </div>

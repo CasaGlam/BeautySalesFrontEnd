@@ -32,12 +32,14 @@ const Categorias = () => {
     setCurrentPage(1); // Reiniciar a la primera página al buscar
   };
 
-  const filteredCategorias = categorias.filter(
-    (categoria) =>
-      categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (estadoFiltrado === "" ||
-        (categoria.estado ? "Activo" : "Inactivo") === estadoFiltrado)
-  );
+  const filteredCategorias = categorias.filter((categoria) => {
+    const nombreMatch = categoria.nombre.toLowerCase().includes(searchTerm.toLowerCase());
+    const descripcionMatch = categoria.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
+    const estadoMatch = (categoria.estado ? "Activo" : "Inactivo").toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return nombreMatch || descripcionMatch || estadoMatch;
+  });
+  
 
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
