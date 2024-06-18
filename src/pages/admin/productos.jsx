@@ -69,6 +69,7 @@ const Productos = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  
   const handleDelete = (id) => {
     Swal.fire({
       title: "¿Estás seguro?",
@@ -81,25 +82,30 @@ const Productos = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:8080/api/productos/${id}`)
+        // Primero verificamos si el producto está asociado a alguna venta
+        fetch(`http://localhost:8080/api/ventas`)
           .then((response) => response.json())
           .then((data) => {
-            if (data.compraAsociada || data.ventaAsociada) {
+            // Buscar si el producto está en algún detalle de venta
+            const asociadoAVenta = data.some((venta) =>
+              venta.detallesVenta.some((detalle) => detalle.idProducto === id)
+            );
+  
+            if (asociadoAVenta) {
               Swal.fire(
                 "Error",
-                "El producto está asociado a una compra o una venta y no puede ser eliminado.",
+                "El producto está asociado a una venta y no puede ser eliminado.",
                 "error"
               );
             } else {
+              // Si no está asociado a ninguna venta, procedemos con la eliminación
               fetch(`http://localhost:8080/api/productos/${id}`, {
                 method: "DELETE",
               })
                 .then((response) => response.json())
                 .then((data) => {
                   if (data.success) {
-                    setProductos(
-                      productos.filter((producto) => producto._id !== id)
-                    );
+                    setProductos(productos.filter((producto) => producto._id !== id));
                     Swal.fire(
                       "Eliminado",
                       "El producto ha sido eliminado.",
@@ -125,10 +131,10 @@ const Productos = () => {
             }
           })
           .catch((error) => {
-            console.error("Error obteniendo producto:", error);
+            console.error("Error obteniendo ventas:", error);
             Swal.fire(
               "Error",
-              "Hubo un problema al obtener el producto.",
+              "Hubo un problema al obtener las ventas.",
               "error"
             );
           });
