@@ -69,6 +69,7 @@ const Productos = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  
   const handleDelete = (id) => {
     Swal.fire({
       title: "¿Estás seguro?",
