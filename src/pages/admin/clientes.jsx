@@ -8,7 +8,7 @@ import { MdEdit } from "react-icons/md";
 const Clientes = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("activo");
+  const [filter, setFilter] = useState("todos"); // Estado seleccionado (activo, inactivo, todos)
   const [clientes, setClientes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +44,11 @@ const Clientes = () => {
   );
 
   const filteredAndFilteredClientes = filteredClientes.filter((cliente) =>
-    filter === "activo" ? cliente.estado : !cliente.estado
+    filter === "activo"
+      ? cliente.estado
+      : filter === "inactivo"
+      ? !cliente.estado
+      : true // Mostrar todos
   );
 
   const itemsPerPage = 10;
@@ -64,7 +68,7 @@ const Clientes = () => {
       })
       .then((ventas) => {
         const clienteAsociadoVenta = ventas.some((venta) => venta.idCliente === clienteId);
-  
+
         if (clienteAsociadoVenta) {
           Swal.fire({
             icon: "error",
@@ -80,7 +84,8 @@ const Clientes = () => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Hubo un problema al verificar las ventas relacionadas con el cliente. Por favor, inténtalo de nuevo más tarde.",
+          text:
+            "Hubo un problema al verificar las ventas relacionadas con el cliente. Por favor, inténtalo de nuevo más tarde.",
         });
       });
   };
@@ -157,6 +162,7 @@ const Clientes = () => {
           onChange={handleFilterChange}
           className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
         >
+          <option value="todos">Todos</option>
           <option value="activo">Activo</option>
           <option value="inactivo">Inactivo</option>
         </select>
