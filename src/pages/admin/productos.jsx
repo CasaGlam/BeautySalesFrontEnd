@@ -172,9 +172,10 @@ const Productos = () => {
               value={estadoFiltrado}
               onChange={(e) => setEstadoFiltrado(e.target.value)}
             >
+              <option value="">Todos</option>
               <option value="Activo">Activo</option>
               <option value="Inactivo">Inactivo</option>
-              <option value="">Todos</option>
+              
             </select>
           </div>
           {filteredProductos.length === 0 ? (

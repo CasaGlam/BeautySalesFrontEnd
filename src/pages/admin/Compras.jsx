@@ -277,9 +277,10 @@ const Compras = () => {
                 onChange={(event) => setFiltroEstado(event.target.value)}
                 className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
                 >
+                  <option value="">Todas</option>
                 <option value="activas">Activo</option>
                 <option value="inactivas">Inactivo</option>
-                <option value="">Todas</option>
+                
               </select>
             </div>
             <div>
