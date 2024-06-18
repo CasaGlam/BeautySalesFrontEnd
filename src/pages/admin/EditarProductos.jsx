@@ -4,16 +4,15 @@ import Swal from 'sweetalert2';
 
 // Icons
 import { MdCategory } from "react-icons/md";
-import { TbCoinFilled } from "react-icons/tb";
 import { BsBagFill } from "react-icons/bs";
-import { FaProductHunt, FaDonate, FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 
 const EditarProducto = () => {
   const [producto, setProducto] = useState({
     nombre: "",
     descripcion: "",
     idCategoria: "",
-    estado: null  // Puedes inicializarlo como null si es opcional
+    estado: ""
   });
   
   const [categorias, setCategorias] = useState([]);
@@ -32,15 +31,11 @@ const EditarProducto = () => {
         const dataProducto = await responseProducto.json();
         const dataCategorias = await responseCategorias.json();
         
-        console.log("Datos del producto:", dataProducto);
-        console.log("Datos de categorías:", dataCategorias);
-        
-        // Actualizar estado del producto con los datos recibidos
         setProducto({
-          nombre: dataProducto.nombre,
-          descripcion: dataProducto.descripcion,
-          idCategoria: dataProducto.idCategoria,
-          estado: dataProducto.estado  // Asegúrate de manejar correctamente el tipo de dato
+          nombre: dataProducto.producto.nombre || "",
+          descripcion: dataProducto.producto.descripcion || "",
+          idCategoria: dataProducto.producto.idCategoria || "",
+          estado: dataProducto.producto.estado ? "true" : "false"
         });
         
         setCategorias(dataCategorias.categorias.filter(categoria => categoria.estado));
@@ -51,10 +46,6 @@ const EditarProducto = () => {
   
     fetchProducto();
   }, [objectId]);
-  
-  
-  
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,17 +54,10 @@ const EditarProducto = () => {
       [name]: value
     }));
   };
-  
-  
-  
 
   const handleActualizarProducto = () => {
-    // Verificar que ningún campo esté vacío
     if (
-      producto.nombre.trim() === "" ||
-      producto.descripcion.trim() === "" ||
-      producto.idCategoria.trim() === "" ||
-      producto.estado === null  // Ajusta según el tipo de dato esperado
+      Object.values(producto).some(value => typeof value === 'string' && value.trim() === "")
     ) {
       Swal.fire({
         icon: 'error',
@@ -84,7 +68,6 @@ const EditarProducto = () => {
       return;
     }
   
-    // Realizar la solicitud PUT para actualizar el producto
     fetch(`http://localhost:8080/api/productos/${objectId}`, {
       method: "PUT",
       headers: {
@@ -94,23 +77,17 @@ const EditarProducto = () => {
     })
     .then(response => {
       if (response.ok) {
-        return response.json(); // Devuelve el JSON de respuesta para manejarlo más abajo
+        Swal.fire({
+          icon: 'success',
+          title: '¡Producto actualizado!',
+          showConfirmButton: false,
+          timer: 1500
+        }).then(() => {
+          window.location.href = '/productos';
+        });
       } else {
         throw new Error("Error al actualizar producto");
       }
-    })
-    .then(data => {
-      // Manejar la respuesta JSON
-      Swal.fire({
-        icon: 'success',
-        title: '¡Producto actualizado!',
-        showConfirmButton: false,
-        timer: 1500
-      }).then(() => {
-        // Redireccionar al usuario a la ruta /productos
-        window.location.href = '/productos';
-        // Realizar otras acciones necesarias en caso de éxito
-      });
     })
     .catch(error => {
       console.error("Error:", error);
@@ -122,7 +99,6 @@ const EditarProducto = () => {
       });
     });
   };
-  
 
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
@@ -209,8 +185,6 @@ const EditarProducto = () => {
       </div>
     </div>
   );
-  
-  
 };
 
 export default EditarProducto;

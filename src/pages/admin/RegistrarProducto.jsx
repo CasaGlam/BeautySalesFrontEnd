@@ -48,7 +48,7 @@ const RegistrarProducto = () => {
     e.preventDefault();
     
     // Validar que el nombre solo contenga letras y no esté vacío
-    const nombreValido = /^[A-Za-z\s]+$/.test(producto.nombre.trim());
+    const nombreValido = /^[A-Za-z\s1234567890áéíóúÁÉÍÓÚ]+$/.test(producto.nombre.trim());
     if (!nombreValido) {
       Swal.fire("¡Error!", "El nombre solo puede contener letras y espacios.", "error");
       return;

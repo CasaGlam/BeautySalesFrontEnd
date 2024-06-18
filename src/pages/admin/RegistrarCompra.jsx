@@ -384,13 +384,13 @@ const Compras = () => {
             <div className="mb-4 w-full flex flex-col justify-center items-center">
               <label className="block text-texto-100 text-sm font-bold mb-2" htmlFor="fecha">Fecha</label>
               <input
-                id="fecha"
-                type="date"
-                className="border w-[70%] rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                value={fecha}
-                onChange={(e) => setFecha(e.target.value)}
-              
-              />
+  id="fecha"
+  type="date"
+  className="border w-[70%] rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+  value={fecha}
+  onChange={(e) => setFecha(e.target.value)}
+  max={currentDate} // Establece el límite máximo a la fecha actual
+/>
             </div>
             </div>
             <div className='flex justify-around'>
