@@ -10,7 +10,7 @@ const Usuarios = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(10);
   const [usuariosFromApi, setUsuariosFromApi] = useState([]);
-  const [filter, setFilter] = useState("activo"); // Estado seleccionado (activo o inactivo)
+  const [filter, setFilter] = useState("todos"); // Cambiado a 'todos' por defecto
 
   useEffect(() => {
     fetch("http://localhost:8080/api/usuarios")
@@ -38,13 +38,22 @@ const Usuarios = () => {
     setCurrentPage(1);
   };
 
-  const filteredUsuarios = usuariosFromApi.filter(
-    (usuario) =>
-      (usuario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        usuario.rol.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (filter === "activo" ? usuario.estado : !usuario.estado)
-  );
+  const filteredUsuarios = usuariosFromApi.filter((usuario) => {
+    const matchesSearchTerm =
+      usuario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      usuario.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      usuario.rol.toLowerCase().includes(searchTerm.toLowerCase());
+
+    if (filter === "todos") {
+      return matchesSearchTerm;
+    } else if (filter === "activo") {
+      return matchesSearchTerm && usuario.estado;
+    } else if (filter === "inactivo") {
+      return matchesSearchTerm && !usuario.estado;
+    }
+
+    return false; // En caso de que no coincida con ninguno
+  });
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -56,14 +65,13 @@ const Usuarios = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleDeleteUser = (userId, userName) => {
-    // Verificar si el usuario es el "SUPER ADMINISTRADOR"
     if (userName === "SUPER ADMINISTRADOR") {
       Swal.fire(
         "Error!",
         "No se puede eliminar al SUPER ADMINISTRADOR.",
         "error"
       );
-      return; // Evitar que se continúe con la eliminación
+      return;
     }
 
     Swal.fire({
@@ -91,7 +99,6 @@ const Usuarios = () => {
               "El usuario se ha eliminado exitosamente.",
               "success"
             ).then(() => {
-              // Recargar la lista de usuarios después de la eliminación
               window.location.reload();
             });
           })
@@ -141,9 +148,9 @@ const Usuarios = () => {
           onChange={handleFilterChange}
           className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
         >
+          <option value="todos">Todos</option>
           <option value="activo">Activo</option>
           <option value="inactivo">Inactivo</option>
-          
         </select>
       </div>
 

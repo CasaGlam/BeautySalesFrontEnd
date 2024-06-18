@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { obtenerDatosDesdeToken } from "./functions/token";
 import getPermisosDesdeToken from "./functions/PermisosDesdeToken";
 
+import RedirectToPrevious from "./components/RedirectToPrevious";
+
 // Layouts
 import LayoutAdmin from "./layouts/LayoutAdmin";
 
@@ -46,7 +48,7 @@ function App() {
   useEffect(() => {
     // Llama a la función para obtener los datos del token
     const tokenData = obtenerDatosDesdeToken();
-    
+
     // Verifica si se obtuvieron los datos del token
     if (tokenData) {
       // Extrae el rol del tokenData
@@ -73,65 +75,114 @@ function App() {
         <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
         <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
         <Route path="/" element={<LayoutAdmin />}>
-          {permisos.includes("dashboard") && <Route index element={<Dashboard />} />}
+          {permisos.includes("dashboard") && (
+            <Route index element={<Dashboard />} />
+          )}
           {permisos.includes("productos") && (
             <>
               <Route path="/productos" element={<Productos />} />
-              <Route path="/productos/registrar-producto" element={<RegistrarProducto />} />
-              <Route path="/productos/editar-producto/:objectId" element={<EditarProducto />} />
+              <Route
+                path="/productos/registrar-producto"
+                element={<RegistrarProducto />}
+              />
+              <Route
+                path="/productos/editar-producto/:objectId"
+                element={<EditarProducto />}
+              />
             </>
           )}
           {permisos.includes("categorias") && (
             <>
               <Route path="/categorias" element={<Categorias />} />
-              <Route path="/categorias/registrar-categoria" element={<RegistrarCategoria />} />
-              <Route path="/categorias/editar-categoria/:objectId" element={<EditarCategoria />} />
+              <Route
+                path="/categorias/registrar-categoria"
+                element={<RegistrarCategoria />}
+              />
+              <Route
+                path="/categorias/editar-categoria/:objectId"
+                element={<EditarCategoria />}
+              />
             </>
           )}
           {permisos.includes("ventas") && (
             <>
               <Route path="/ventas" element={<Ventas />} />
-              <Route path="/ventas/registrar-venta" element={<RegistrarVenta />} />
-              <Route path="/ventas/editar-venta/:objectId" element={<EditarVenta />} />
+              <Route
+                path="/ventas/registrar-venta"
+                element={<RegistrarVenta />}
+              />
+              <Route
+                path="/ventas/editar-venta/:objectId"
+                element={<EditarVenta />}
+              />
             </>
           )}
           {permisos.includes("compras") && (
             <>
               <Route path="/compras" element={<Compras />} />
-              <Route path="/compras/registrar-compra" element={<RegistrarCompra />} />
-              <Route path="/compras/editar-compra/:objectId" element={<EditarCompra />} />
+              <Route
+                path="/compras/registrar-compra"
+                element={<RegistrarCompra />}
+              />
+              <Route
+                path="/compras/editar-compra/:objectId"
+                element={<EditarCompra />}
+              />
             </>
           )}
           {permisos.includes("proveedores") && (
             <>
               <Route path="/proveedores" element={<Proveedores />} />
-              <Route path="/proveedores/registrar-proveedor" element={<RegistrarProveedor />} />
-              <Route path="/proveedores/editar-proveedor/:objectId" element={<EditarProveedor />} />
+              <Route
+                path="/proveedores/registrar-proveedor"
+                element={<RegistrarProveedor />}
+              />
+              <Route
+                path="/proveedores/editar-proveedor/:objectId"
+                element={<EditarProveedor />}
+              />
             </>
           )}
           {permisos.includes("clientes") && (
             <>
               <Route path="/clientes" element={<Clientes />} />
-              <Route path="/clientes/registrar-cliente" element={<RegistrarCliente />} />
-              <Route path="/clientes/editar-cliente/:objectId" element={<EditarCliente />} />
+              <Route
+                path="/clientes/registrar-cliente"
+                element={<RegistrarCliente />}
+              />
+              <Route
+                path="/clientes/editar-cliente/:objectId"
+                element={<EditarCliente />}
+              />
             </>
           )}
           {permisos.includes("usuarios") && (
             <>
               <Route path="/usuarios" element={<Usuarios />} />
-              <Route path="/usuarios/registrar-usuario" element={<RegistrarUsuario />} />
-              <Route path="/usuarios/editar-usuario/:objectId" element={<EditarUsuario />} />
+              <Route
+                path="/usuarios/registrar-usuario"
+                element={<RegistrarUsuario />}
+              />
+              <Route
+                path="/usuarios/editar-usuario/:objectId"
+                element={<EditarUsuario />}
+              />
             </>
           )}
           {permisos.includes("roles") && (
             <>
               <Route path="/roles" element={<Roles />} />
               <Route path="/roles/registrar-rol" element={<RegistrarRol />} />
-              <Route path="/roles/editar-rol/:objectId" element={<EditarRol />} />
+              <Route
+                path="/roles/editar-rol/:objectId"
+                element={<EditarRol />}
+              />
             </>
           )}
+          
         </Route>
-        <Route path="*" element={<Error404 />} />
+        {/*<Route path="*" element={<RedirectToPrevious />} />*/}
+
       </Routes>
     </BrowserRouter>
   );

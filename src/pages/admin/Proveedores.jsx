@@ -18,10 +18,7 @@ const Proveedores = () => {
         if (data && data.proveedores && Array.isArray(data.proveedores)) {
           setProveedores(data.proveedores);
         } else {
-          console.error(
-            "Datos de proveedores no encontrados en la respuesta:",
-            data
-          );
+          console.error("Datos de proveedores no encontrados en la respuesta:", data);
         }
       })
       .catch((error) => console.error("Error fetching proveedores:", error));
@@ -29,7 +26,7 @@ const Proveedores = () => {
 
   const handleSearch = (event) => {
     const value = event.target.value;
-    // Validar que el valor ingresado contenga solo letras
+    // Validar que el valor ingresado contenga solo letras, números, espacios y algunos caracteres especiales
     if (/^[A-Za-z\s-1234567890.]+$/.test(value) || value === "") {
       setSearchTerm(value);
       setCurrentPage(1); // Resetear a la primera página al buscar
@@ -43,9 +40,7 @@ const Proveedores = () => {
 
   const filteredProveedores = proveedores.filter((proveedor) => {
     // Filtrar por nombre
-    const nombreIncludes = proveedor.nombre
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const nombreIncludes = proveedor.nombre.toLowerCase().includes(searchTerm.toLowerCase());
 
     // Filtrar por estado
     if (filter === "todos") {
@@ -58,10 +53,7 @@ const Proveedores = () => {
   const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProveedores.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredProveedores.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -71,16 +63,13 @@ const Proveedores = () => {
       .then((response) => response.json())
       .then((data) => {
         // Filtrar las compras para encontrar alguna que tenga el mismo ID de proveedor que estamos intentando eliminar
-        const comprasRelacionadas = data.filter(
-          (compra) => compra.idProveedor === id
-        );
+        const comprasRelacionadas = data.filter((compra) => compra.idProveedor === id);
         if (comprasRelacionadas.length > 0) {
           // Si hay compras relacionadas, mostrar una alerta y evitar la eliminación
           Swal.fire({
             icon: "error",
             title: "Proveedor relacionado con una compra",
-            text:
-              "Este proveedor no se puede eliminar porque está relacionado con una compra.",
+            text: "Este proveedor no se puede eliminar porque está relacionado con una compra.",
           });
         } else {
           // Si no hay compras relacionadas, proceder con la eliminación del proveedor
@@ -88,15 +77,11 @@ const Proveedores = () => {
         }
       })
       .catch((error) => {
-        console.error(
-          "Error al verificar las compras relacionadas con el proveedor:",
-          error
-        );
+        console.error("Error al verificar las compras relacionadas con el proveedor:", error);
         Swal.fire({
           icon: "error",
           title: "Error",
-          text:
-            "Hubo un problema al verificar las compras relacionadas con el proveedor. Por favor, inténtalo de nuevo más tarde.",
+          text: "Hubo un problema al verificar las compras relacionadas con el proveedor. Por favor, inténtalo de nuevo más tarde.",
         });
       });
   };
@@ -127,37 +112,19 @@ const Proveedores = () => {
       .then((response) => {
         if (response.ok) {
           // Si la eliminación es exitosa, actualizar la lista de proveedores
-          const updatedProveedores = proveedores.filter(
-            (proveedor) => proveedor._id !== id
-          );
+          const updatedProveedores = proveedores.filter((proveedor) => proveedor._id !== id);
           setProveedores(updatedProveedores);
-          Swal.fire(
-            "¡Eliminado!",
-            "El proveedor ha sido eliminado",
-            "success"
-          );
+          Swal.fire("¡Eliminado!", "El proveedor ha sido eliminado", "success");
         } else {
-          console.error(
-            "Error al eliminar el proveedor:",
-            response.statusText
-          );
-          Swal.fire(
-            "Error",
-            "Hubo un problema al eliminar el proveedor",
-            "error"
-          );
+          console.error("Error al eliminar el proveedor:", response.statusText);
+          Swal.fire("Error", "Hubo un problema al eliminar el proveedor", "error");
         }
       })
       .catch((error) => {
         console.error("Error al eliminar el proveedor:", error);
-        Swal.fire(
-          "Error",
-          "Hubo un problema al eliminar el proveedor",
-          "error"
-        );
+        Swal.fire("Error", "Hubo un problema al eliminar el proveedor", "error");
       });
   };
-
   return (
     <div className="bg-secondary-100 py-4 px-8 rounded-lg">
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 md:ml-0 ">
@@ -193,9 +160,9 @@ const Proveedores = () => {
           onChange={handleFilterChange}
           className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
         >
+          <option value="todos">Todos</option>
           <option value="activo">Activo</option>
           <option value="inactivo">Inactivo</option>
-          
         </select>
       </div>
         {filteredProveedores.length === 0 ? (
