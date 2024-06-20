@@ -453,7 +453,7 @@ const Compras = () => {
                                 {detalle.cantidad}
                               </span>
                               <span className="text-black">
-                                ${detalle.precioVenta * detalle.cantidad}
+                                ${detalle.precioCompra * detalle.cantidad}
                               </span>
                             </li>
                           ))}

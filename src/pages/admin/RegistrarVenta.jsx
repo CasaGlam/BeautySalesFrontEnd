@@ -290,15 +290,17 @@ const RegistrarVenta = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         setProductosEncontrados([]);
-        setTotalVenta(0); 
+        setTotalVenta(0);
         Swal.fire(
-          'Creación de cliente cancelada',
-          'La creación de cliente ha sido cancelada.',
+          'Venta cancelada',
+          'La venta ha sido cancelada.',
           'error'
         );
+        window.history.back(); // Retrocede en el historial del navegador
       }
     });
   };
+  
 
   useEffect(() => {
     const currentDate = new Date();
