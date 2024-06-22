@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/', // Ajusta esto si la aplicación está en un subdirectorio
+  base: '/', // Ajusta esto si estás desplegando en un subdirectorio
   build: {
     outDir: 'dist',
     rollupOptions: {
