@@ -31,7 +31,7 @@ const Compras = () => {
   }, []);
 
   const fetchCompras = () => {
-    fetch("http://localhost:8080/api/compras")
+    fetch("https://beautysalesbackend.onrender.com/api/compras")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -47,7 +47,7 @@ const Compras = () => {
   };
 
   const fetchProveedores = () => {
-    fetch("http://localhost:8080/api/proveedores")
+    fetch("https://beautysalesbackend.onrender.com/api/proveedores")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data.proveedores)) {
@@ -63,7 +63,7 @@ const Compras = () => {
   };
 
   const fetchProductos = () => {
-    fetch("http://localhost:8080/api/productos")
+    fetch("https://beautysalesbackend.onrender.com/api/productos")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data.productos)) {
@@ -120,7 +120,7 @@ const Compras = () => {
   const updateCompraEstado = async (compraId, estado, descripcionEstado) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/compras/${compraId}`,
+        `https://beautysalesbackend.onrender.com/api/compras/${compraId}`,
         {
           method: "PUT",
           headers: {
@@ -277,9 +277,10 @@ const Compras = () => {
                 onChange={(event) => setFiltroEstado(event.target.value)}
                 className="px-2 py-1 rounded-lg bg-secondary-900 text-black"
                 >
+                  <option value="">Todas</option>
                 <option value="activas">Activo</option>
                 <option value="inactivas">Inactivo</option>
-                <option value="">Todas</option>
+                
               </select>
             </div>
             <div>
@@ -452,7 +453,7 @@ const Compras = () => {
                                 {detalle.cantidad}
                               </span>
                               <span className="text-black">
-                                ${detalle.precioVenta * detalle.cantidad}
+                                ${detalle.precioCompra * detalle.cantidad}
                               </span>
                             </li>
                           ))}

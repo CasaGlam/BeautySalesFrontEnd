@@ -12,7 +12,7 @@ const Categorias = () => {
   const [estadoFiltrado, setEstadoFiltrado] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/categorias")
+    fetch("https://beautysalesbackend.onrender.com/api/categorias")
       .then((response) => response.json())
       .then((data) => {
         if (data && data.categorias && Array.isArray(data.categorias)) {
@@ -63,7 +63,7 @@ const Categorias = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:8080/api/categorias/${id}`, {
+        fetch(`https://beautysalesbackend.onrender.com/api/categorias/${id}`, {
           method: "DELETE",
         })
           .then((response) => {
@@ -143,9 +143,10 @@ const Categorias = () => {
           value={estadoFiltrado}
           onChange={(e) => setEstadoFiltrado(e.target.value)}
         >
+           <option value="">Todas</option>
           <option value="Activo">Activas</option>
           <option value="Inactivo">Inactivas</option>
-          <option value="">Todas</option>
+         
         </select>
       </div>
       {filteredCategorias.length === 0 ? (

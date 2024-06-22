@@ -11,7 +11,7 @@ const EditarRol = () => {
   });
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/roles/${objectId}`)
+    fetch(`https://beautysalesbackend.onrender.com/api/roles/${objectId}`)
       .then(response => response.json())
       .then(data => {
         if (data && data.role) {
@@ -54,7 +54,7 @@ const EditarRol = () => {
     }
 
     // Realizar la solicitud GET para obtener todos los roles
-    fetch("http://localhost:8080/api/roles")
+    fetch("https://beautysalesbackend.onrender.com/api/roles")
       .then(response => response.json())
       .then(data => {
         // Verificar si el nombre de rol ya existe en la lista de roles
@@ -76,7 +76,7 @@ const EditarRol = () => {
             cancelButtonText: "Cancelar",
           }).then((result) => {
             if (result.isConfirmed) {
-              fetch(`http://localhost:8080/api/roles/${objectId}`, {
+              fetch(`https://beautysalesbackend.onrender.com/api/roles/${objectId}`, {
                 method: "PUT",
                 headers: {
                   "Content-Type": "application/json",

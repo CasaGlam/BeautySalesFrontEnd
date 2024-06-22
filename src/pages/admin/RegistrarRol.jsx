@@ -38,7 +38,7 @@ const RegistrarRol = () => {
     }
 
     // Realizar la solicitud GET para obtener todos los roles
-    fetch("http://localhost:8080/api/roles")
+    fetch("https://beautysalesbackend.onrender.com/api/roles")
       .then((response) => {
         if (!response.ok) {
           throw new Error("No se pudo obtener la lista de roles.");
@@ -67,7 +67,7 @@ const RegistrarRol = () => {
             confirmButtonText: "Sí",
           }).then((result) => {
             if (result.isConfirmed) {
-              fetch("http://localhost:8080/api/roles", {
+              fetch("https://beautysalesbackend.onrender.com/api/roles", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",

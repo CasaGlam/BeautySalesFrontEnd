@@ -12,7 +12,7 @@ const Proveedores = () => {
   const [proveedores, setProveedores] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/proveedores")
+    fetch("https://beautysalesbackend.onrender.com/api/proveedores")
       .then((response) => response.json())
       .then((data) => {
         if (data && data.proveedores && Array.isArray(data.proveedores)) {
@@ -59,7 +59,7 @@ const Proveedores = () => {
 
   const handleDelete = (id) => {
     // Consultar la API de compras para verificar si el proveedor está relacionado con alguna compra
-    fetch("http://localhost:8080/api/compras")
+    fetch("https://beautysalesbackend.onrender.com/api/compras")
       .then((response) => response.json())
       .then((data) => {
         // Filtrar las compras para encontrar alguna que tenga el mismo ID de proveedor que estamos intentando eliminar
@@ -106,7 +106,7 @@ const Proveedores = () => {
   };
 
   const deleteProveedor = (id) => {
-    fetch(`http://localhost:8080/api/proveedores/${id}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/proveedores/${id}`, {
       method: "DELETE",
     })
       .then((response) => {
