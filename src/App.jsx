@@ -181,7 +181,6 @@ function App() {
           )}
           
         </Route>
-        <Route path="*" element={<RedirectToPrevious />} />
 
       </Routes>
     </BrowserRouter>
