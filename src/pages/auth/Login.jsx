@@ -64,13 +64,13 @@ const Login = () => {
     <div className="w-[100vw] h-[100vh] flex justify-center items-center bg-gray-400">
       <div
         className="w-[90vw] h-[90vh] rounded-lg flex justify-center"
-        style={{ backgroundImage: "url('./src/assets/img/bg-login.jpg')" }}
+        style={{ backgroundImage: "url('src/assets/img/bg-login.jpg')" }}
       >
         <div
           className="w-[40%] h-[100%] border-r border-black"
           id="Prueba"
         >
-          <img src="./src/assets/img/BeautySales.png" alt="" className="w-full h-full" />
+          <img src="src/assets/img/BeautySales.png" alt="" className="w-full h-full" />
         </div>
         <div className="text-black w-[60%] flex flex-col justify-center items-center backdrop-blur-sm rounded-lg">
           <div className="flex justify-center items-center">
