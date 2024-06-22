@@ -21,7 +21,7 @@ const Compras = () => {
     setFecha(currentDate);
     setFechaRegistro(currentDate);
   
-    fetch('http://localhost:8080/api/productos')
+    fetch('https://beautysalesbackend.onrender.com/api/productos')
       .then(response => response.json())
       .then(data => {
         const productosActivos = data.productos.filter(producto => producto.estado === true);
@@ -29,7 +29,7 @@ const Compras = () => {
       })
       .catch(error => console.error('Error fetching productos:', error));
   
-    fetch('http://localhost:8080/api/proveedores')
+    fetch('https://beautysalesbackend.onrender.com/api/proveedores')
       .then(response => response.json())
       .then(data => {
         const proveedoresActivos = data.proveedores.filter(proveedor => proveedor.estado === true);
@@ -142,7 +142,7 @@ const Compras = () => {
         };
 
         try {
-          const response = await fetch('http://localhost:8080/api/compras', {
+          const response = await fetch('https://beautysalesbackend.onrender.com/api/compras', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -152,7 +152,7 @@ const Compras = () => {
 
           if (response.ok) {
             await Promise.all(productosSeleccionados.map(producto =>
-              fetch(`http://localhost:8080/api/productos/${producto.idProducto}`, {
+              fetch(`https://beautysalesbackend.onrender.com/api/productos/${producto.idProducto}`, {
                 method: 'PATCH',
                 headers: {
                   'Content-Type': 'application/json'
@@ -210,7 +210,7 @@ const Compras = () => {
 
   const actualizarPrecioVentaProducto = async (productoId, nuevoPrecioVenta) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/productos/${productoId}`, {
+      const response = await fetch(`https://beautysalesbackend.onrender.com/api/productos/${productoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

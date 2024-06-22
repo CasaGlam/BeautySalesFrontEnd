@@ -20,7 +20,7 @@ const RegistrarVenta = () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/clientes')
+    fetch('https://beautysalesbackend.onrender.com/api/clientes')
       .then(response => response.json())
       .then(data => {
         if (Array.isArray(data.clientes)) {
@@ -47,7 +47,7 @@ const RegistrarVenta = () => {
   };
 
   const handleSubmit = () => {
-    fetch('http://localhost:8080/api/clientes', {
+    fetch('https://beautysalesbackend.onrender.com/api/clientes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ const RegistrarVenta = () => {
     const value = e.target.value;
     setInputValue(value);
   
-    fetch('http://localhost:8080/api/productos')
+    fetch('https://beautysalesbackend.onrender.com/api/productos')
       .then(response => response.json())
       .then(data => {
         const productosActivos = data.productos.filter(producto => producto.estado === true);
@@ -117,7 +117,7 @@ const RegistrarVenta = () => {
       );
       setProductosEncontrados(nuevosProductos);
     } else {
-      fetch('http://localhost:8080/api/productos')
+      fetch('https://beautysalesbackend.onrender.com/api/productos')
         .then(response => response.json())
         .then(data => {
           const productoEncontrado = data.productos.find(item => item.nombre === producto);
@@ -167,7 +167,7 @@ const RegistrarVenta = () => {
     const verificarStock = async () => {
       try {
         for (let producto of productosEncontrados) {
-          const response = await fetch(`http://localhost:8080/api/productos/${producto.idProducto}`);
+          const response = await fetch(`https://beautysalesbackend.onrender.com/api/productos/${producto.idProducto}`);
           if (!response.ok) {
             throw new Error('Error al obtener el producto');
           }
@@ -221,7 +221,7 @@ const RegistrarVenta = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             // Aquí realizar la solicitud para guardar la venta
-            fetch('http://localhost:8080/api/ventas', {
+            fetch('https://beautysalesbackend.onrender.com/api/ventas', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -239,7 +239,7 @@ const RegistrarVenta = () => {
   
                 // Actualizar la cantidad vendida de cada producto en el stock
                 for (let producto of productosEncontrados) {
-                  fetch(`http://localhost:8080/api/productos/${producto.idProducto}`, {
+                  fetch(`https://beautysalesbackend.onrender.com/api/productos/${producto.idProducto}`, {
                     method: 'PATCH',
                     headers: {
                       'Content-Type': 'application/json'

@@ -13,7 +13,7 @@ const Usuarios = () => {
   const [filter, setFilter] = useState("todos"); // Cambiado a 'todos' por defecto
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/usuarios")
+    fetch("https://beautysalesbackend.onrender.com/api/usuarios")
       .then((response) => response.json())
       .then((data) => {
         if (data && data.usuarios && Array.isArray(data.usuarios)) {
@@ -84,7 +84,7 @@ const Usuarios = () => {
       confirmButtonText: "Sí, eliminar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:8080/api/usuarios/${userId}`, {
+        fetch(`https://beautysalesbackend.onrender.com/api/usuarios/${userId}`, {
           method: "DELETE",
         })
           .then((response) => {

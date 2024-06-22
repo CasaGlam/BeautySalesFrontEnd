@@ -14,12 +14,12 @@ const Productos = () => {
   const [estadoFiltrado, setEstadoFiltrado] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/productos")
+    fetch("https://beautysalesbackend.onrender.com/api/productos")
       .then((response) => response.json())
       .then((data) => {
         if (data && data.productos && Array.isArray(data.productos)) {
           setProductos(data.productos);
-          fetch("http://localhost:8080/api/categorias")
+          fetch("https://beautysalesbackend.onrender.com/api/categorias")
             .then((response) => response.json())
             .then((data) => {
               if (data && data.categorias && Array.isArray(data.categorias)) {
@@ -83,7 +83,7 @@ const Productos = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         // Primero verificamos si el producto está asociado a alguna venta
-        fetch(`http://localhost:8080/api/ventas`)
+        fetch(`https://beautysalesbackend.onrender.com/api/ventas`)
           .then((response) => response.json())
           .then((data) => {
             // Buscar si el producto está en algún detalle de venta
@@ -99,7 +99,7 @@ const Productos = () => {
               );
             } else {
               // Si no está asociado a ninguna venta, procedemos con la eliminación
-              fetch(`http://localhost:8080/api/productos/${id}`, {
+              fetch(`https://beautysalesbackend.onrender.com/api/productos/${id}`, {
                 method: "DELETE",
               })
                 .then((response) => response.json())

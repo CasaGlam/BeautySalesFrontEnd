@@ -24,7 +24,7 @@ const Ventas = () => {
   const [estadoFiltrado, setEstadoFiltrado] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/ventas")
+    fetch("https://beautysalesbackend.onrender.com/api/ventas")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -38,7 +38,7 @@ const Ventas = () => {
       })
       .catch((error) => console.error("Error fetching ventas:", error));
 
-    fetch("http://localhost:8080/api/clientes")
+    fetch("https://beautysalesbackend.onrender.com/api/clientes")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data.clientes)) {
@@ -52,7 +52,7 @@ const Ventas = () => {
       })
       .catch((error) => console.error("Error fetching clientes:", error));
 
-    fetch("http://localhost:8080/api/productos")
+    fetch("https://beautysalesbackend.onrender.com/api/productos")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data.productos)) {
@@ -118,7 +118,7 @@ const Ventas = () => {
     const estado = formData.get("estado") === "true";
     const updatedVenta = { ...ventaEditando, estado };
     updatedVenta.descripcionEstado = descripcion; // Actualizando la descripción del estado
-    fetch(`http://localhost:8080/api/ventas/${ventaEditando._id}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/ventas/${ventaEditando._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

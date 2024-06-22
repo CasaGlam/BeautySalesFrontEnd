@@ -24,7 +24,7 @@ const RegistrarProducto = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/categorias");
+        const response = await fetch("https://beautysalesbackend.onrender.com/api/categorias");
         const data = await response.json();
         const categoriasFiltradas = data.categorias.filter(categoria => categoria.estado);
         setCategorias(categoriasFiltradas);
@@ -74,7 +74,7 @@ const RegistrarProducto = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/productos", {
+      const response = await fetch("https://beautysalesbackend.onrender.com/api/productos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

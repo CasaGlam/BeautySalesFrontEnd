@@ -21,8 +21,8 @@ const EditarProducto = () => {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const responseProducto = await fetch(`http://localhost:8080/api/productos/${objectId}`);
-        const responseCategorias = await fetch(`http://localhost:8080/api/categorias`);
+        const responseProducto = await fetch(`https://beautysalesbackend.onrender.com/api/productos/${objectId}`);
+        const responseCategorias = await fetch(`https://beautysalesbackend.onrender.com/api/categorias`);
         
         if (!responseProducto.ok || !responseCategorias.ok) {
           throw new Error('Error al obtener los datos');
@@ -68,7 +68,7 @@ const EditarProducto = () => {
       return;
     }
   
-    fetch(`http://localhost:8080/api/productos/${objectId}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/productos/${objectId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

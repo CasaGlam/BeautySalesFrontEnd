@@ -67,7 +67,7 @@ const CambiarContrasena = () => {
     };
 
     // Enviar solicitud PUT
-    fetch('http://localhost:8080/api/auth/cambiar-contrasena', {
+    fetch('https://beautysalesbackend.onrender.com/api/auth/cambiar-contrasena', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'

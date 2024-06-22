@@ -54,7 +54,7 @@ const RegistrarProveedor = () => {
     }
 
     // Verificar si el proveedor ya existe en la base de datos
-    fetch("http://localhost:8080/api/proveedores")
+    fetch("https://beautysalesbackend.onrender.com/api/proveedores")
       .then((response) => response.json())
       .then((data) => {
         // Verificar si la respuesta contiene la propiedad 'proveedores'
@@ -76,7 +76,7 @@ const RegistrarProveedor = () => {
             );
           } else {
             // Si el proveedor no existe, enviar la solicitud POST para registrar el proveedor
-            fetch("http://localhost:8080/api/proveedores", {
+            fetch("https://beautysalesbackend.onrender.com/api/proveedores", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

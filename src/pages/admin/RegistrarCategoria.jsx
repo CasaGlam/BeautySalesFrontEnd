@@ -28,7 +28,7 @@ const RegistrarCategoria = () => {
     }
     
     try {
-      const response = await fetch("http://localhost:8080/api/categorias", {
+      const response = await fetch("https://beautysalesbackend.onrender.com/api/categorias", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
