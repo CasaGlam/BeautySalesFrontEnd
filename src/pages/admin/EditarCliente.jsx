@@ -18,7 +18,7 @@ const EditarCliente = () => {
   useEffect(() => {
     const fetchCliente = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/clientes/${objectId}`);
+        const response = await fetch(`https://beautysalesbackend.onrender.com/api/clientes/${objectId}`);
         if (!response.ok) {
           throw new Error('Error al obtener los datos del cliente');
         }
@@ -60,7 +60,7 @@ const EditarCliente = () => {
 
     // Verificar si el correo o el teléfono ya están registrados
     try {
-      const response = await fetch(`http://localhost:8080/api/clientes`);
+      const response = await fetch(`https://beautysalesbackend.onrender.com/api/clientes`);
       if (!response.ok) {
         throw new Error('Error al obtener los datos de los clientes');
       }
@@ -95,7 +95,7 @@ const EditarCliente = () => {
     }
 
     // Realizar la solicitud PUT para actualizar el cliente
-    fetch(`http://localhost:8080/api/clientes/${objectId}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/clientes/${objectId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

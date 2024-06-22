@@ -25,7 +25,7 @@ const RecuperarContrasena = () => {
     }
 
     // Hacer la solicitud POST a la API
-    fetch('http://localhost:8080/api/auth/recuperar-contrasena', {
+    fetch('https://beautysalesbackend.onrender.com/api/auth/recuperar-contrasena', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

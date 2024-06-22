@@ -13,7 +13,7 @@ const Clientes = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/clientes")
+    fetch("https://beautysalesbackend.onrender.com/api/clientes")
       .then((response) => response.json())
       .then((data) => {
         if (data && data.clientes && Array.isArray(data.clientes)) {
@@ -59,7 +59,7 @@ const Clientes = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleDelete = (clienteId) => {
-    fetch(`http://localhost:8080/api/ventas`)
+    fetch(`https://beautysalesbackend.onrender.com/api/ventas`)
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -108,7 +108,7 @@ const Clientes = () => {
   };
 
   const deleteCliente = (clienteId) => {
-    fetch(`http://localhost:8080/api/clientes/${clienteId}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/clientes/${clienteId}`, {
       method: "DELETE",
     })
       .then((response) => {

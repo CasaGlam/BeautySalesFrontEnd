@@ -17,7 +17,7 @@ const RegistrarUsuario = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/roles")
+    fetch("https://beautysalesbackend.onrender.com/api/roles")
       .then((response) => response.json())
       .then((data) => {
         setRoles(data.roles);
@@ -61,7 +61,7 @@ const RegistrarUsuario = () => {
 
   const checkIfUserExists = async (nombre, correo) => {
     try {
-      const response = await fetch("http://localhost:8080/api/usuarios");
+      const response = await fetch("https://beautysalesbackend.onrender.com/api/usuarios");
       if (!response.ok) {
         throw new Error("Error al obtener los usuarios");
       }
@@ -118,7 +118,7 @@ const RegistrarUsuario = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch("http://localhost:8080/api/usuarios", {
+        fetch("https://beautysalesbackend.onrender.com/api/usuarios", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

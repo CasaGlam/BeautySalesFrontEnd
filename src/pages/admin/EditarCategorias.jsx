@@ -17,7 +17,7 @@ const EditarCategoria = () => {
   useEffect(() => {
     const fetchCategoria = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/categorias/${objectId}`);
+        const response = await fetch(`https://beautysalesbackend.onrender.com/api/categorias/${objectId}`);
         if (!response.ok) {
           throw new Error('Error al obtener los datos del usuario');
         }
@@ -54,7 +54,7 @@ const EditarCategoria = () => {
     }
 
     // Realizar la solicitud PUT para actualizar la categoría
-    fetch(`http://localhost:8080/api/categorias/${objectId}`, {
+    fetch(`https://beautysalesbackend.onrender.com/api/categorias/${objectId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
