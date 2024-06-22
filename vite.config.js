@@ -14,4 +14,5 @@ export default defineConfig({
       },
     },
   },
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.svg'], // Asegúrate de que estas extensiones están incluidas
 });
