@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: mi-app-vite-react
+    name: beautysalesfrontend
     env: static
     staticPublishPath: dist
     routes:

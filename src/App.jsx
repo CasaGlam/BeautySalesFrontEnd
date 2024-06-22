@@ -181,7 +181,7 @@ function App() {
           )}
           
         </Route>
-        {/*<Route path="*" element={<RedirectToPrevious />} />*/}
+        <Route path="*" element={<RedirectToPrevious />} />
 
       </Routes>
     </BrowserRouter>
